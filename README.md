@@ -1,1 +1,1 @@
-# cmps121
+CMPS 121 - Mobile Applications - Fall 2017
