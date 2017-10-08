@@ -17,7 +17,7 @@
 
 ## Configuring Manifest - Declare Activity
 
-We nee dto add an <activity> element as a child of <application> element
+We need to add an <activity> element as a child of <application> element
 
 ## Configuring Manifest - Declare Intent Filters
 
