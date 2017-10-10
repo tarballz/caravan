@@ -38,9 +38,10 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".CreateFindParty"
-                  android:parentActivityName=".MainActivity" >
-        </activity>
+        <activity
+            android:name=".CreateFindParty"
+            android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".CreateParty"></activity>
     </application>
 
 </manifest>
