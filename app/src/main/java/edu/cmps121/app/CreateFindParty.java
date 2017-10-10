@@ -29,4 +29,9 @@ public class CreateFindParty extends AppCompatActivity {
         Intent intent = new Intent(this, CreateParty.class);
         startActivity(intent);
     }
+
+    public void gotoFindParty(View view) {
+        Intent intent = new Intent(this, FindParty.class);
+        startActivity(intent);
+    }
 }
