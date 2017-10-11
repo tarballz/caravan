@@ -33,7 +33,7 @@ public class CreateParty extends AppCompatActivity {
 
     public void lookup(View view) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.28:8000/")
+                .baseUrl("http://169.233.242.236:8000/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         TeamService service = retrofit.create(TeamService.class);
@@ -45,6 +45,19 @@ public class CreateParty extends AppCompatActivity {
                 // the request worked!!
                 if (response.isSuccessful()) {
                     Log.d("RESULTS: ", "SUCCESS!");
+                    List<Team> list = response.body();
+                    /*Team team = null;
+                    for (int i = 0; i < list.size(); i++) {
+                        team = new Team();
+                        String name = list.get(i).getName();
+                        Log.d("NAME: ", name);
+                        String[] cars = list.get(i).getCars();
+                        Log.d("CAR[0]: ", cars[0]);
+                        team.setName(name);
+                        team.setCars(cars);
+                        // For some reason this crashes the app...
+                        //localTeamList.add(team);
+                    }*/
                 }
             }
 
@@ -54,5 +67,11 @@ public class CreateParty extends AppCompatActivity {
                 Toast.makeText(CreateParty.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
             }
         });
+
+//        for (int i = 0; i < localTeamList.size(); i++) {
+//            if (cPartyName.equals(localTeamList.get(i).getName())) {
+//                Toast.makeText(CreateParty.this, "Team already exists!", Toast.LENGTH_SHORT).show();
+//            }
+//        }
     }
 }
