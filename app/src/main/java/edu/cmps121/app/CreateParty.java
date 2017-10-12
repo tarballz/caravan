@@ -22,6 +22,8 @@ public class CreateParty extends AppCompatActivity {
 
     String cPartyName = "";
 
+    List<Team> teamList = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +35,7 @@ public class CreateParty extends AppCompatActivity {
 
     public void lookup(View view) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://169.233.242.236:8000/")
+                .baseUrl("http://169.233.194.78:8000/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         TeamService service = retrofit.create(TeamService.class);
@@ -45,7 +47,8 @@ public class CreateParty extends AppCompatActivity {
                 // the request worked!!
                 if (response.isSuccessful()) {
                     Log.d("RESULTS: ", "SUCCESS!");
-                    List<Team> list = response.body();
+                    teamList = response.body();
+                    assert (teamList != null);
                     /*Team team = null;
                     for (int i = 0; i < list.size(); i++) {
                         team = new Team();
@@ -68,10 +71,11 @@ public class CreateParty extends AppCompatActivity {
             }
         });
 
-//        for (int i = 0; i < localTeamList.size(); i++) {
-//            if (cPartyName.equals(localTeamList.get(i).getName())) {
-//                Toast.makeText(CreateParty.this, "Team already exists!", Toast.LENGTH_SHORT).show();
-//            }
-//        }
+        for (int i = 0; i < teamList.size(); i++) {
+            if (cPartyName.equals(teamList.get(i).getName())) {
+                Toast.makeText(CreateParty.this, "Team already exists!", Toast.LENGTH_SHORT).show();
+            }
+        }
+
     }
 }
