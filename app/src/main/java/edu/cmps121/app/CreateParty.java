@@ -29,11 +29,14 @@ public class CreateParty extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_party);
 
-        EditText editText = (EditText) findViewById(R.id.c_party_name);
-        cPartyName = editText.getText().toString();
     }
 
     public void lookup(View view) {
+        EditText editText = (EditText) findViewById(R.id.c_party_name);
+        cPartyName = editText.getText().toString();
+
+        Log.d("TEAM NAME", cPartyName);
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://169.233.194.78:8000/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -70,12 +73,14 @@ public class CreateParty extends AppCompatActivity {
                 Toast.makeText(CreateParty.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
             }
         });
-
-        for (int i = 0; i < teamList.size(); i++) {
-            if (cPartyName.equals(teamList.get(i).getName())) {
-                Toast.makeText(CreateParty.this, "Team already exists!", Toast.LENGTH_SHORT).show();
+        if (teamList != null) {
+            for (int i = 0; i < teamList.size(); i++) {
+                if (cPartyName.equals(teamList.get(i).getName())) {
+                    Toast.makeText(CreateParty.this, "Team already exists!", Toast.LENGTH_SHORT).show();
+                }
             }
+        } else {
+            Toast.makeText(CreateParty.this, "teamList is null!", Toast.LENGTH_SHORT).show();
         }
-
     }
 }
