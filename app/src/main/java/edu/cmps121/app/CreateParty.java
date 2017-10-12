@@ -52,18 +52,16 @@ public class CreateParty extends AppCompatActivity {
                     Log.d("RESULTS: ", "SUCCESS!");
                     teamList = response.body();
                     assert (teamList != null);
-                    /*Team team = null;
-                    for (int i = 0; i < list.size(); i++) {
-                        team = new Team();
-                        String name = list.get(i).getName();
-                        Log.d("NAME: ", name);
-                        String[] cars = list.get(i).getCars();
-                        Log.d("CAR[0]: ", cars[0]);
-                        team.setName(name);
-                        team.setCars(cars);
-                        // For some reason this crashes the app...
-                        //localTeamList.add(team);
-                    }*/
+
+                    if (teamList != null) {
+                        for (int i = 0; i < teamList.size(); i++) {
+                            if (cPartyName.equals(teamList.get(i).getName())) {
+                                Toast.makeText(CreateParty.this, "Team already exists!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    } else {
+                        Toast.makeText(CreateParty.this, "teamList is null!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
@@ -73,14 +71,6 @@ public class CreateParty extends AppCompatActivity {
                 Toast.makeText(CreateParty.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
             }
         });
-        if (teamList != null) {
-            for (int i = 0; i < teamList.size(); i++) {
-                if (cPartyName.equals(teamList.get(i).getName())) {
-                    Toast.makeText(CreateParty.this, "Team already exists!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        } else {
-            Toast.makeText(CreateParty.this, "teamList is null!", Toast.LENGTH_SHORT).show();
-        }
+
     }
 }
