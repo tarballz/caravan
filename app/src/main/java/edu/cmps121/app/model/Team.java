@@ -1,5 +1,7 @@
 package edu.cmps121.app.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Arrays;
 
 /**
@@ -7,14 +9,21 @@ import java.util.Arrays;
  */
 
 public class Team {
+    @SerializedName("id")
     public int id;
 
+    @SerializedName("name")
     public String name;
 
+    @SerializedName("cars")
     public String[] cars;
 
     public Team() {
 
+    }
+
+    public Team(String name) {
+        this.name = name;
     }
 
     public Team(int id, String name, String[] cars) {
