@@ -44,6 +44,7 @@ public class CreateParty extends AppCompatActivity {
         TeamService service = retrofit.create(TeamService.class);
         Call<List<Team>> teams = service.listTeams();
 
+        // Remember, this enqueue() method works asynchronously.
         teams.enqueue(new Callback<List<Team>>() {
             @Override
             public void onResponse(Call<List<Team>> t, Response<List<Team>> response) {
@@ -51,7 +52,6 @@ public class CreateParty extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Log.d("RESULTS: ", "SUCCESS!");
                     teamList = response.body();
-                    assert (teamList != null);
 
                     if (teamList != null) {
                         for (int i = 0; i < teamList.size(); i++) {
