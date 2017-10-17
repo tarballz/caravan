@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,8 +29,14 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CreateFindParty.class);
         EditText editText = (EditText) findViewById(R.id.editText);
         String usersName = editText.getText().toString();
-        // Adds (key, value) to our intent
-        intent.putExtra(EXTRA_MESSAGE, usersName);
-        startActivity(intent);
+        if (usersName.length() > 0) {
+            // Adds (key, value) to our intent
+            // Consider writing this to a file.
+            intent.putExtra(EXTRA_MESSAGE, usersName);
+            startActivity(intent);
+        } else {
+            Toast.makeText(MainActivity.this, "Name is too short!", Toast.LENGTH_SHORT).show();
+        }
+
     }
 }

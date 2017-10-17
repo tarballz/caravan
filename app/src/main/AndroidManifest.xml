@@ -48,7 +48,9 @@
             android:parentActivityName=".CreateFindParty" />
         <activity
             android:name=".FindParty"
-            android:parentActivityName=".CreateFindParty"/>
+            android:parentActivityName=".CreateFindParty" />
+        <activity android:name=".PartyMenuActivity" />
+        <activity android:name=".CreateCarActivity"></activity>
     </application>
 
 </manifest>
