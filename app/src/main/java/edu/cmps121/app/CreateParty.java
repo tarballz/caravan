@@ -22,7 +22,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CreateParty extends AppCompatActivity {
 
     String cPartyName = "";
-    List<Team> teamList = null;
     // Tutorial says to prefix our intent extras with our package name
     // to avoid conflicts.
     public static final String EXTRA_MESSAGE = "edu.cmps121.app.USERSNAME";
@@ -39,39 +38,24 @@ public class CreateParty extends AppCompatActivity {
         cPartyName = editText.getText().toString();
         final Intent intent = new Intent(this, PartyMenuActivity.class);
 
-        Log.d("TEAM NAME", cPartyName);
+        Log.i("TEAM NAME", cPartyName);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://192.168.1.28:8000")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        TeamService service = retrofit.create(TeamService.class);
-        Call<List<Team>> teams = service.listTeams();
+
+        Call<List<Team>> teams = retrofit
+                .create(TeamService.class)
+                .listTeams();
 
         // Remember, this enqueue() method works asynchronously.
         teams.enqueue(new Callback<List<Team>>() {
             @Override
             public void onResponse(Call<List<Team>> t, Response<List<Team>> response) {
                 // the request worked!!
-                boolean teamExists = false;
                 if (response.isSuccessful()) {
-                    Log.d("RESULTS: ", "SUCCESS1!");
-                    teamList = response.body();
-
-                    if (teamList != null) {
-                        for (int i = 0; i < teamList.size(); i++) {
-                            if (cPartyName.equals(teamList.get(i).getName())) {
-                                teamExists = true;
-                                Toast.makeText(CreateParty.this, "Team already exists!", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                    } else {
-                        // TODO: Take this bool assignment out later, just using it to safeguard for now.
-                        teamExists = true;
-                        Toast.makeText(CreateParty.this, "teamList is null!", Toast.LENGTH_SHORT).show();
-                    }
-                    if (!teamExists) {
+                    if (!checkTeamExists(response.body())) {
                         intent.putExtra(EXTRA_MESSAGE, cPartyName);
                         startActivity(intent);
                     }
@@ -80,14 +64,44 @@ public class CreateParty extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Team>> t, Throwable e) {
-                Log.d("RESULTS: ", "FAILURE!");
-                Toast.makeText(CreateParty.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
+                Log.e("RESULTS: ", "FAILURE!");
+                shortToast("Server could not be reached... please try again later");
                 t.cancel();
+
                 // TODO: Remove this move to the next activity, just doing this so others can work off this branch.
                 intent.putExtra(EXTRA_MESSAGE, cPartyName);
                 startActivity(intent);
             }
         });
+    }
 
+    private boolean checkTeamExists(List<Team> teamList) {
+        try {
+            boolean teamExists = teamList.stream()
+                    .filter(e -> e.getName().equals(cPartyName))
+                    .findFirst()
+                    .isPresent();
+
+            if (teamExists) {
+                shortToast("Team already exists!");
+                return true;
+            }
+
+            return false;
+        } catch (NullPointerException e) {
+            // What does it mean when teamList is null? Does this mean that something is broken?
+            // If so, then throw a new RunTimeException(e) here instead of logging & returning
+            Log.i("log", "teamList is null");
+            shortToast("teamList is null!");
+            return false;
+        }
+    }
+
+    private void shortToast(String msg) {
+        Toast.makeText(
+                CreateParty.this,
+                msg,
+                Toast.LENGTH_SHORT
+        ).show();
     }
 }
