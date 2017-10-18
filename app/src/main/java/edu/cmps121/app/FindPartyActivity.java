@@ -3,7 +3,7 @@ package edu.cmps121.app;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class FindParty extends AppCompatActivity {
+public class FindPartyActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,8 +1,87 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.cmps121.app.MapsActivity" />
+    android:background="@android:color/darker_gray"
+    tools:layout_editor_absoluteY="81dp"
+    tools:layout_editor_absoluteX="0dp">
+
+    <Button
+        android:id="@+id/buttonEmergency"
+        android:layout_width="0dp"
+        android:layout_height="85dp"
+        android:text="@string/emergency"
+        android:background="@android:color/holo_red_dark"
+        android:onClick="notifyEmergency"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        app:layout_constraintRight_toRightOf="@+id/buttonGas"
+        android:layout_marginTop="57dp"
+        app:layout_constraintTop_toBottomOf="@+id/buttonGas"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/buttonGas" />
+
+    <Button
+        android:id="@+id/buttonRest"
+        android:layout_width="95dp"
+        android:layout_height="85dp"
+        android:layout_marginStart="66dp"
+        android:text="@string/rest"
+        android:background="@android:color/holo_purple"
+        android:onClick="notifyRest"
+        app:layout_constraintBaseline_toBaselineOf="@+id/buttonEmergency"
+        tools:layout_constraintBaseline_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <Button
+        android:id="@+id/buttonGas"
+        android:layout_width="100dp"
+        android:layout_height="87dp"
+        android:text="@string/gas"
+        android:background="@android:color/holo_blue_bright"
+        android:onClick="notifyGas"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        android:layout_marginEnd="70dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="82dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="70dp"
+        tools:layout_editor_absoluteX="214dp" />
+
+    <Button
+        android:id="@+id/buttonFoods"
+        android:layout_width="0dp"
+        android:layout_height="85dp"
+        android:text="@string/food"
+        android:background="@android:color/holo_green_light"
+        android:onClick="notifyFood"
+        tools:layout_constraintRight_creator="1"
+        app:layout_constraintRight_toRightOf="@+id/buttonRest"
+        app:layout_constraintBaseline_toBaselineOf="@+id/buttonGas"
+        tools:layout_constraintBaseline_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/buttonRest" />
+
+    <Button
+        android:id="@+id/buttonMaps"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:text="@string/go_to_google_maps"
+        android:layout_marginStart="70dp"
+        android:layout_marginEnd="70dp"
+        android:background="@android:color/holo_orange_light"
+        android:onClick="mapsRedirect"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="76dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+</android.support.constraint.ConstraintLayout>
