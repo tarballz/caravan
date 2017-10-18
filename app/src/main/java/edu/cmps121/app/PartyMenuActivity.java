@@ -25,4 +25,8 @@ public class PartyMenuActivity extends AppCompatActivity {
     public void gotoMapsActivity(View view) {
         startActivity(new Intent(this, MapsActivity.class));
     }
+
+    public void gotoSettingsActivity(View view) {
+        startActivity(new Intent(this, SettingsActivity.class));
+    }
 }

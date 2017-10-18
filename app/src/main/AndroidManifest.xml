@@ -50,7 +50,11 @@
             android:name=".FindPartyActivity"
             android:parentActivityName=".PartyOptionsActivity" />
         <activity android:name=".PartyMenuActivity" />
-        <activity android:name=".CreateCarActivity"></activity>
+        <activity android:name=".CreateCarActivity" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
