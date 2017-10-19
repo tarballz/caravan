@@ -1,14 +1,10 @@
 package edu.cmps121.app;
 
 import android.content.Intent;
-import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     // Called when user taps the "Maps?" button.
     public void gotoCreateFindParty(View view) {
         // new Intent(from, to), I think
-        Intent intent = new Intent(this, CreateFindParty.class);
+        Intent intent = new Intent(this, PartyOptionsActivity.class);
         EditText editText = (EditText) findViewById(R.id.editText);
         String usersName = editText.getText().toString();
         if (usersName.length() > 0) {

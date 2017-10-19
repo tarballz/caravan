@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-public class CreateFindParty extends AppCompatActivity {
+public class PartyOptionsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +24,12 @@ public class CreateFindParty extends AppCompatActivity {
 
     public void gotoCreateParty(View view) {
         // new Intent(from, to), I think
-        Intent intent = new Intent(this, CreateParty.class);
+        Intent intent = new Intent(this, CreatePartyActivity.class);
         startActivity(intent);
     }
 
     public void gotoFindParty(View view) {
-        Intent intent = new Intent(this, FindParty.class);
+        Intent intent = new Intent(this, FindPartyActivity.class);
         startActivity(intent);
     }
 }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -18,8 +17,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static edu.cmps121.app.api.CaravanUtils.shortToast;
 
-public class CreateParty extends AppCompatActivity {
+
+public class CreatePartyActivity extends AppCompatActivity {
 
     String cPartyName = "";
     // Tutorial says to prefix our intent extras with our package name
@@ -65,7 +66,7 @@ public class CreateParty extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Team>> t, Throwable e) {
                 Log.e("RESULTS: ", "FAILURE!");
-                shortToast("Server could not be reached... please try again later");
+                shortToast(CreatePartyActivity.this, "Server unresponsive, please try again later");
                 t.cancel();
 
                 // TODO: Remove this move to the next activity, just doing this so others can work off this branch.
@@ -83,7 +84,7 @@ public class CreateParty extends AppCompatActivity {
                     .isPresent();
 
             if (teamExists) {
-                shortToast("Team already exists!");
+                shortToast(CreatePartyActivity.this, "Team already exists!");
                 return true;
             }
 
@@ -92,16 +93,8 @@ public class CreateParty extends AppCompatActivity {
             // What does it mean when teamList is null? Does this mean that something is broken?
             // If so, then throw a new RunTimeException(e) here instead of logging & returning
             Log.i("log", "teamList is null");
-            shortToast("teamList is null!");
+            shortToast(CreatePartyActivity.this, "teamList is null!");
             return false;
         }
-    }
-
-    private void shortToast(String msg) {
-        Toast.makeText(
-                CreateParty.this,
-                msg,
-                Toast.LENGTH_SHORT
-        ).show();
     }
 }
