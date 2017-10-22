@@ -17,7 +17,6 @@ public class FindCarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_car);
 
-        //map to XML
         carList = (ListView) findViewById(R.id.carList);
 
         //display dummy information to the ListView
@@ -31,7 +30,6 @@ public class FindCarActivity extends AppCompatActivity {
         {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                String value = (String)parent.getItemAtPosition(position);
                 startActivity(new Intent(parent.getContext(), PartyMenuActivity.class));
             }
         });
