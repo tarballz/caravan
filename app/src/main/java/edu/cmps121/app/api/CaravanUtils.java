@@ -1,6 +1,7 @@
 package edu.cmps121.app.api;
 
 import android.support.v7.app.AppCompatActivity;
+import android.util.StringBuilderPrinter;
 import android.widget.Toast;
 
 import edu.cmps121.app.CreatePartyActivity;
@@ -16,5 +17,14 @@ public class CaravanUtils {
                 msg,
                 Toast.LENGTH_SHORT
         ).show();
+    }
+
+    public static String strAppend(String inStr, String appStr) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append(inStr);
+        stringBuilder.append(appStr);
+
+        return stringBuilder.toString();
     }
 }
