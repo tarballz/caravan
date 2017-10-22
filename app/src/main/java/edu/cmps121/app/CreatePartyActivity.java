@@ -7,17 +7,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.regions.Regions;
+
 import java.util.List;
 
-import edu.cmps121.app.api.TeamService;
+//import edu.cmps121.app.api.TeamService;
 import edu.cmps121.app.model.Team;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 import static edu.cmps121.app.api.CaravanUtils.shortToast;
+import static edu.cmps121.app.api.CaravanUtils.strAppend;
 
 
 public class CreatePartyActivity extends AppCompatActivity {
@@ -27,11 +25,20 @@ public class CreatePartyActivity extends AppCompatActivity {
     // to avoid conflicts.
     public static final String EXTRA_MESSAGE = "edu.cmps121.app.USERSNAME";
 
+    String url = "https://169.233.219.84:8000/teams/?name=";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_party);
 
+        // Initialize the Amazon Cognito credentials provider.
+        // Pass the credentials provider object to the constructor of the AWS client you are using.
+        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                getApplicationContext(),
+                "us-west-2:3d86ea2c-db71-4953-bc20-8eb77c931e43", // Identity pool ID
+                Regions.US_WEST_2 // Region
+        );
     }
 
     public void lookup(View view) {
@@ -41,7 +48,7 @@ public class CreatePartyActivity extends AppCompatActivity {
 
         Log.i("TEAM NAME", cPartyName);
 
-        Retrofit retrofit = new Retrofit.Builder()
+        /*Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://192.168.1.28:8000")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -73,7 +80,28 @@ public class CreatePartyActivity extends AppCompatActivity {
                 intent.putExtra(EXTRA_MESSAGE, cPartyName);
                 startActivity(intent);
             }
+        });*/
+
+        // Instantiate the RequestQueue
+        url = strAppend(url, cPartyName);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        mTextView.setText("Response is: "+ response.substring(0,500));
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mTextView.setText("That didn't work!");
+            }
         });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+
     }
 
     private boolean checkTeamExists(List<Team> teamList) {
