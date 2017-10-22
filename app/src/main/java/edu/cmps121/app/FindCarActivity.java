@@ -1,7 +1,10 @@
 package edu.cmps121.app;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -23,5 +26,14 @@ public class FindCarActivity extends AppCompatActivity {
                 "Narges' Car\n- Narges (driving)\n- John\n- Qua"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arr);
         carList.setAdapter(adapter);
+
+        carList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                String value = (String)parent.getItemAtPosition(position);
+                startActivity(new Intent(parent.getContext(), PartyMenuActivity.class));
+            }
+        });
     }
 }

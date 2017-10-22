@@ -22,6 +22,16 @@ public class PartyMenuActivity extends AppCompatActivity {
         textView.setText(teamName + "\'s");
     }
 
+    public void gotoCreateCarActivity(View view) {
+        Intent intent = new Intent(this, CreateCarActivity.class);
+        startActivity(intent);
+    }
+
+    public void gotoFindCarActivity(View view) {
+        Intent intent = new Intent(this, FindCarActivity.class);
+        startActivity(intent);
+    }
+
     public void gotoMapsActivity(View view) {
         startActivity(new Intent(this, MapsActivity.class));
     }
