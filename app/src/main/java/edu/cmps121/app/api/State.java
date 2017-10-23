@@ -1,15 +1,17 @@
 package edu.cmps121.app.api;
 
 import android.content.Intent;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
-import java.io.Serializable;
+import android.util.Log;
 
 import edu.cmps121.app.MainActivity;
 
 /**
  * To be instantiated upon application start up. For sharing the user's key data between activities
  */
-public class State implements Serializable {
+public class State implements Parcelable {
     public String party;
     public String car;
     public String username;
@@ -20,7 +22,7 @@ public class State implements Serializable {
 
         try {
             Intent intent = currentActivity.getIntent();
-            State state = (State) intent.getSerializableExtra("state");
+            State state = intent.getParcelableExtra("state");
 
             party = state.party;
             car = state.car;
@@ -31,11 +33,45 @@ public class State implements Serializable {
         }
     }
 
+    protected State(Parcel in) {
+        party = in.readString();
+        car = in.readString();
+        username = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(party);
+        dest.writeString(car);
+        dest.writeString(username);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<State> CREATOR = new Creator<State>() {
+        @Override
+        public State createFromParcel(Parcel in) {
+            return new State(in);
+        }
+
+        @Override
+        public State[] newArray(int size) {
+            return new State[size];
+        }
+    };
+
     public void nextActivity(AppCompatActivity currentActivity,
                              Class destinationActivity) {
-        Intent intent = new Intent(currentActivity, destinationActivity);
-        intent.putExtra("state", this);
-        currentActivity.startActivity(intent);
+        try {
+            Intent intent = new Intent(currentActivity, destinationActivity);
+            intent.putExtra("state", this);
+            currentActivity.startActivity(intent);
+        } catch (IllegalStateException e) {
+            Log.i("fuck", "me");
+        }
     }
 }
 

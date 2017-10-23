@@ -12,15 +12,15 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 
-import edu.cmps121.app.model.Car;
-import edu.cmps121.app.model.Party;
-
 import static edu.cmps121.app.api.CaravanUtils.shortToast;
+
+// TODO: implement a method that queries our tables, checking if an item's primary key has already been used
 
 public class DB {
     private AmazonDynamoDBClient ddbClient;
     private DynamoDBMapper mapper;
-    private Handler messageHandler;
+    // If try catch block for saveItem fails, implement messageHanlder. So far it's working
+//    private Handler messageHandler;
 
     public DB(AppCompatActivity activity) {
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
@@ -34,48 +34,20 @@ public class DB {
         mapper = new DynamoDBMapper(ddbClient);
 
         // Do not use Handler in main thread. Could cause memory leak
-        messageHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                shortToast(activity, msg.toString());
-            }
-        };
+//        messageHandler = new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                shortToast(activity, msg.toString());
+//            }
+//        };
     }
 
-    public <T> boolean saveItem(AppCompatActivity activity, T item) {
-        // This try catch might not be effective. Consider moving inside thread
-        try {
-            Runnable runnable = () -> {
-                mapper.save(item);
-            };
-
-            Thread thread = new Thread(runnable);
-            thread.start();
-
-            return true;
-        } catch (ResourceNotFoundException e) {
-            Log.w("DB", "Table does not exist or invalid POJO");
-            shortToast(activity, "Failed to save data");
-            return false;
-        }
-    }
-
-    public void saveCarDB() {
-        Log.d("blah", "balaahh");
+    public <T> void saveItem(T item) throws ResourceNotFoundException {
         Runnable runnable = () -> {
-            Car car = new Car();
-            car.setCar("Batmobile");
-            car.setDriver("Batman");
-            car.setParty("Cool Party");
-
-            Party party = new Party();
-            party.setParty("Rager");
-            party.setOwner("Blah");
-
-            mapper.save(car);
-            mapper.save(party);
+            mapper.save(item);
         };
-        Thread mythread = new Thread(runnable);
-        mythread.start();
+
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
 }
