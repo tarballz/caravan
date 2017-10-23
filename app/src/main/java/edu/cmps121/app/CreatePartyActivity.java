@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.amazonaws.Request;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.regions.Regions;
 
@@ -25,8 +26,6 @@ public class CreatePartyActivity extends AppCompatActivity {
     // to avoid conflicts.
     public static final String EXTRA_MESSAGE = "edu.cmps121.app.USERSNAME";
 
-    String url = "https://169.233.219.84:8000/teams/?name=";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,25 +40,14 @@ public class CreatePartyActivity extends AppCompatActivity {
         );
     }
 
-    private boolean checkTeamExists(List<Team> teamList) {
-        try {
-            boolean teamExists = teamList.stream()
-                    .filter(e -> e.getName().equals(cPartyName))
-                    .findFirst()
-                    .isPresent();
+    public void lookup(View view) {
+        EditText editText = (EditText) findViewById(R.id.c_party_name);
+        cPartyName = editText.getText().toString();
+        final Intent intent = new Intent(this, PartyMenuActivity.class);
 
-            if (teamExists) {
-                shortToast(CreatePartyActivity.this, "Team already exists!");
-                return true;
-            }
+        Log.i("TEAM NAME", cPartyName);
 
-            return false;
-        } catch (NullPointerException e) {
-            // What does it mean when teamList is null? Does this mean that something is broken?
-            // If so, then throw a new RunTimeException(e) here instead of logging & returning
-            Log.i("log", "teamList is null");
-            shortToast(CreatePartyActivity.this, "teamList is null!");
-            return false;
-        }
+        
     }
+    
 }
