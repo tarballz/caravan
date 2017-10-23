@@ -1,6 +1,7 @@
 package edu.cmps121.app.model;
 
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIndexHashKey;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
 @DynamoDBTable(tableName = "users")
@@ -9,7 +10,7 @@ public class User {
     private String car;
     private String party;
 
-    @DynamoDBIndexHashKey(attributeName = "user")
+    @DynamoDBHashKey(attributeName = "user")
     public String getUser() {
         return user;
     }
@@ -18,7 +19,7 @@ public class User {
         this.user = user;
     }
 
-    @DynamoDBIndexHashKey(attributeName = "car")
+    @DynamoDBAttribute(attributeName = "car")
     public String getCar() {
         return car;
     }
@@ -27,7 +28,7 @@ public class User {
         this.car = car;
     }
 
-    @DynamoDBIndexHashKey(attributeName = "party")
+    @DynamoDBAttribute(attributeName = "party")
     public String getParty() {
         return party;
     }

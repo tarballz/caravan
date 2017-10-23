@@ -8,6 +8,8 @@ import android.widget.Toast;
 
 import edu.cmps121.app.api.State;
 
+import static edu.cmps121.app.api.CaravanUtils.shortToast;
+
 // TODO: possibly override onBackPress() to also pass state.
 
 public class MainActivity extends AppCompatActivity {
@@ -33,5 +35,15 @@ public class MainActivity extends AppCompatActivity {
             state.nextActivity(this, PartyOptionsActivity.class);
         } else
             Toast.makeText(MainActivity.this, "Name is too short!", Toast.LENGTH_SHORT).show();
+    }
+
+    public void onClickSave(View view) {
+        state.db.saveCarDB();
+        shortToast(this, "You pressed save");
+    }
+
+    public void onClickLoad(View view) {
+        state.db.loadCarDB();
+        shortToast(this, "You pressed load");
     }
 }

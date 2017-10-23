@@ -13,17 +13,11 @@ public class State implements Serializable {
     public String party;
     public String car;
     public String username;
-
-    // TODO: do we want to add the dynamodb client here? Instantiate in MainActivity?
-
-    public void nextActivity(AppCompatActivity currentActivity,
-                             Class destinationActivity) {
-        Intent intent = new Intent(currentActivity, destinationActivity);
-        intent.putExtra("state", this);
-        currentActivity.startActivity(intent);
-    }
+    public DB db;
 
     public State(AppCompatActivity currentActivity) {
+        db = new DB(currentActivity);
+
         try {
             Intent intent = currentActivity.getIntent();
             State state = (State) intent.getSerializableExtra("state");
@@ -35,6 +29,13 @@ public class State implements Serializable {
             if (!currentActivity.getClass().equals(MainActivity.class))
                 throw new RuntimeException("State can only be null at start of MainActivity" + e);
         }
+    }
+
+    public void nextActivity(AppCompatActivity currentActivity,
+                             Class destinationActivity) {
+        Intent intent = new Intent(currentActivity, destinationActivity);
+        intent.putExtra("state", this);
+        currentActivity.startActivity(intent);
     }
 }
 
