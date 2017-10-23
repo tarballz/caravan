@@ -1,25 +1,32 @@
 package edu.cmps121.app;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import edu.cmps121.app.api.State;
+
 public class PartyOptionsActivity extends AppCompatActivity {
+    private State state; 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_find_party);
+        
+        setState(); 
 
-        // Get the Intent that started this activity and extract the string
-        Intent intent = getIntent();
-        String usersName = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-
-        // Capture the layout's TextView and set the string as its text.
         TextView textView = (TextView) findViewById(R.id.displayName);
-        textView.setText("Hello " + usersName + "!");
+        textView.setText("Hello " + state.username + "!");
+    }
+
+    private void setState() {
+        Intent intent = this.getIntent();
+        Bundle extras = intent.getExtras();
+        state = extras.getParcelable("state");
     }
 
     public void gotoCreateParty(View view) {

@@ -15,9 +15,11 @@
     <string name="gas">Gas</string>
     <string name="emergency">Emergency</string>
     <string name="go_to_google_maps">Go to Google Maps</string>
-    <string name="enter_your_name">Enter your name</string>
+    <string name="enter_your_username">Enter Your Username</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="change_username">Change Username</string>
     <string name="change_car_name">Change Car Name</string>
     <string name="delete_party">Delete Party</string>
+    <string name="enter_party_name">Enter party name</string>
+    <string name="search">Search</string>
 </resources>
