@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/enter_car_name_et"
+        android:id="@+id/enter_create_car_name_et"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -45,14 +45,15 @@
         android:layout_marginStart="139dp" />
 
     <Button
-        android:id="@+id/create_car_b"
+        android:id="@+id/create_car_menu_b"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="148dp"
         android:layout_marginTop="182dp"
         android:text="@string/create"
         android:textAllCaps="false"
+        android:onClick="onClickCreateCar"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/enter_car_name_et"
+        app:layout_constraintTop_toBottomOf="@+id/enter_create_car_name_et"
         android:layout_marginStart="148dp" />
 </android.support.constraint.ConstraintLayout>

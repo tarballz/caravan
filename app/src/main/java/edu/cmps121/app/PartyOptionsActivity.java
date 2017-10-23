@@ -13,7 +13,7 @@ public class PartyOptionsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_find_party);
+        setContentView(R.layout.activity_party_options);
 
         state = new State(this);
 
@@ -21,11 +21,11 @@ public class PartyOptionsActivity extends AppCompatActivity {
         textView.setText("Hello " + state.username + "!");
     }
 
-    public void onClickCreateParty(View view) {
+    public void onClickCreatePartyOptions(View view) {
         state.nextActivity(this, CreatePartyActivity.class);
     }
 
-    public void onClickFindParty(View view) {
+    public void onClickFindPartyOptions(View view) {
         state.nextActivity(this, FindPartyActivity.class);
     }
 }

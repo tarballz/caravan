@@ -1,6 +1,5 @@
 package edu.cmps121.app;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,20 +17,23 @@ public class PartyMenuActivity extends AppCompatActivity {
 
         state = new State(this);
 
-        // Get the Intent that started this activity and extract the string
-        Intent intent = getIntent();
-        String teamName = intent.getStringExtra(CreatePartyActivity.EXTRA_MESSAGE);
-
-        // Capture the layout's TextView and set the string as its text.
         TextView textView = (TextView) findViewById(R.id.team_name_tv);
-        textView.setText(teamName + "\'s");
+        textView.setText(state.party + "\'s");
     }
 
-    public void onClickMaps(View view) {
+    public void onClickCreateCarMenu(View view) {
+       state.nextActivity(this, CreateCarActivity.class);
+    }
+
+    public void onClickFindCarMenu(View view) {
+        state.nextActivity(this, FindCarActivity.class);
+    }
+
+    public void onClickMapsMenu(View view) {
         state.nextActivity(this, MapsActivity.class);
     }
 
-    public void onClickSettings(View view) {
+    public void onClickSettingsMenu(View view) {
         state.nextActivity(this, SettingsActivity.class);
     }
 }

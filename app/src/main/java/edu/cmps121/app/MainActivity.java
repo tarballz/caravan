@@ -25,13 +25,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickCreateUsername(View view) {
         EditText editText = (EditText) findViewById(R.id.enter_username_et);
-        state.username = editText.getText().toString();
+        String potentialUsername= editText.getText().toString();
 
         // TODO: check that username is unique in DB
-        if (state.username.length() >= MIN_LENGTH && state.username.length() <= MAX_LENGTH) {
+        if (potentialUsername.length() >= MIN_LENGTH && potentialUsername.length() <= MAX_LENGTH) {
+            state.username = potentialUsername;
             state.nextActivity(this, PartyOptionsActivity.class);
-        } else {
+        } else
             Toast.makeText(MainActivity.this, "Name is too short!", Toast.LENGTH_SHORT).show();
-        }
     }
 }

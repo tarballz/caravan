@@ -7,7 +7,7 @@
     tools:context="edu.cmps121.app.CreatePartyActivity">
 
     <EditText
-        android:id="@+id/enter_party_name_et"
+        android:id="@+id/enter_create_party_name_et"
         android:layout_width="246dp"
         android:layout_height="42dp"
         android:layout_marginLeft="8dp"
@@ -18,18 +18,18 @@
         android:inputType="textPersonName"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/check_party_name_b"
+        app:layout_constraintRight_toLeftOf="@+id/create_party_name_b"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/check_party_name_b"
+        android:id="@+id/create_party_name_b"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:onClick="checkPartyName"
+        android:onClick="onClickCreateParty"
         android:text="@string/create"
-        app:layout_constraintBaseline_toBaselineOf="@+id/enter_party_name_et"
+        app:layout_constraintBaseline_toBaselineOf="@+id/enter_create_party_name_et"
         app:layout_constraintRight_toRightOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

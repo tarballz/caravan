@@ -3,16 +3,15 @@ package edu.cmps121.app;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 
 import edu.cmps121.app.api.State;
 
+import static edu.cmps121.app.api.CaravanUtils.shortToast;
+
 
 public class CreatePartyActivity extends AppCompatActivity {
-
-    public static final String EXTRA_MESSAGE = "edu.cmps121.app.USERSNAME";
     private State state;
-
-    String url = "https://169.233.219.84:8000/teams/?name=";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,20 +19,31 @@ public class CreatePartyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_party);
 
         state = new State(this);
+    }
 
-        // Initialize the Amazon Cognito credentials provider.
-        // Pass the credentials provider object to the constructor of the AWS client you are using.
+    public void onClickCreateParty(View view) {
+        EditText editText = (EditText) findViewById(R.id.enter_create_party_name_et);
+        String potentialParty = editText.getText().toString();
+
+        if (isUnique(potentialParty)) {
+            state.party = potentialParty;
+            state.nextActivity(this, PartyMenuActivity.class);
+        } else
+            shortToast(this, potentialParty + " has already been taken");
+    }
+
+    private boolean isUnique(String potentialParty) {
+        // TODO: check for uniqueness here. Scan db party names
+        return true;
+    }
+
+    // Initialize the Amazon Cognito credentials provider.
+    // Pass the credentials provider object to the constructor of the AWS client you are using.
 //        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
 //                getApplicationContext(),
 //                "us-west-2:3d86ea2c-db71-4953-bc20-8eb77c931e43", // Identity pool ID
 //                Regions.US_WEST_2 // Region
 //        );
-    }
-
-    public void checkPartyName(View view) {
-        // TODO: check for uniqueness here. Scan db party names
-        state.nextActivity(this, PartyMenuActivity.class);
-    }
 
 //    private boolean checkTeamExists(List<Team> teamList) {
 //        try {

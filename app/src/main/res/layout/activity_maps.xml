@@ -68,7 +68,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/rest_b" />
 
     <Button
-        android:id="@+id/maps_b"
+        android:id="@+id/maps_menu_b"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:text="@string/go_to_google_maps"
