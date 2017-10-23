@@ -43,6 +43,7 @@ public class FindCarActivity extends AppCompatActivity {
     private ArrayList<String> getCarsItems() {
         // TODO: scan Cars table here and put each car's primary key into an ArrayList
         ArrayList<String> cars = new ArrayList<>();
+
         cars.add("Gabe's Car");
         cars.add("Batmobile");
         cars.add("Joey's car");

@@ -39,17 +39,18 @@ public class MainActivity extends AppCompatActivity {
         // TODO: check that username is unique in DB
 
         if (potentialUsername.length() < MIN_LENGTH || potentialUsername.length() > MAX_LENGTH)
-            Toast.makeText(MainActivity.this, "Name is too short!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Invalid length", Toast.LENGTH_SHORT).show();
+        else {
+            state.username = potentialUsername;
+            user.setUser(potentialUsername);
 
-        state.username = potentialUsername;
-        user.setUser(potentialUsername);
-
-        try {
-            state.db.saveItem(user);
-            state.nextActivity(this, PartyOptionsActivity.class);
-        } catch (ResourceNotFoundException e) {
-            Log.w("DB", "Table does not exist or invalid POJO");
-            shortToast(this, "Failed to save data");
+            try {
+                state.db.saveItem(user);
+                state.nextActivity(this, PartyOptionsActivity.class);
+            } catch (ResourceNotFoundException e) {
+                Log.w("DB", "Table does not exist or invalid POJO");
+                shortToast(this, "Failed to save data");
+            }
         }
     }
 }

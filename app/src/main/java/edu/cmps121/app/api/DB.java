@@ -43,9 +43,7 @@ public class DB {
     }
 
     public <T> void saveItem(T item) throws ResourceNotFoundException {
-        Runnable runnable = () -> {
-            mapper.save(item);
-        };
+        Runnable runnable = () -> mapper.save(item);
 
         Thread thread = new Thread(runnable);
         thread.start();
