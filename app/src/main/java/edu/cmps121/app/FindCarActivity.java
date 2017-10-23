@@ -1,15 +1,16 @@
 package edu.cmps121.app;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class FindCarActivity extends AppCompatActivity {
+import java.util.ArrayList;
 
+import edu.cmps121.app.api.State;
+
+public class FindCarActivity extends AppCompatActivity {
+    private State state;
     ListView carList;
 
     @Override
@@ -17,21 +18,35 @@ public class FindCarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_car);
 
-        carList = (ListView) findViewById(R.id.carList);
+        state = new State(this);
 
-        //display dummy information to the ListView
-        String[] arr = new String[] {"Gabe's Car\n- Gabe (driving)\n- Joey",
-                "Payton's Car\n- Payton (driving)\n- Czar",
-                "Narges' Car\n- Narges (driving)\n- John\n- Qua"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arr);
+        createCarListView();
+    }
+
+    private void createCarListView() {
+        carList = (ListView) findViewById(R.id.car_list_lv);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_list_item_1,
+                getCarsItems()
+        );
         carList.setAdapter(adapter);
 
-        carList.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(parent.getContext(), PartyMenuActivity.class));
-            }
+        carList.setOnItemClickListener((parent, view, position, id) -> {
+            // TODO: test that state.car is accurate and that state.nextActivity works with Context as a param
+            state.car = (String) parent.getItemAtPosition(position);
+            state.nextActivity(parent.getContext(), PartyMenuActivity.class);
         });
+    }
+
+    private ArrayList<String> getCarsItems() {
+        // TODO: scan Cars table here and put each car's primary key into an ArrayList
+        ArrayList<String> cars = new ArrayList<>();
+        cars.add("Gabe's Car");
+        cars.add("Batmobile");
+        cars.add("Joey's car");
+
+        return cars;
     }
 }

@@ -9,33 +9,31 @@
     tools:layout_editor_absoluteX="0dp">
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/enter_username_et"
         android:layout_width="0dp"
         android:layout_height="45dp"
         android:ems="10"
-        android:hint="@string/enter_your_name"
+        android:hint="@string/enter_your_username"
         android:inputType="textPersonName"
         android:text="@string/users_name"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/create_username_b"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="RtlHardcoded"
-        android:layout_marginStart="36dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/button3"
-        tools:layout_constraintBaseline_creator="1"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        android:layout_marginStart="16dp" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/create_username_b"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="gotoCreateFindParty"
-        android:text="Send"
-        tools:layout_constraintTop_creator="1"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="64dp"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/editText"
-        android:layout_marginLeft="13dp" />
-
+        android:onClick="onClickCreateUsername"
+        android:text="@string/next"
+        app:layout_constraintBaseline_toBaselineOf="@+id/enter_username_et"
+        app:layout_constraintLeft_toRightOf="@+id/enter_username_et"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
 
 </android.support.constraint.ConstraintLayout>
