@@ -1,7 +1,5 @@
 package edu.cmps121.app;
 
-import android.content.Intent;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,27 +14,18 @@ public class PartyOptionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_find_party);
-        
-        setState(); 
 
-        TextView textView = (TextView) findViewById(R.id.displayName);
+        state = new State(this);
+
+        TextView textView = (TextView) findViewById(R.id.display_name_tv);
         textView.setText("Hello " + state.username + "!");
     }
 
-    private void setState() {
-        Intent intent = this.getIntent();
-        Bundle extras = intent.getExtras();
-        state = extras.getParcelable("state");
+    public void onClickCreateParty(View view) {
+        state.nextActivity(this, CreatePartyActivity.class);
     }
 
-    public void gotoCreateParty(View view) {
-        // new Intent(from, to), I think
-        Intent intent = new Intent(this, CreatePartyActivity.class);
-        startActivity(intent);
-    }
-
-    public void gotoFindParty(View view) {
-        Intent intent = new Intent(this, FindPartyActivity.class);
-        startActivity(intent);
+    public void onClickFindParty(View view) {
+        state.nextActivity(this, FindPartyActivity.class);
     }
 }

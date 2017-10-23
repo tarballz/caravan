@@ -22,4 +22,8 @@
     <string name="delete_party">Delete Party</string>
     <string name="enter_party_name">Enter party name</string>
     <string name="search">Search</string>
+    <string name="create">Create</string>
+    <string name="dreamteam">DreamTeam</string>
+    <string name="batmobile">Batmobile</string>
+    <string name="name_of_your_car">Name of your car</string>
 </resources>

@@ -7,27 +7,27 @@
     tools:context="edu.cmps121.app.FindPartyActivity">
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/enter_party_name_et"
         android:layout_width="246dp"
         android:layout_height="42dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="@string/enter_party_name"
+        android:hint="@string/enter_party_name"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/button2"
+        app:layout_constraintRight_toLeftOf="@+id/find_party_name_b"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="16dp" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/find_party_name_b"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
         android:text="@string/search"
-        app:layout_constraintBaseline_toBaselineOf="@+id/editText2"
+        app:layout_constraintBaseline_toBaselineOf="@+id/enter_party_name_et"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginEnd="16dp" />
 

@@ -2,14 +2,15 @@ package edu.cmps121.app;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+
+import edu.cmps121.app.api.State;
 
 
 public class CreatePartyActivity extends AppCompatActivity {
 
-    String cPartyName = "";
-    // Tutorial says to prefix our intent extras with our package name
-    // to avoid conflicts.
     public static final String EXTRA_MESSAGE = "edu.cmps121.app.USERSNAME";
+    private State state;
 
     String url = "https://169.233.219.84:8000/teams/?name=";
 
@@ -18,6 +19,8 @@ public class CreatePartyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_party);
 
+        state = new State(this);
+
         // Initialize the Amazon Cognito credentials provider.
         // Pass the credentials provider object to the constructor of the AWS client you are using.
 //        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
@@ -25,6 +28,11 @@ public class CreatePartyActivity extends AppCompatActivity {
 //                "us-west-2:3d86ea2c-db71-4953-bc20-8eb77c931e43", // Identity pool ID
 //                Regions.US_WEST_2 // Region
 //        );
+    }
+
+    public void checkPartyName(View view) {
+        // TODO: check for uniqueness here. Scan db party names
+        state.nextActivity(this, PartyMenuActivity.class);
     }
 
 //    private boolean checkTeamExists(List<Team> teamList) {

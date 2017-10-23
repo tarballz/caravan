@@ -10,21 +10,21 @@
     tools:showIn="@layout/activity_settings">
 
     <Button
-        android:id="@+id/buttonChangeCarName"
+        android:id="@+id/change_car_name_b"
         android:layout_width="219dp"
         android:layout_height="53dp"
         android:text="@string/change_car_name"
         android:background="@android:color/holo_orange_light"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toTopOf="@+id/buttonDeleteParty"
+        app:layout_constraintBottom_toTopOf="@+id/delete_party_b"
         app:layout_constraintRight_toRightOf="parent"
         tools:layout_constraintLeft_creator="1"
         android:layout_marginBottom="82dp"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <Button
-        android:id="@+id/buttonDeleteParty"
+        android:id="@+id/delete_party_b"
         android:layout_width="0dp"
         android:layout_height="53dp"
         android:text="@string/delete_party"
@@ -32,13 +32,13 @@
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintBottom_creator="1"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="@+id/buttonChangeCarName"
+        app:layout_constraintRight_toRightOf="@+id/change_car_name_b"
         tools:layout_constraintLeft_creator="1"
         android:layout_marginBottom="94dp"
-        app:layout_constraintLeft_toLeftOf="@+id/buttonChangeCarName" />
+        app:layout_constraintLeft_toLeftOf="@+id/change_car_name_b" />
 
     <Button
-        android:id="@+id/buttonChangeUsername"
+        android:id="@+id/change_username_b"
         android:layout_width="219dp"
         android:layout_height="53dp"
         android:text="@string/change_username"
