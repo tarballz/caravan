@@ -4,13 +4,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 
 import edu.cmps121.app.model.Car;
 import edu.cmps121.app.model.Party;
@@ -42,6 +42,24 @@ public class DB {
         };
     }
 
+    public <T> boolean saveItem(AppCompatActivity activity, T item) {
+        // This try catch might not be effective. Consider moving inside thread
+        try {
+            Runnable runnable = () -> {
+                mapper.save(item);
+            };
+
+            Thread thread = new Thread(runnable);
+            thread.start();
+
+            return true;
+        } catch (ResourceNotFoundException e) {
+            Log.w("DB", "Table does not exist or invalid POJO");
+            shortToast(activity, "Failed to save data");
+            return false;
+        }
+    }
+
     public void saveCarDB() {
         Log.d("blah", "balaahh");
         Runnable runnable = () -> {
@@ -59,30 +77,5 @@ public class DB {
         };
         Thread mythread = new Thread(runnable);
         mythread.start();
-    }
-
-    public void loadCarDB() {
-        Log.d("blah", "blah");
-        Runnable runnable = () -> {
-            Car car = mapper.load(Car.class, "cars");
-            if (car == null) {
-                car = new Car();
-                car.setCar("BatMobile");
-                car.setDriver("Batman");
-                car.setParty("Cool Party");
-            } else {
-                Message msg = new Message();
-                msg.obj = "Car already exists.";
-                messageHandler.sendMessage(msg);
-                Log.d("CarSTATUS", "Car already exists.");
-                Log.d("Driver:", car.getDriver());
-            }
-        };
-        Thread myThread = new Thread(runnable);
-        myThread.start();
-    }
-
-    public boolean queryDB() {
-        return true;
     }
 }

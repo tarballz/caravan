@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import edu.cmps121.app.api.State;
+import edu.cmps121.app.model.User;
 
 import static edu.cmps121.app.api.CaravanUtils.shortToast;
 
@@ -14,7 +15,7 @@ import static edu.cmps121.app.api.CaravanUtils.shortToast;
 
 public class MainActivity extends AppCompatActivity {
     private State state;
-    private int MIN_LENGTH = 2;
+    private int MIN_LENGTH = 3;
     private int MAX_LENGTH = 8;
 
     @Override
@@ -27,23 +28,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickCreateUsername(View view) {
         EditText editText = (EditText) findViewById(R.id.enter_username_et);
-        String potentialUsername= editText.getText().toString();
+        User user = new User();
+        String potentialUsername = editText.getText().toString();
 
         // TODO: check that username is unique in DB
-        if (potentialUsername.length() >= MIN_LENGTH && potentialUsername.length() <= MAX_LENGTH) {
-            state.username = potentialUsername;
-            state.nextActivity(this, PartyOptionsActivity.class);
-        } else
+
+        if (potentialUsername.length() < MIN_LENGTH || potentialUsername.length() > MAX_LENGTH)
             Toast.makeText(MainActivity.this, "Name is too short!", Toast.LENGTH_SHORT).show();
+
+        state.username = potentialUsername;
+        user.setUser(potentialUsername);
+
+        if (state.db.saveItem(this, user))
+            state.nextActivity(this, PartyOptionsActivity.class);
     }
 
     public void onClickSave(View view) {
         state.db.saveCarDB();
         shortToast(this, "You pressed save");
-    }
-
-    public void onClickLoad(View view) {
-        state.db.loadCarDB();
-        shortToast(this, "You pressed load");
     }
 }
