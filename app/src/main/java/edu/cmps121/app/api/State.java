@@ -1,5 +1,6 @@
 package edu.cmps121.app.api;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -63,15 +64,11 @@ public class State implements Parcelable {
         }
     };
 
-    public void nextActivity(AppCompatActivity currentActivity,
+    public void nextActivity(Context currentActivity,
                              Class destinationActivity) {
-        try {
-            Intent intent = new Intent(currentActivity, destinationActivity);
-            intent.putExtra("state", this);
-            currentActivity.startActivity(intent);
-        } catch (IllegalStateException e) {
-            Log.i("fuck", "me");
-        }
+        Intent intent = new Intent(currentActivity, destinationActivity);
+        intent.putExtra("state", this);
+        currentActivity.startActivity(intent);
     }
 }
 
