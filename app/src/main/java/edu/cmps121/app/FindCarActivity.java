@@ -2,38 +2,51 @@ package edu.cmps121.app;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.EditText;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 import edu.cmps121.app.api.State;
 
-import static edu.cmps121.app.api.CaravanUtils.shortToast;
-
 public class FindCarActivity extends AppCompatActivity {
     private State state;
+    ListView carList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_car);
-        
+
         state = new State(this);
+
+        createCarListView();
     }
 
-    public void onClickFindCar(View view) {
-        EditText editText = (EditText) findViewById(R.id.enter_find_car_name_et);
-        String potentialCar = editText.getText().toString();
+    private void createCarListView() {
+        carList = (ListView) findViewById(R.id.car_list_lv);
 
-        if (isReal(potentialCar)) {
-            state.car = potentialCar;
-            state.nextActivity(this, PartyMenuActivity.class);
-        }
-        else
-            shortToast(this, "Unable to find the car: " + potentialCar);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_list_item_1,
+                getCarsItems()
+        );
+        carList.setAdapter(adapter);
+
+        carList.setOnItemClickListener((parent, view, position, id) -> {
+            // TODO: test that state.car is accurate and that state.nextActivity works with Context as a param
+            state.car = (String) parent.getItemAtPosition(position);
+            state.nextActivity(parent.getContext(), PartyMenuActivity.class);
+        });
     }
 
-    private boolean isReal(String potentialCar) {
-        // TODO: db check here
-        return true; 
+    private ArrayList<String> getCarsItems() {
+        // TODO: scan Cars table here and put each car's primary key into an ArrayList
+        ArrayList<String> cars = new ArrayList<>();
+        cars.add("Gabe's Car");
+        cars.add("Batmobile");
+        cars.add("Joey's car");
+
+        return cars;
     }
 }

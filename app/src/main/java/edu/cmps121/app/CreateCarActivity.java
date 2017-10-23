@@ -1,5 +1,6 @@
 package edu.cmps121.app;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -35,5 +36,10 @@ public class CreateCarActivity extends AppCompatActivity {
     private boolean isUnique(String potentialCar) {
         // TODO: check db here
         return true; 
+    }
+
+    public void createCar(View view) {
+        Intent intent = new Intent(this, PartyMenuActivity.class);
+        startActivity(intent);
     }
 }
