@@ -9,7 +9,6 @@ import edu.cmps121.app.api.State;
 
 import static edu.cmps121.app.api.CaravanUtils.shortToast;
 
-
 public class CreatePartyActivity extends AppCompatActivity {
     private State state;
 
