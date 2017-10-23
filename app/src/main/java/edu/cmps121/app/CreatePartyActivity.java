@@ -41,69 +41,6 @@ public class CreatePartyActivity extends AppCompatActivity {
         );
     }
 
-    public void lookup(View view) {
-        EditText editText = (EditText) findViewById(R.id.c_party_name);
-        cPartyName = editText.getText().toString();
-        final Intent intent = new Intent(this, PartyMenuActivity.class);
-
-        Log.i("TEAM NAME", cPartyName);
-
-        /*Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.28:8000")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        Call<List<Team>> teams = retrofit
-                .create(TeamService.class)
-                .listTeams();
-
-        // Remember, this enqueue() method works asynchronously.
-        teams.enqueue(new Callback<List<Team>>() {
-            @Override
-            public void onResponse(Call<List<Team>> t, Response<List<Team>> response) {
-                // the request worked!!
-                if (response.isSuccessful()) {
-                    if (!checkTeamExists(response.body())) {
-                        intent.putExtra(EXTRA_MESSAGE, cPartyName);
-                        startActivity(intent);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Team>> t, Throwable e) {
-                Log.e("RESULTS: ", "FAILURE!");
-                shortToast(CreatePartyActivity.this, "Server unresponsive, please try again later");
-                t.cancel();
-
-                // TODO: Remove this move to the next activity, just doing this so others can work off this branch.
-                intent.putExtra(EXTRA_MESSAGE, cPartyName);
-                startActivity(intent);
-            }
-        });*/
-
-        // Instantiate the RequestQueue
-        url = strAppend(url, cPartyName);
-        RequestQueue queue = Volley.newRequestQueue(this);
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        mTextView.setText("Response is: "+ response.substring(0,500));
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                mTextView.setText("That didn't work!");
-            }
-        });
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
-
-    }
-
     private boolean checkTeamExists(List<Team> teamList) {
         try {
             boolean teamExists = teamList.stream()
