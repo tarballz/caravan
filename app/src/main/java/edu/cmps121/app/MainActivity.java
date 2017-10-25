@@ -7,20 +7,22 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.amazonaws.auth.policy.Resource;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 
-import edu.cmps121.app.api.DB;
+import edu.cmps121.app.api.DynamoDB;
 import edu.cmps121.app.api.State;
 import edu.cmps121.app.model.User;
 
 import static edu.cmps121.app.api.CaravanUtils.shortToast;
 
-// TODO: possibly override onBackPress() to also pass state.
-// TODO: We need two buttons here, one for new users and one for return users. Return user's state should be gathered from the DB
+// TODO: possibly override onBackPress() to also pass state when the back button is used
+// TODO: We need two buttons here, one for new users and one for return users. Return user's state should be gathered from the DynamoDB
 
 public class MainActivity extends AppCompatActivity {
     private State state;
-    private DB db;
+    private DynamoDB dynamoDb;
+
     private int MIN_LENGTH = 3;
     private int MAX_LENGTH = 8;
 
@@ -30,43 +32,34 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         state = new State(this);
+        dynamoDb = new DynamoDB(this);
     }
 
     public void onClickCreateUsername(View view) {
-        EditText editText = (EditText) findViewById(R.id.enter_username_et);
-        User user = new User();
-        String potentialUsername = editText.getText().toString();
+        try {
+            EditText editText = (EditText) findViewById(R.id.enter_username_et);
+            String potentialUsername = editText.getText().toString();
 
-        // TODO: check that username is unique in DB
-
-        if (potentialUsername.length() < MIN_LENGTH || potentialUsername.length() > MAX_LENGTH)
-            Toast.makeText(MainActivity.this, "Invalid length", Toast.LENGTH_SHORT).show();
-        else {
-            state.username = potentialUsername;
-            user.setUser(potentialUsername);
-
-            try {
-                state.db.saveItem(user);
-                state.nextActivity(this, PartyOptionsActivity.class);
-            } catch (ResourceNotFoundException e) {
-                Log.w("DB", "Table does not exist or invalid POJO");
-                shortToast(this, "Failed to save data");
-            }
+            if (potentialUsername.length() < MIN_LENGTH || potentialUsername.length() > MAX_LENGTH)
+                shortToast(this, "Invalid length: " + potentialUsername.length());
+            else
+                validateItem(potentialUsername);
+        } catch (ResourceNotFoundException e) {
+            Log.w("DynamoDB", "Table does not exist or invalid POJO");
+            shortToast(this, "Failed to save data");
         }
     }
 
-    public void onClickCheckIfExists(View view) {
-        EditText editText = (EditText) findViewById(R.id.enter_username_et);
+    private void validateItem(String potentialUsername) throws ResourceNotFoundException {
         User user = new User();
-        String potentialUsername = editText.getText().toString();
+        state.username = potentialUsername;
 
-        if (potentialUsername.length() < MIN_LENGTH || potentialUsername.length() > MAX_LENGTH)
-            Toast.makeText(MainActivity.this, "Invalid length", Toast.LENGTH_SHORT).show();
+        if (dynamoDb.itemExists(User.class, potentialUsername))
+            shortToast(this, "This name is already taken");
         else {
-            state.username = potentialUsername;
-
+            user.setUser(potentialUsername);
+            dynamoDb.saveItem(user);
+            state.nextActivity(this, PartyOptionsActivity.class);
         }
-
-
     }
 }
