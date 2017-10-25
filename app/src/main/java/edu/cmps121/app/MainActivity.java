@@ -5,9 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.amazonaws.auth.policy.Resource;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 
 import edu.cmps121.app.api.DynamoDB;
@@ -50,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // TODO: add a password field to User POJO and prompt user to either enter a username and password or to create a new "account"
     private void validateItem(String potentialUsername) throws ResourceNotFoundException {
         User user = new User();
         state.username = potentialUsername;

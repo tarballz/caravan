@@ -9,9 +9,8 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
-
-// TODO: implement a method that queries our tables, checking if an item's primary key has already been used
 
 public class DynamoDB {
     private AmazonDynamoDBClient ddbClient;
@@ -59,4 +58,8 @@ public class DynamoDB {
         Thread thread = new Thread(runnable);
         thread.start();
     }
+
+    // TODO: implement a method that queries the cars table, adding the primary key of every item that matches the desired party to an ArrayList of Strings.
+    // Use this method ^ to then get the names of all the cars for your party in the FindCarActivity
+    public ArrayList<String> queryTable() { return null; }
 }
