@@ -1,6 +1,5 @@
 package edu.cmps121.app;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +9,7 @@ import android.widget.Toast;
 
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 
+import edu.cmps121.app.api.DB;
 import edu.cmps121.app.api.State;
 import edu.cmps121.app.model.User;
 
@@ -20,6 +20,7 @@ import static edu.cmps121.app.api.CaravanUtils.shortToast;
 
 public class MainActivity extends AppCompatActivity {
     private State state;
+    private DB db;
     private int MIN_LENGTH = 3;
     private int MAX_LENGTH = 8;
 
@@ -52,5 +53,20 @@ public class MainActivity extends AppCompatActivity {
                 shortToast(this, "Failed to save data");
             }
         }
+    }
+
+    public void onClickCheckIfExists(View view) {
+        EditText editText = (EditText) findViewById(R.id.enter_username_et);
+        User user = new User();
+        String potentialUsername = editText.getText().toString();
+
+        if (potentialUsername.length() < MIN_LENGTH || potentialUsername.length() > MAX_LENGTH)
+            Toast.makeText(MainActivity.this, "Invalid length", Toast.LENGTH_SHORT).show();
+        else {
+            state.username = potentialUsername;
+
+        }
+
+
     }
 }
