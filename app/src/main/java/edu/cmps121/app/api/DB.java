@@ -1,5 +1,6 @@
 package edu.cmps121.app.api;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +21,7 @@ public class DB {
     private AmazonDynamoDBClient ddbClient;
     private DynamoDBMapper mapper;
     // If try catch block for saveItem fails, implement messageHanlder. So far it's working
-//    private Handler messageHandler;
+    private Handler messageHandler;
 
     public DB(AppCompatActivity activity) {
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
@@ -33,13 +34,30 @@ public class DB {
         ddbClient.setRegion(Region.getRegion(Regions.US_WEST_2));
         mapper = new DynamoDBMapper(ddbClient);
 
-        // Do not use Handler in main thread. Could cause memory leak
-//        messageHandler = new Handler() {
-//            @Override
-//            public void handleMessage(Message msg) {
-//                shortToast(activity, msg.toString());
-//            }
-//        };
+        messageHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                shortToast(activity, msg.toString());
+            }
+        };
+    }
+
+    public boolean itemExists(Class itemClass, String primaryKey) {
+        Runnable runnable = () -> {
+            Object item = mapper.load(itemClass, primaryKey);
+            Message message = new Message();
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("itemExists", item != null);
+            message.setData(bundle);
+            messageHandler.dispatchMessage(message);
+        };
+
+        Thread thread = new Thread(runnable);
+        thread.start();
+
+        Message message = Message.obtain(messageHandler);
+        Bundle bundle = message.getData();
+        return bundle.getBoolean("itemExists");
     }
 
     public <T> void saveItem(T item) throws ResourceNotFoundException {
