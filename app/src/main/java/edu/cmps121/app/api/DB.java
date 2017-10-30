@@ -1,9 +1,6 @@
 package edu.cmps121.app.api;
 
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
@@ -12,15 +9,16 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 
-import static edu.cmps121.app.api.CaravanUtils.shortToast;
+import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 
-// TODO: implement a method that queries our tables, checking if an item's primary key has already been used
+import edu.cmps121.app.model.User;
 
 public class DB {
     private AmazonDynamoDBClient ddbClient;
     private DynamoDBMapper mapper;
-    // If try catch block for saveItem fails, implement messageHanlder. So far it's working
-//    private Handler messageHandler;
+    private CountDownLatch latch;
+    private boolean doesExist;
 
     public DB(AppCompatActivity activity) {
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
@@ -31,15 +29,29 @@ public class DB {
 
         ddbClient = new AmazonDynamoDBClient(credentialsProvider);
         ddbClient.setRegion(Region.getRegion(Regions.US_WEST_2));
-        mapper = new DynamoDBMapper(ddbClient);
 
-        // Do not use Handler in main thread. Could cause memory leak
-//        messageHandler = new Handler() {
-//            @Override
-//            public void handleMessage(Message msg) {
-//                shortToast(activity, msg.toString());
-//            }
-//        };
+        mapper = new DynamoDBMapper(ddbClient);
+    }
+
+    public boolean itemExists(Class itemClass, String primaryKey) {
+        try {
+            latch = new CountDownLatch(1);
+
+            Runnable runnable = () -> {
+                Object item = mapper.load(itemClass, primaryKey);
+                doesExist = item != null;
+                latch.countDown();
+            };
+
+            Thread thread = new Thread(runnable);
+            thread.start();
+
+            latch.await();
+
+            return doesExist;
+        } catch (InterruptedException | NullPointerException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public <T> void saveItem(T item) throws ResourceNotFoundException {
@@ -48,4 +60,19 @@ public class DB {
         Thread thread = new Thread(runnable);
         thread.start();
     }
+
+    public void updateUserParty(String username, String partyName) throws ResourceNotFoundException {
+        Runnable runnable = () -> {
+            User user = mapper.load(User.class, username);
+            user.setParty(partyName);
+            mapper.save(user);
+        };
+
+        Thread thread = new Thread(runnable);
+        thread.start();
+    }
+
+    // TODO: implement a method that queries the cars table, adding the primary key of every item that matches the desired party to an ArrayList of Strings.
+    // Use this method ^ to then get the names of all the cars for your party in the FindCarActivity
+    public ArrayList<String> queryTable() { return null; }
 }

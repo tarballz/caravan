@@ -10,6 +10,7 @@ public class User {
     private String car;
     private String party;
 
+
     @DynamoDBHashKey(attributeName = "user")
     public String getUser() {
         return user;
@@ -36,4 +37,6 @@ public class User {
     public void setParty(String party) {
         this.party = party;
     }
+
+
 }

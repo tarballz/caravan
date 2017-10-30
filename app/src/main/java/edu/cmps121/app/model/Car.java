@@ -9,6 +9,8 @@ public class Car {
     private String car;
     private String driver;
     private String party;
+    private double lat;
+    private double lng;
 
     @DynamoDBHashKey(attributeName = "car")
     public String getCar() {
@@ -36,4 +38,12 @@ public class Car {
     public void setParty(String party) {
         this.party = party;
     }
+
+    @DynamoDBAttribute(attributeName = "lat")
+    public double getLat() { return lat;}
+    public void setLat(double lat) { this.lat = lat; }
+
+    @DynamoDBAttribute(attributeName = "lng")
+    public double getLng() { return lng; }
+    public void setLng(double lng) { this.lng = lng; }
 }
