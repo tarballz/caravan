@@ -20,9 +20,16 @@ import static edu.cmps121.app.api.CaravanUtils.shortToast;
 public class MainActivity extends AppCompatActivity {
     private State state;
     private DynamoDB dynamoDb;
+    private User user;
 
-    private int MIN_LENGTH = 3;
-    private int MAX_LENGTH = 8;
+    private int MIN_USER_LEN = 3;
+    private int MAX_USER_LEN = 8;
+    private int MIN_PASS_LEN = 5;
+    private int MAX_PASS_LEN = 16;
+
+    public enum AccountStatus {
+        ACCOUNT_AVAILABLE, ACCOUNT_EXISTS, IMPROPER_USER, IMPROPER_PASS;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,32 +40,76 @@ public class MainActivity extends AppCompatActivity {
         dynamoDb = new DynamoDB(this);
     }
 
-    public void onClickCreateUsername(View view) {
-        try {
-            EditText editText = (EditText) findViewById(R.id.enter_username_et);
-            String potentialUsername = editText.getText().toString();
-
-            if (potentialUsername.length() < MIN_LENGTH || potentialUsername.length() > MAX_LENGTH)
-                shortToast(this, "Invalid length: " + potentialUsername.length());
-            else
-                validateItem(potentialUsername);
-        } catch (ResourceNotFoundException e) {
-            Log.w("DynamoDB", "Table does not exist or invalid POJO");
-            shortToast(this, "Failed to save data");
+    public void onClickCreateAccount(View view) {
+        switch (validateInfo()) {
+            case ACCOUNT_AVAILABLE:
+                saveNewAccount();
+                break;
+            case ACCOUNT_EXISTS:
+                shortToast(this, "Username is already taken");
+                break;
+            case IMPROPER_USER:
+                shortToast(this, "Username must be between 3 and 8 characters long");
+                break;
+            case IMPROPER_PASS:
+                shortToast(this, "Password must be 5 and 16 characters long");
+                break;
         }
     }
 
-    // TODO: add a password field to User POJO and prompt user to either enter a username and password or to create a new "account"
-    private void validateItem(String potentialUsername) throws ResourceNotFoundException {
-        User user = new User();
-        state.username = potentialUsername;
+    public void onClickLogin(View view) {
+        switch (validateInfo()) {
+            case ACCOUNT_AVAILABLE:
+                shortToast(this, "Username or password is incorrect");
+                break;
+            case ACCOUNT_EXISTS:
+                state.nextActivity(this, PartyOptionsActivity.class);
+                break;
+            case IMPROPER_USER:
+                shortToast(this, "Username must be between 3 and 8 characters long");
+                break;
+            case IMPROPER_PASS:
+                shortToast(this, "Password must be 5 and 16 characters long");
+                break;
 
-        if (dynamoDb.itemExists(User.class, potentialUsername))
-            shortToast(this, "This name is already taken");
-        else {
-            user.setUser(potentialUsername);
+        }
+    }
+
+    private AccountStatus validateInfo() {
+        user = new User();
+        String username = ((EditText) findViewById(R.id.enter_username_et)).getText().toString();
+        String password = ((EditText) findViewById(R.id.enter_password_et)).getText().toString();
+        user.setUser(username);
+        user.setPassword(password);
+        state.username = username;
+
+        if (username.length() < MIN_USER_LEN || username.length() > MAX_USER_LEN)
+            return AccountStatus.IMPROPER_USER;
+        if (password.length() < MIN_PASS_LEN || password.length() > MAX_PASS_LEN)
+            return AccountStatus.IMPROPER_PASS;
+
+        switch (dynamoDb.userExists(User.class, user)) {
+            case USER_EXISTS:
+                return AccountStatus.ACCOUNT_EXISTS;
+            case USER_INVALID:
+                return AccountStatus.IMPROPER_PASS;
+            case USER_AVAILABLE:
+                return AccountStatus.ACCOUNT_AVAILABLE;
+            default:
+                throw new RuntimeException("Bad enum in validating info");
+        }
+    }
+
+    private void saveNewAccount() {
+        try {
+            if (dynamoDb.userExists(User.class, user) != DynamoDB.ItemStatus.USER_AVAILABLE)
+                throw new RuntimeException("Account should not exist. Validate Failed.");
+
             dynamoDb.saveItem(user);
             state.nextActivity(this, PartyOptionsActivity.class);
+        } catch (ResourceNotFoundException e) {
+            Log.w("DynamoDB", "Table does not exist or invalid POJO");
+            shortToast(this, "Failed to save account data");
         }
     }
 }

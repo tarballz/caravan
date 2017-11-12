@@ -13,8 +13,15 @@ import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
+import edu.cmps121.app.model.User;
+
 public class DynamoDB {
     private DynamoDBMapper mapper;
+
+    public enum ItemStatus {
+        USER_EXISTS, USER_AVAILABLE, USER_INVALID, PARTY_EXISTS, PARTY_AVAILABLE, PARTY_INVALID,
+        CAR_EXISTS, CAR_AVAILABLE, CAR_INVALID;
+    }
 
     public DynamoDB(AppCompatActivity activity) {
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
@@ -29,14 +36,18 @@ public class DynamoDB {
         mapper = new DynamoDBMapper(ddbClient);
     }
 
-    public boolean itemExists(Class itemClass, String primaryKey) {
+    public ItemStatus userExists(Class itemClass, User user) {
         try {
             CountDownLatch latch = new CountDownLatch(1);
             Bundle bundle = new Bundle();
 
             Runnable runnable = () -> {
-                Object item = mapper.load(itemClass, primaryKey);
-                bundle.putBoolean("doesExist", item != null);
+                User item = (User) mapper.load(itemClass, user.getUser());
+                if (item != null)
+                    bundle.putInt("doesExist", item.getPassword().equals(user.getPassword())? 0 : 1);
+                else
+                    bundle.putInt("doesExist", 2);
+
                 latch.countDown();
             };
 
@@ -45,7 +56,16 @@ public class DynamoDB {
 
             latch.await();
 
-            return bundle.getBoolean("doesExist");
+            switch (bundle.getInt("doesExist")) {
+                case 0:
+                    return ItemStatus.USER_EXISTS;
+                case 1:
+                    return ItemStatus.USER_INVALID;
+                case 2:
+                    return ItemStatus.USER_AVAILABLE;
+            }
+
+            throw new RuntimeException("Error in checking for user in DB");
         } catch (InterruptedException | NullPointerException e) {
             throw new RuntimeException(e);
         }
