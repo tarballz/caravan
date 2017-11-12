@@ -15,7 +15,6 @@ import edu.cmps121.app.model.User;
 import static edu.cmps121.app.api.CaravanUtils.shortToast;
 
 // TODO: possibly override onBackPress() to also pass state when the back button is used
-// TODO: We need two buttons here, one for new users and one for return users. Return user's state should be gathered from the DynamoDB
 
 public class MainActivity extends AppCompatActivity {
     private State state;
