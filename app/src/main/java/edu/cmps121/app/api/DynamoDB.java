@@ -1,5 +1,6 @@
 package edu.cmps121.app.api;
 
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
@@ -13,10 +14,7 @@ import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
 public class DynamoDB {
-    private AmazonDynamoDBClient ddbClient;
     private DynamoDBMapper mapper;
-    private CountDownLatch latch;
-    private boolean doesExist;
 
     public DynamoDB(AppCompatActivity activity) {
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
@@ -25,7 +23,7 @@ public class DynamoDB {
                 Regions.US_WEST_2
         );
 
-        ddbClient = new AmazonDynamoDBClient(credentialsProvider);
+        AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
         ddbClient.setRegion(Region.getRegion(Regions.US_WEST_2));
 
         mapper = new DynamoDBMapper(ddbClient);
@@ -33,11 +31,12 @@ public class DynamoDB {
 
     public boolean itemExists(Class itemClass, String primaryKey) {
         try {
-            latch = new CountDownLatch(1);
+            CountDownLatch latch = new CountDownLatch(1);
+            Bundle bundle = new Bundle();
 
             Runnable runnable = () -> {
                 Object item = mapper.load(itemClass, primaryKey);
-                doesExist = item != null;
+                bundle.putBoolean("doesExist", item != null);
                 latch.countDown();
             };
 
@@ -46,7 +45,7 @@ public class DynamoDB {
 
             latch.await();
 
-            return doesExist;
+            return bundle.getBoolean("doesExist");
         } catch (InterruptedException | NullPointerException e) {
             throw new RuntimeException(e);
         }
