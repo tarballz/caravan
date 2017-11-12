@@ -59,19 +59,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickLogin(View view) {
         switch (validateInfo()) {
+            case IMPROPER_USER:
             case ACCOUNT_AVAILABLE:
-                shortToast(this, "Username or password is incorrect");
+                shortToast(this, "Username incorrect");
                 break;
             case ACCOUNT_EXISTS:
                 state.nextActivity(this, PartyOptionsActivity.class);
                 break;
-            case IMPROPER_USER:
-                shortToast(this, "Username must be between 3 and 8 characters long");
-                break;
             case IMPROPER_PASS:
-                shortToast(this, "Password must be 5 and 16 characters long");
+                shortToast(this, "Password incorrect");
                 break;
-
         }
     }
 
