@@ -34,7 +34,7 @@ public class FindPartyActivity extends AppCompatActivity {
     }
 
     private boolean isReal(String potentialParty) {
-        // TODO: search DB for party name,
+        // TODO: search DynamoDB for party name,
         return true;
     }
 }

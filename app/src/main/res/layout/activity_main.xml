@@ -9,30 +9,86 @@
     tools:layout_editor_absoluteX="0dp">
 
     <EditText
-        android:id="@+id/enter_username_et"
+        android:id="@+id/enter_password_et"
         android:layout_width="0dp"
         android:layout_height="45dp"
+        android:layout_marginStart="67dp"
         android:ems="10"
-        android:hint="@string/enter_your_username"
+        android:hint="@string/password"
         android:inputType="textPersonName"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/create_username_b"
-        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="RtlHardcoded"
-        android:layout_marginStart="16dp" />
+        android:layout_marginEnd="67dp"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="@+id/login_b"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <EditText
+        android:id="@+id/enter_username_et"
+        android:layout_width="0dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="67dp"
+        android:ems="10"
+        android:hint="@string/username"
+        android:inputType="textPersonName"
+        tools:ignore="RtlHardcoded"
+        android:layout_marginEnd="67dp"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toBottomOf="@+id/enter_password_et"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="83dp"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="82dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/welcome_tv" />
 
     <Button
-        android:id="@+id/create_username_b"
+        android:id="@+id/login_b"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:onClick="onClickLogin"
+        android:text="@string/login"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="@+id/create_account_b"
+        android:layout_marginStart="66dp"
+        android:layout_marginEnd="66dp"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="26dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/welcome_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onClickCreateUsername"
-        android:text="@string/next"
-        app:layout_constraintBaseline_toBaselineOf="@+id/enter_username_et"
-        app:layout_constraintLeft_toRightOf="@+id/enter_username_et"
+        android:text="@string/welcome"
+        android:textSize="30sp"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp" />
+        android:layout_marginTop="42dp"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/create_account_b"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:onClick="onClickCreateAccount"
+        tools:text="Create an account"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="@+id/login_b"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="105dp"
+        app:layout_constraintLeft_toLeftOf="@+id/login_b" />
 
 </android.support.constraint.ConstraintLayout>

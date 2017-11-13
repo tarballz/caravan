@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import edu.cmps121.app.MainActivity;
 
@@ -16,11 +15,8 @@ public class State implements Parcelable {
     public String party;
     public String car;
     public String username;
-    public DB db;
 
     public State(AppCompatActivity currentActivity) {
-        db = new DB(currentActivity);
-
         try {
             Intent intent = currentActivity.getIntent();
             State state = intent.getParcelableExtra("state");
