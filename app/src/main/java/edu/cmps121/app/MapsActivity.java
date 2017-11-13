@@ -50,4 +50,8 @@ public class MapsActivity extends AppCompatActivity {
         else
             shortToast(MapsActivity.this, "Please install Google Maps on your device");
     }
+
+    public void mapsPage(View view) {
+        state.nextActivity(this, MapsActivityRaw.class);
+    }
 }

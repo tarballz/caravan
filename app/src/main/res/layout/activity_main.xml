@@ -81,14 +81,14 @@
         android:id="@+id/create_account_b"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:onClick="onClickCreateAccount"
-        tools:text="Create an account"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="@+id/login_b"
-        tools:layout_constraintLeft_creator="1"
         android:layout_marginBottom="105dp"
-        app:layout_constraintLeft_toLeftOf="@+id/login_b" />
+        android:onClick="onClickCreateAccount"
+        android:text="Create an account"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/login_b"
+        app:layout_constraintRight_toRightOf="@+id/login_b"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1" />
 
 </android.support.constraint.ConstraintLayout>
