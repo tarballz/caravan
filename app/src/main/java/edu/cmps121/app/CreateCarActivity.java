@@ -28,7 +28,6 @@ public class CreateCarActivity extends AppCompatActivity {
     private String carName;
     private String color;
 
-    // TODO: link state.car with the created car's name
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +104,6 @@ public class CreateCarActivity extends AppCompatActivity {
                 .collect(Collectors.toList()));
     }
 
-    // TODO: make sure that non of the fields are left empty before saving
     public void onClickCreateCar(View view) {
         EditText editText = (EditText) findViewById(R.id.enter_create_car_name_et);
         carName = editText.getText().toString();
