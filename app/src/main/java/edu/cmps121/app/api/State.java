@@ -15,6 +15,8 @@ public class State implements Parcelable {
     public String party;
     public String car;
     public String username;
+    public double dest_lat = 0.0;
+    public double dest_lng = 0.0;
 
     public State(AppCompatActivity currentActivity) {
         try {

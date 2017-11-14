@@ -30,9 +30,9 @@ public class DynamoDB {
     private Party partyItem;
     private Car carItem;
     private User userItem;
+    private boolean doesExist;
 
     private static final String TAG = DynamoDB.class.getSimpleName();
-
 
     public enum ItemStatus {
         USER_EXISTS, USER_AVAILABLE, USER_INVALID;
@@ -57,7 +57,7 @@ public class DynamoDB {
             Bundle bundle = new Bundle();
 
             Runnable runnable = () -> {
-                User item = (User) mapper.load(itemClass, user.getUser());
+                User item = mapper.load(itemClass, user.getUser());
                 if (item != null)
                     bundle.putInt("doesExist", item.getPassword().equals(user.getPassword()) ? 0 : 1);
                 else
@@ -109,6 +109,31 @@ public class DynamoDB {
         }
     }
 
+    public boolean itemExists(Class itemClass, String primaryKey) {
+        try {
+            CountDownLatch latch = new CountDownLatch(1);
+
+            Runnable runnable = () -> {
+                Object item = mapper.load(itemClass, primaryKey);
+                if (item != null)
+                    doesExist = true;
+                else
+                    doesExist = false;
+                latch.countDown();
+            };
+
+            Thread thread = new Thread(runnable);
+            thread.start();
+
+            latch.await();
+
+            return doesExist;
+        } catch (InterruptedException | NullPointerException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     public <T> void saveItem(T item) throws ResourceNotFoundException {
         Runnable runnable = () -> mapper.save(item);
 
@@ -146,5 +171,16 @@ public class DynamoDB {
             Log.w(TAG, "Thread was interrupted: " + e);
             return null;
         }
+    }
+
+    public void updateUserParty(String username, String partyName) throws ResourceNotFoundException {
+        Runnable runnable = () -> {
+            User user = mapper.load(User.class, username);
+            user.setParty(partyName);
+            mapper.save(user);
+        };
+
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
 }
