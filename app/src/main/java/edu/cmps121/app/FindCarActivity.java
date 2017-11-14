@@ -2,7 +2,6 @@ package edu.cmps121.app;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -18,7 +17,6 @@ import edu.cmps121.app.api.State;
 
 public class FindCarActivity extends AppCompatActivity {
     private State state;
-    ListView carList;
     DynamoDB dynamoDB;
 
     @Override
@@ -33,7 +31,7 @@ public class FindCarActivity extends AppCompatActivity {
     }
 
     public void createCarListView() {
-        carList = (ListView) findViewById(R.id.car_list_lv);
+        ListView carList = (ListView) findViewById(R.id.car_list_lv);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
@@ -49,10 +47,10 @@ public class FindCarActivity extends AppCompatActivity {
     }
 
     private ArrayList<String> getCarsItems() {
-        List<Map<String, AttributeValue>> itemList = dynamoDB.queryTable("cars");
+        List<Map<String, AttributeValue>> itemList = dynamoDB.queryTable("cars", state.party);
 
         return new ArrayList<>(itemList.stream()
-                .filter(e -> e.get("party").getS().equals(state.party))
+//                .filter(e -> e.get("party").getS().equals(state.party))
                 .map(e -> e.get("driver").getS() + "'s " + e.get("car").getS())
                 .collect(Collectors.toList()));
     }

@@ -14,23 +14,28 @@ import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
+import edu.cmps121.app.model.Car;
+import edu.cmps121.app.model.Party;
 import edu.cmps121.app.model.User;
 
 public class DynamoDB {
     private DynamoDBMapper mapper;
     private AmazonDynamoDBClient client;
     private List<Map<String, AttributeValue>> itemsList;
+    private Party partyItem;
+    private Car carItem;
+    private User userItem;
 
     private static final String TAG = DynamoDB.class.getSimpleName();
 
 
     public enum ItemStatus {
-        USER_EXISTS, USER_AVAILABLE, USER_INVALID, PARTY_EXISTS, PARTY_AVAILABLE, PARTY_INVALID,
-        CAR_EXISTS, CAR_AVAILABLE, CAR_INVALID;
+        USER_EXISTS, USER_AVAILABLE, USER_INVALID;
     }
 
     public DynamoDB(AppCompatActivity activity) {
@@ -81,6 +86,29 @@ public class DynamoDB {
         }
     }
 
+    public boolean carExists(Class<Car> itemClass, Car car) {
+        try {
+            CountDownLatch latch = new CountDownLatch(1);
+
+            Runnable runnable = () -> {
+                carItem = (Car) mapper.load(itemClass, car.getCar());
+                latch.countDown();
+            };
+
+            Thread thread = new Thread(runnable);
+            thread.start();
+
+            latch.await();
+
+            if (carItem != null)
+                return true;
+            else
+                return false;
+        } catch (InterruptedException | NullPointerException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public <T> void saveItem(T item) throws ResourceNotFoundException {
         Runnable runnable = () -> mapper.save(item);
 
@@ -88,12 +116,19 @@ public class DynamoDB {
         thread.start();
     }
 
-    public List<Map<String, AttributeValue>> queryTable(String table) {
+    public List<Map<String, AttributeValue>> queryTable(String table, String key) {
         try {
             CountDownLatch latch = new CountDownLatch(1);
 
+            Map<String, AttributeValue> expressionAttributeValues =
+                    new HashMap<String, AttributeValue>();
+            expressionAttributeValues.put(":val", new AttributeValue().withS(key));
+
             Runnable runnable = () -> {
-                ScanRequest scanRequest = new ScanRequest().withTableName(table);
+                ScanRequest scanRequest = new ScanRequest()
+                        .withTableName(table)
+                        .withFilterExpression("party = :val")
+                        .withExpressionAttributeValues(expressionAttributeValues);
 
                 ScanResult result = client.scan(scanRequest);
                 itemsList = result.getItems();

@@ -100,27 +100,27 @@ public class MapsActivityRaw extends AppCompatActivity implements OnMapReadyCall
     }
 
     private void setIcons() {
-        List<Map<String, AttributeValue>> itemList = dynamoDB.queryTable("cars");
+        List<Map<String, AttributeValue>> itemList = dynamoDB.queryTable("cars", state.party);
 
         List<String> cars = itemList.stream()
-                .filter(e -> e.get("party").getS().equals(state.party))
+//                .filter(e -> e.get("party").getS().equals(state.party))
                 .map(e -> e.get("car").getS())
                 .collect(Collectors.toList());
 
         List<String> drivers = itemList.stream()
-                .filter(e -> e.get("party").getS().equals(state.party))
+//                .filter(e -> e.get("party").getS().equals(state.party))
                 .map(e -> e.get("driver").getS())
                 .collect(Collectors.toList());
 
         // TODO: implement this
         List<String> positions = itemList.stream()
-                .filter(e -> e.get("party").getS().equals(state.party))
+//                .filter(e -> e.get("party").getS().equals(state.party))
                 .map(e -> e.get("position").getS())
                 .collect(Collectors.toList());
 
         // TODO: implement me
         List<String> colors = itemList.stream()
-                .filter(e -> e.get("party").getS().equals(state.party))
+//                .filter(e -> e.get("party").getS().equals(state.party))
                 .map(e -> e.get("color").getS())
                 .collect(Collectors.toList());
 
