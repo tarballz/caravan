@@ -52,8 +52,8 @@ public class FindCarActivity extends AppCompatActivity {
         List<Map<String, AttributeValue>> itemList = dynamoDB.queryTable("cars");
 
         return new ArrayList<>(itemList.stream()
-                .filter(e -> e.get("party").toString().equals(state.party))
-                .map(e -> e.get("driver").toString() + "'s " + e.get("car").toString())
+                .filter(e -> e.get("party").getS().equals(state.party))
+                .map(e -> e.get("driver").getS() + "'s " + e.get("car").getS())
                 .collect(Collectors.toList()));
     }
 }
