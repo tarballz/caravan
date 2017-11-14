@@ -17,6 +17,7 @@ import edu.cmps121.app.model.User;
 
 public class DynamoDB {
     private DynamoDBMapper mapper;
+    private boolean doesExist;
 
     public enum ItemStatus {
         USER_EXISTS, USER_AVAILABLE, USER_INVALID, PARTY_EXISTS, PARTY_AVAILABLE, PARTY_INVALID,
@@ -71,8 +72,45 @@ public class DynamoDB {
         }
     }
 
+    public boolean itemExists(Class itemClass, String primaryKey) {
+        try {
+            CountDownLatch latch = new CountDownLatch(1);
+            Bundle bundle = new Bundle();
+
+            Runnable runnable = () -> {
+                Object item = mapper.load(itemClass, primaryKey);
+                if (item != null) {
+                    bundle.putBoolean("doesExist", true);
+                } else {
+                    bundle.putBoolean("doesExist", false);
+                }
+                latch.countDown();
+            };
+
+            Thread thread = new Thread(runnable);
+            thread.start();
+
+            latch.await();
+
+            return doesExist;
+        } catch (InterruptedException | NullPointerException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public <T> void saveItem(T item) throws ResourceNotFoundException {
         Runnable runnable = () -> mapper.save(item);
+
+        Thread thread = new Thread(runnable);
+        thread.start();
+    }
+
+    public void updateUserParty(String username, String partyName) throws ResourceNotFoundException {
+        Runnable runnable = () -> {
+            User user = mapper.load(User.class, username);
+            user.setParty(partyName);
+            mapper.save(user);
+        };
 
         Thread thread = new Thread(runnable);
         thread.start();
