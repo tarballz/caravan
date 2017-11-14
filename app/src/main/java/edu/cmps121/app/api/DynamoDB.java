@@ -2,21 +2,31 @@ package edu.cmps121.app.api;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
+import com.amazonaws.services.dynamodbv2.model.ScanRequest;
+import com.amazonaws.services.dynamodbv2.model.ScanResult;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 import edu.cmps121.app.model.User;
 
 public class DynamoDB {
     private DynamoDBMapper mapper;
+    private AmazonDynamoDBClient client;
+    private List<Map<String, AttributeValue>> itemsList;
+
+    private static final String TAG = DynamoDB.class.getSimpleName();
+
 
     public enum ItemStatus {
         USER_EXISTS, USER_AVAILABLE, USER_INVALID, PARTY_EXISTS, PARTY_AVAILABLE, PARTY_INVALID,
@@ -30,13 +40,13 @@ public class DynamoDB {
                 Regions.US_WEST_2
         );
 
-        AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
-        ddbClient.setRegion(Region.getRegion(Regions.US_WEST_2));
+        client = new AmazonDynamoDBClient(credentialsProvider);
+        client.setRegion(Region.getRegion(Regions.US_WEST_2));
 
-        mapper = new DynamoDBMapper(ddbClient);
+        mapper = new DynamoDBMapper(client);
     }
 
-    public ItemStatus userExists(Class itemClass, User user) {
+    public ItemStatus userExists(Class<User> itemClass, User user) {
         try {
             CountDownLatch latch = new CountDownLatch(1);
             Bundle bundle = new Bundle();
@@ -44,7 +54,7 @@ public class DynamoDB {
             Runnable runnable = () -> {
                 User item = (User) mapper.load(itemClass, user.getUser());
                 if (item != null)
-                    bundle.putInt("doesExist", item.getPassword().equals(user.getPassword())? 0 : 1);
+                    bundle.putInt("doesExist", item.getPassword().equals(user.getPassword()) ? 0 : 1);
                 else
                     bundle.putInt("doesExist", 2);
 
@@ -78,7 +88,28 @@ public class DynamoDB {
         thread.start();
     }
 
-    // TODO: implement a method that queries the cars table, adding the primary key of every item that matches the desired party to an ArrayList of Strings.
-    // Use this method ^ to then get the names of all the cars for your party in the FindCarActivity
-    public ArrayList<String> queryTable() { return null; }
+    public List<Map<String, AttributeValue>> queryTable(String table) {
+        try {
+            CountDownLatch latch = new CountDownLatch(1);
+
+            Runnable runnable = () -> {
+                ScanRequest scanRequest = new ScanRequest().withTableName(table);
+
+                ScanResult result = client.scan(scanRequest);
+                itemsList = result.getItems();
+
+                latch.countDown();
+            };
+
+            Thread thread = new Thread(runnable);
+            thread.start();
+
+            latch.await();
+
+            return itemsList;
+        } catch (InterruptedException e) {
+            Log.w(TAG, "Thread was interrupted: " + e);
+            return null;
+        }
+    }
 }

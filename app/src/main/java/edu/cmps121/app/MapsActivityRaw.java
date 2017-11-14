@@ -1,5 +1,7 @@
 package edu.cmps121.app;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
@@ -21,6 +24,7 @@ import edu.cmps121.app.api.State;
  */
 public class MapsActivityRaw extends AppCompatActivity implements OnMapReadyCallback {
     State state;
+    GoogleMap googleMap;
 
     private static final String TAG = MapsActivityRaw.class.getSimpleName();
 
@@ -46,7 +50,41 @@ public class MapsActivityRaw extends AppCompatActivity implements OnMapReadyCall
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
+        setStyle();
+        setPosition();
+        setIcons();
 
+//        // TODO: fix this. Make it stop after 20 seconds of alternating
+//        Runnable runnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                boolean blah = false;
+//
+//                while (true) {
+//                    try {
+//                        Thread.sleep(5000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    if (!blah)
+//                        marker.setPosition(new LatLng(-34, 151));
+//                    else
+//                        marker.setPosition(new LatLng(-34, 150));
+//                }
+//            }
+//        };
+//
+//        Thread thread = new Thread(runnable);
+//        thread.run();
+    }
+
+    private void setPosition() {
+        // TODO: get gps position here
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(-34, 151)));
+    }
+
+    private void setStyle() {
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
@@ -60,35 +98,19 @@ public class MapsActivityRaw extends AppCompatActivity implements OnMapReadyCall
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can't find style. Error: ", e);
         }
-        // Position the map's camera near Sydney, Australia.
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(-34, 151)));
+    }
+
+    private void setIcons() {
+        // Iterate through all cars for party
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.car, null);
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        Bitmap smallCar = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
 
         // Attempt at marker
         Marker marker = googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(-34, 150))
-                .title("hello world!"));
-
-        // TODO: fix this. Make it stop after 20 seconds of alternating
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                boolean blah = false;
-
-                while (true) {
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    if (!blah)
-                        marker.setPosition(new LatLng(-34, 151));
-                    else
-                        marker.setPosition(new LatLng(-34, 150));
-                }
-            }
-        };
-
-        Thread thread = new Thread(runnable);
-        thread.run();
+                .title("hello world!")
+                .snippet("sup duuuuuuuuudes")
+                .icon(BitmapDescriptorFactory.fromBitmap(smallCar)));
     }
 }
