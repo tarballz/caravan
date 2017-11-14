@@ -36,6 +36,7 @@ public class CreatePartyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_party);
 
         state = new State(this);
+        db = new DynamoDB(this); 
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);

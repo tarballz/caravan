@@ -17,7 +17,6 @@ import edu.cmps121.app.model.User;
 
 public class DynamoDB {
     private DynamoDBMapper mapper;
-    private CountDownLatch latch;
     private boolean doesExist;
 
     public enum ItemStatus {
@@ -75,11 +74,16 @@ public class DynamoDB {
 
     public boolean itemExists(Class itemClass, String primaryKey) {
         try {
-            latch = new CountDownLatch(1);
+            CountDownLatch latch = new CountDownLatch(1);
+            Bundle bundle = new Bundle();
 
             Runnable runnable = () -> {
                 Object item = mapper.load(itemClass, primaryKey);
-                doesExist = item != null;
+                if (item != null) {
+                    bundle.putBoolean("doesExist", true);
+                } else {
+                    bundle.putBoolean("doesExist", false);
+                }
                 latch.countDown();
             };
 
