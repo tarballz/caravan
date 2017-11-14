@@ -7,6 +7,7 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 @DynamoDBTable(tableName = "users")
 public class User {
     private String user;
+    private String password;
     private String car;
     private String party;
 
@@ -38,5 +39,12 @@ public class User {
         this.party = party;
     }
 
+    @DynamoDBAttribute(attributeName = "password")
+    public String getPassword() {
+        return password;
+    }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

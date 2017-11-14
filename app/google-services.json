@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "581046330845",
+    "firebase_url": "https://cmps121-7be21.firebaseio.com",
+    "project_id": "cmps121-7be21",
+    "storage_bucket": "cmps121-7be21.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:581046330845:android:7fd04c44daf119dd",
+        "android_client_info": {
+          "package_name": "edu.cmps121.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "581046330845-en06r8enrecmq98sdnv5hvsqcefv2dtu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAh2Pa9Cs3P5nN6C8Bx_Xnde21Fgdcv16E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

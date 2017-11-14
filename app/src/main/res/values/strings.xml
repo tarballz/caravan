@@ -28,4 +28,8 @@
     <string name="enter_the_name_of_your_car">Enter the name of your car</string>
     <string name="find_car">Find Car</string>
     <string name="who_s_driving">Who\'s Driving?</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="welcome">Welcome!</string>
 </resources>

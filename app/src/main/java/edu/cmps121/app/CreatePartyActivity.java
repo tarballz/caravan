@@ -18,8 +18,8 @@ import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
 
+import edu.cmps121.app.api.DynamoDB;
 import edu.cmps121.app.api.State;
-import edu.cmps121.app.api.DB;
 import edu.cmps121.app.model.Party;
 import edu.cmps121.app.model.User;
 
@@ -28,6 +28,7 @@ import static edu.cmps121.app.api.CaravanUtils.shortToast;
 public class CreatePartyActivity extends AppCompatActivity {
     private State state;
     private String TAG = "CPA";
+    public DynamoDB db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +70,8 @@ public class CreatePartyActivity extends AppCompatActivity {
             party.setLng(state.dest_lng);
             state.party = potentialParty;
             try {
-                state.db.saveItem(party);
-                state.db.updateUserParty(state.username, potentialParty);
+                db.saveItem(party);
+                db.updateUserParty(state.username, potentialParty);
                 state.nextActivity(this, PartyMenuActivity.class);
             } catch (ResourceNotFoundException e) {
                 Log.w("DB", "Table does not exist or invalid POJO");
@@ -84,6 +85,6 @@ public class CreatePartyActivity extends AppCompatActivity {
     }
 
     private boolean isUnique(String potentialParty) {
-        return !state.db.itemExists(Party.class, potentialParty);
+        return !db.itemExists(Party.class, potentialParty);
     }
 }
