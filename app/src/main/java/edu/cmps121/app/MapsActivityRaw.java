@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -17,37 +18,35 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import edu.cmps121.app.api.DynamoDB;
 import edu.cmps121.app.api.State;
 
-/**
- * A styled map using JSON styles from a raw resource.
- */
 public class MapsActivityRaw extends AppCompatActivity implements OnMapReadyCallback {
     State state;
+    DynamoDB dynamoDB;
     GoogleMap googleMap;
+    Map<String, Marker> markers;
 
     private static final String TAG = MapsActivityRaw.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Retrieve the content view that renders the map.
         setContentView(R.layout.activity_maps_raw);
 
         state = new State(this);
+        dynamoDB = new DynamoDB(this);
 
-        // Get the SupportMapFragment and register for the callback
-        // when the map is ready for use.
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
 
-    /**
-     * Manipulates the map when it's available.
-     * The API invokes this callback when the map is ready for use.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
@@ -76,7 +75,7 @@ public class MapsActivityRaw extends AppCompatActivity implements OnMapReadyCall
 //        };
 //
 //        Thread thread = new Thread(runnable);
-//        thread.run();
+//        thread.start();
     }
 
     private void setPosition() {
@@ -101,16 +100,64 @@ public class MapsActivityRaw extends AppCompatActivity implements OnMapReadyCall
     }
 
     private void setIcons() {
-        // Iterate through all cars for party
-        BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.car, null);
-        Bitmap bitmap = bitmapDrawable.getBitmap();
-        Bitmap smallCar = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
+        List<Map<String, AttributeValue>> itemList = dynamoDB.queryTable("cars");
 
-        // Attempt at marker
-        Marker marker = googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(-34, 150))
-                .title("hello world!")
-                .snippet("sup duuuuuuuuudes")
-                .icon(BitmapDescriptorFactory.fromBitmap(smallCar)));
+        List<String> cars = itemList.stream()
+                .filter(e -> e.get("party").getS().equals(state.party))
+                .map(e -> e.get("car").getS())
+                .collect(Collectors.toList());
+
+        List<String> drivers = itemList.stream()
+                .filter(e -> e.get("party").getS().equals(state.party))
+                .map(e -> e.get("driver").getS())
+                .collect(Collectors.toList());
+
+        // TODO: implement this
+        List<String> positions = itemList.stream()
+                .filter(e -> e.get("party").getS().equals(state.party))
+                .map(e -> e.get("position").getS())
+                .collect(Collectors.toList());
+
+        // TODO: implement me
+        List<String> colors = itemList.stream()
+                .filter(e -> e.get("party").getS().equals(state.party))
+                .map(e -> e.get("color").getS())
+                .collect(Collectors.toList());
+
+        if (cars.size() != drivers.size())
+            throw new RuntimeException("Error in our DynamoDB cars table. |drivers| != |cars|");
+
+        for (int i = 0; i < cars.size(); ++i) {
+            int color = getCarColor(colors.get(i));
+
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(color, null);
+            Bitmap bitmap = bitmapDrawable.getBitmap();
+            Bitmap smallCar = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
+
+            // TODO: potentially add occupants to the snippet as well
+            markers.put(
+                    cars.get(i),
+                    googleMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(-34, 150 + i / 10))
+                            .title(cars.get(i))
+                            .snippet("Driver: " + drivers.get(i))
+                            .icon(BitmapDescriptorFactory.fromBitmap(smallCar)))
+            );
+        }
+    }
+
+    private int getCarColor(String color) {
+        switch (color) {
+            case "cyan":
+                return R.drawable.cyan;
+            case "red":
+                return R.drawable.red;
+            case "yellow":
+                return R.drawable.yellow;
+            case "green":
+                return R.drawable.green;
+            default:
+                throw new RuntimeException("Error in car table. Invalid color");
+        }
     }
 }
