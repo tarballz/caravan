@@ -23,7 +23,7 @@ public class PartyOptionsActivity extends AppCompatActivity {
             state.nextActivity(this, PartyMenuActivity.class);
 
         TextView textView = (TextView) findViewById(R.id.display_name_tv);
-        textView.setText("Hello " + state.username + "!");
+        textView.setText("Hello " + state.user + "!");
     }
 
     public void onClickCreatePartyOptions(View view) {

@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             if (analyzeUser(User.class, user) != AccountStatus.ACCOUNT_AVAILABLE)
                 throw new RuntimeException("Account should not exist. Validate Failed.");
 
-            state.username = user.getUser();
+            state.user = user.getUser();
             state.party = null;
             state.car = null;
 
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         if (!userItem.getPassword().equals(user.getPassword()))
             return AccountStatus.NO_MATCH_PASS_USER;
 
-        state.username = userItem.getUser();
+        state.user = userItem.getUser();
         state.car = userItem.getCar();
         state.party = userItem.getParty();
 

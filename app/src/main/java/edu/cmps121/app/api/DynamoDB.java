@@ -109,14 +109,10 @@ public class DynamoDB {
         thread.start();
     }
 
-    public void updateUserParty(String username, String partyName) throws ResourceNotFoundException {
-        Runnable runnable = () -> {
-            User user = mapper.load(User.class, username);
-            user.setParty(partyName);
-            mapper.save(user);
-        };
+    public void updateUserParty(String username, String partyName) {
+        User userItem = (User) getItem(User.class, username);
+        userItem.setParty(partyName);
 
-        Thread thread = new Thread(runnable);
-        thread.start();
+        saveItem(userItem);
     }
 }

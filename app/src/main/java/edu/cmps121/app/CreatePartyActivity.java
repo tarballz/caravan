@@ -16,7 +16,6 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import edu.cmps121.app.api.DynamoDB;
 import edu.cmps121.app.api.State;
 import edu.cmps121.app.model.Party;
-import edu.cmps121.app.model.User;
 
 import static edu.cmps121.app.api.CaravanUtils.shortToast;
 
@@ -24,6 +23,7 @@ public class CreatePartyActivity extends AppCompatActivity {
     private State state;
     private DynamoDB dynamoDB;
     private Place destination;
+    private String partyName;
 
 
     private static final String TAG = CreatePartyActivity.class.getSimpleName();
@@ -35,6 +35,8 @@ public class CreatePartyActivity extends AppCompatActivity {
 
         state = new State(this);
         dynamoDB = new DynamoDB(this);
+
+        state.validateFields(State.Validate.USER);
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
@@ -56,41 +58,34 @@ public class CreatePartyActivity extends AppCompatActivity {
 
     public void onClickCreateParty(View view) {
         EditText editText = (EditText) findViewById(R.id.enter_create_party_name_et);
-        String partyName = editText.getText().toString();
+        partyName = editText.getText().toString();
 
         if (destination.getLatLng().longitude == 0.0 || destination.getLatLng().latitude == 0.0)
             shortToast(this, "Please enter a location");
         else if (dynamoDB.itemExists(Party.class, partyName))
             shortToast(this, partyName + " has already been taken");
         else {
-            try {
-                saveParty(partyName);
-                updateUserParty(partyName);
-
+                updateDB();
                 state.nextActivity(this, PartyMenuActivity.class);
-            } catch (ResourceNotFoundException e) {
-                Log.w("DB", "Table does not exist or invalid POJO");
-                shortToast(this, "Failed to save data");
-            }
         }
     }
 
-    private void saveParty(String partyName) {
-        Party party = new Party();
+    private void updateDB() {
+        try {
+            Party party = new Party();
 
-        party.setParty(partyName);
-        party.setOwner(state.username);
-        party.setLat(destination.getLatLng().latitude);
-        party.setLng(destination.getLatLng().longitude);
+            party.setParty(partyName);
+            party.setOwner(state.user);
+            party.setLat(destination.getLatLng().latitude);
+            party.setLng(destination.getLatLng().longitude);
 
-        dynamoDB.saveItem(party);
-    }
+            dynamoDB.saveItem(party);
+            dynamoDB.updateUserParty(state.user, partyName);
 
-    private void updateUserParty(String partyName) {
-        User userItem = (User) dynamoDB.getItem(User.class, state.username);
-        userItem.setParty(partyName);
-
-        dynamoDB.saveItem(userItem);
-        state.party = partyName;
+            state.party = partyName;
+        } catch (ResourceNotFoundException e) {
+            Log.w("DB", "Table does not exist or invalid POJO");
+            shortToast(this, "Failed to save data");
+        }
     }
 }
