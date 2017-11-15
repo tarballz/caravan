@@ -36,7 +36,7 @@ public class CreatePartyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_party);
 
         state = new State(this);
-        db = new DynamoDB(this); 
+        db = new DynamoDB(this);
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
@@ -64,15 +64,18 @@ public class CreatePartyActivity extends AppCompatActivity {
         Party party = new Party();
         String potentialParty = editText.getText().toString();
 
-        if (isUnique(potentialParty) && state.dest_lat != 0.0) {
-            party.setParty(potentialParty);
-            party.setOwner(state.username);
-            party.setLat(state.dest_lat);
-            party.setLng(state.dest_lng);
-            state.party = potentialParty;
+        if (!db.itemExists(Party.class, potentialParty) && state.dest_lat != 0.0) {
             try {
+                state.party = potentialParty;
+
+                party.setParty(potentialParty);
+                party.setOwner(state.username);
+                party.setLat(state.dest_lat);
+                party.setLng(state.dest_lng);
+
                 db.saveItem(party);
                 db.updateUserParty(state.username, potentialParty);
+
                 state.nextActivity(this, PartyMenuActivity.class);
             } catch (ResourceNotFoundException e) {
                 Log.w("DB", "Table does not exist or invalid POJO");
@@ -80,12 +83,7 @@ public class CreatePartyActivity extends AppCompatActivity {
             }
         } else if (state.dest_lat == 0.0) {
             shortToast(this, "Please enter a location.");
-        }
-        else
+        } else
             shortToast(this, potentialParty + " has already been taken");
-    }
-
-    private boolean isUnique(String potentialParty) {
-        return !db.itemExists(Party.class, potentialParty);
     }
 }

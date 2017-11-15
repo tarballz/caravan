@@ -62,8 +62,8 @@ public class State implements Parcelable {
         }
     };
 
-    public void nextActivity(Context currentActivity,
-                             Class destinationActivity) {
+    public <T> void nextActivity(Context currentActivity,
+                             Class<T> destinationActivity) {
         Intent intent = new Intent(currentActivity, destinationActivity);
         intent.putExtra("state", this);
         currentActivity.startActivity(intent);

@@ -1,10 +1,7 @@
 package edu.cmps121.app.api;
 
 import android.support.v7.app.AppCompatActivity;
-import android.util.StringBuilderPrinter;
 import android.widget.Toast;
-
-import edu.cmps121.app.CreatePartyActivity;
 
 public class CaravanUtils {
     public static void shortToast(AppCompatActivity activity, String msg) {

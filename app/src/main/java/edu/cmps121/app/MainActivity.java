@@ -84,21 +84,12 @@ public class MainActivity extends AppCompatActivity {
         if (password.length() < MIN_PASS_LEN || password.length() > MAX_PASS_LEN)
             return AccountStatus.IMPROPER_PASS;
 
-        switch (dynamoDb.userExists(User.class, user)) {
-            case USER_EXISTS:
-                return AccountStatus.ACCOUNT_EXISTS;
-            case USER_INVALID:
-                return AccountStatus.IMPROPER_PASS;
-            case USER_AVAILABLE:
-                return AccountStatus.ACCOUNT_AVAILABLE;
-            default:
-                throw new RuntimeException("Bad enum in validating info");
-        }
+        return analyzeUser(User.class, user);
     }
 
     private void saveNewAccount() {
         try {
-            if (dynamoDb.userExists(User.class, user) != DynamoDB.ItemStatus.USER_AVAILABLE)
+            if (analyzeUser(User.class, user) != AccountStatus.ACCOUNT_AVAILABLE)
                 throw new RuntimeException("Account should not exist. Validate Failed.");
 
             dynamoDb.saveItem(user);
@@ -107,5 +98,16 @@ public class MainActivity extends AppCompatActivity {
             Log.w("DynamoDB", "Table does not exist or invalid POJO");
             shortToast(this, "Failed to save account data");
         }
+    }
+
+    public AccountStatus analyzeUser(Class<User> userClass, User user) {
+        User userItem = (User) dynamoDb.getItem(userClass, user.getUser());
+
+        if (userItem == null)
+            return AccountStatus.ACCOUNT_AVAILABLE;
+        if (userItem.getPassword().equals(user.getPassword()))
+            return AccountStatus.ACCOUNT_EXISTS;
+        else
+            return AccountStatus.IMPROPER_PASS;
     }
 }

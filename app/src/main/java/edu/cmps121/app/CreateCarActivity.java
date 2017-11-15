@@ -91,8 +91,8 @@ public class CreateCarActivity extends AppCompatActivity {
     }
 
     private ArrayList<String> getDriverItem() {
-        List<Map<String, AttributeValue>> driversItem = dynamoDB.queryTable("cars", state.party);
-        List<Map<String, AttributeValue>> usersItems = dynamoDB.queryTable("users", state.party);
+        List<Map<String, AttributeValue>> driversItem = dynamoDB.queryTableByParty("cars", state.party);
+        List<Map<String, AttributeValue>> usersItems = dynamoDB.queryTableByParty("users", state.party);
 
         List<String> driversList = driversItem.stream()
                 .map(e -> e.get("driver").getS())
@@ -112,7 +112,7 @@ public class CreateCarActivity extends AppCompatActivity {
             Car car = new Car();
             car.setCar(carName);
 
-            if (!dynamoDB.carExists(Car.class, car)) {
+            if (!dynamoDB.itemExists(Car.class, carName)) {
                 state.car = car.getCar();
                 dynamoDB.saveItem(car);
                 state.nextActivity(this, PartyMenuActivity.class);
