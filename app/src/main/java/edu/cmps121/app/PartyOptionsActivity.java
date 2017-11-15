@@ -8,7 +8,9 @@ import android.widget.TextView;
 import edu.cmps121.app.api.State;
 
 public class PartyOptionsActivity extends AppCompatActivity {
-    private State state; 
+    private State state;
+
+    private static final String TAG = PartyOptionsActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,6 +18,9 @@ public class PartyOptionsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_party_options);
 
         state = new State(this);
+
+        if (state.party != null && !state.party.isEmpty())
+            state.nextActivity(this, PartyMenuActivity.class);
 
         TextView textView = (TextView) findViewById(R.id.display_name_tv);
         textView.setText("Hello " + state.username + "!");

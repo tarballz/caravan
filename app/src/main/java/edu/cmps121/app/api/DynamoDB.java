@@ -1,7 +1,5 @@
 package edu.cmps121.app.api;
 
-import android.content.ClipData;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -43,33 +41,6 @@ public class DynamoDB {
         mapper = new DynamoDBMapper(client);
     }
 
-//    public ItemStatus analyzeUser(Class<User> itemClass, User user) {
-//        try {
-//            CountDownLatch latch = new CountDownLatch(1);
-//
-//            Runnable runnable = () -> {
-//                userItem = mapper.load(itemClass, user.getUser());
-//
-//                latch.countDown();
-//            };
-//
-//            Thread thread = new Thread(runnable);
-//            thread.start();
-//
-//            latch.await();
-//
-//            if (userItem == null)
-//                return ItemStatus.USER_AVAILABLE;
-//            if (userItem.getPassword().equals(user.getPassword()))
-//                return ItemStatus.USER_EXISTS;
-//            else
-//                return ItemStatus.USER_INVALID;
-//
-//        } catch (InterruptedException | NullPointerException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
     public <T> Object getItem(Class<T> itemClass, String primaryKey) {
         try {
             CountDownLatch latch = new CountDownLatch(1);
@@ -98,30 +69,6 @@ public class DynamoDB {
         else
             return true;
     }
-
-//    public boolean itemExists(Class itemClass, String primaryKey) {
-//        try {
-//            CountDownLatch latch = new CountDownLatch(1);
-//
-//            Runnable runnable = () -> {
-//                Object item = mapper.load(itemClass, primaryKey);
-//                if (item != null)
-//                    doesExist = true;
-//                else
-//                    doesExist = false;
-//                latch.countDown();
-//            };
-//
-//            Thread thread = new Thread(runnable);
-//            thread.start();
-//
-//            latch.await();
-//
-//            return doesExist;
-//        } catch (InterruptedException | NullPointerException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 
     public List<Map<String, AttributeValue>> queryTableByParty(String table, String party) {
         try {

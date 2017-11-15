@@ -6,13 +6,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedQueryList;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
@@ -27,8 +22,11 @@ import static edu.cmps121.app.api.CaravanUtils.shortToast;
 
 public class CreatePartyActivity extends AppCompatActivity {
     private State state;
-    private String TAG = "CPA";
-    public DynamoDB db;
+    private DynamoDB dynamoDB;
+    private Place destination;
+
+
+    private static final String TAG = CreatePartyActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +34,7 @@ public class CreatePartyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_party);
 
         state = new State(this);
-        db = new DynamoDB(this);
+        dynamoDB = new DynamoDB(this);
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
@@ -44,16 +42,13 @@ public class CreatePartyActivity extends AppCompatActivity {
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
-                state.dest_lat = place.getLatLng().latitude;
-                state.dest_lng = place.getLatLng().longitude;
+                destination = place;
                 Log.i(TAG, "Place: " + place.getName());
             }
 
             @Override
             public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: " + status);
+                Log.e(TAG, "An error occurred: " + status);
             }
         });
 
@@ -61,29 +56,41 @@ public class CreatePartyActivity extends AppCompatActivity {
 
     public void onClickCreateParty(View view) {
         EditText editText = (EditText) findViewById(R.id.enter_create_party_name_et);
-        Party party = new Party();
-        String potentialParty = editText.getText().toString();
+        String partyName = editText.getText().toString();
 
-        if (!db.itemExists(Party.class, potentialParty) && state.dest_lat != 0.0) {
+        if (destination.getLatLng().longitude == 0.0 || destination.getLatLng().latitude == 0.0)
+            shortToast(this, "Please enter a location");
+        else if (dynamoDB.itemExists(Party.class, partyName))
+            shortToast(this, partyName + " has already been taken");
+        else {
             try {
-                state.party = potentialParty;
-
-                party.setParty(potentialParty);
-                party.setOwner(state.username);
-                party.setLat(state.dest_lat);
-                party.setLng(state.dest_lng);
-
-                db.saveItem(party);
-                db.updateUserParty(state.username, potentialParty);
+                saveParty(partyName);
+                updateUserParty(partyName);
 
                 state.nextActivity(this, PartyMenuActivity.class);
             } catch (ResourceNotFoundException e) {
                 Log.w("DB", "Table does not exist or invalid POJO");
                 shortToast(this, "Failed to save data");
             }
-        } else if (state.dest_lat == 0.0) {
-            shortToast(this, "Please enter a location.");
-        } else
-            shortToast(this, potentialParty + " has already been taken");
+        }
+    }
+
+    private void saveParty(String partyName) {
+        Party party = new Party();
+
+        party.setParty(partyName);
+        party.setOwner(state.username);
+        party.setLat(destination.getLatLng().latitude);
+        party.setLng(destination.getLatLng().longitude);
+
+        dynamoDB.saveItem(party);
+    }
+
+    private void updateUserParty(String partyName) {
+        User userItem = (User) dynamoDB.getItem(User.class, state.username);
+        userItem.setParty(partyName);
+
+        dynamoDB.saveItem(userItem);
+        state.party = partyName;
     }
 }

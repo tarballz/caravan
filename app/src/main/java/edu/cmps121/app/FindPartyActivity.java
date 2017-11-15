@@ -5,12 +5,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import edu.cmps121.app.api.DynamoDB;
 import edu.cmps121.app.api.State;
 
 import static edu.cmps121.app.api.CaravanUtils.shortToast;
 
 public class FindPartyActivity extends AppCompatActivity {
     private State state;
+    private DynamoDB dynamoDB;
+
+    private static final String TAG = FindPartyActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +22,7 @@ public class FindPartyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_find_party);
 
         state = new State(this);
+        dynamoDB = new DynamoDB(this);
     }
 
     public void onClickFindParty(View view) {
