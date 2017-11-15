@@ -36,8 +36,6 @@ public class CreatePartyActivity extends AppCompatActivity {
         state = new State(this);
         dynamoDB = new DynamoDB(this);
 
-        state.validateFields(State.Validate.USER);
-
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 

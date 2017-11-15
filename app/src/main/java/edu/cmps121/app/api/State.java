@@ -17,7 +17,7 @@ public class State implements Parcelable {
     public String car;
     public String user;
 
-    public enum Validate {
+    private enum Validate {
         USER, CAR, PARTY, USER_CAR, USER_PARTY, CAR_PARTY, USER_CAR_PARTY;
     }
 
@@ -75,42 +75,54 @@ public class State implements Parcelable {
         currentActivity.startActivity(intent);
     }
 
+    // TODO: add checks here as necessary
     private void testActivityRequirements() {
         switch (currentActivityName) {
+            case "PartyMenuActivity":
+            case "PartyOptionsActivity":
             case "CreatePartyActivity":
             case "FindPartyActivity":
+            case "SettingsActivity":
                 validateFields(Validate.USER);
                 break;
             case "FindCarActivity":
             case "CreateCarActivity":
+            case "MapsActivity":
+            case "MapsActivityRaw":
                 validateFields(Validate.USER_PARTY);
+                break;
+            case "MainActivity":
+                break;
+            default:
+                throw new RuntimeException("This activity has not yet been registered in " +
+                        "State#testActivityRequirements");
         }
     }
 
-    public void validateFields(Validate set) {
+    private void validateFields(Validate set) {
         boolean valid;
 
         switch (set) {
             case USER:
-                valid = checkNull(user);
+                valid = isPopulated(user);
                 break;
             case CAR:
-                valid = checkNull(car);
+                valid = isPopulated(car);
                 break;
             case PARTY:
-                valid = checkNull(party);
+                valid = isPopulated(party);
                 break;
             case USER_CAR:
-                valid = checkNull(user) && checkNull(car);
+                valid = isPopulated(user) && isPopulated(car);
                 break;
             case USER_PARTY:
-                valid = checkNull(user) && checkNull(party);
+                valid = isPopulated(user) && isPopulated(party);
                 break;
             case CAR_PARTY:
-                valid = checkNull(car) && checkNull(party);
+                valid = isPopulated(car) && isPopulated(party);
                 break;
             case USER_CAR_PARTY:
-                valid = checkNull(user) && checkNull(car) && checkNull(party);
+                valid = isPopulated(user) && isPopulated(car) && isPopulated(party);
                 break;
             default:
                 throw new RuntimeException("Bad switch case in State#validateUser");
@@ -120,7 +132,7 @@ public class State implements Parcelable {
             throw new RuntimeException("Required state fields not yet set. Terminating app");
     }
 
-    private boolean checkNull(String field) {
+    private boolean isPopulated(String field) {
         return field != null && !field.isEmpty();
     }
 }

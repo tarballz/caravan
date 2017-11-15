@@ -24,8 +24,6 @@ public class FindPartyActivity extends AppCompatActivity {
 
         state = new State(this);
         dynamoDB = new DynamoDB(this);
-
-        state.validateFields(State.Validate.USER);
     }
 
     public void onClickFindParty(View view) {
@@ -38,10 +36,5 @@ public class FindPartyActivity extends AppCompatActivity {
             state.party = partyName;
             state.nextActivity(this, PartyMenuActivity.class);
         }
-    }
-
-    private boolean isReal(String potentialParty) {
-        // TODO: search DynamoDB for party name,
-        return true;
     }
 }
