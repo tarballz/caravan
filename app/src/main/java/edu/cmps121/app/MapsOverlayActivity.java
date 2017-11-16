@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.content.res.Resources;
@@ -43,6 +44,10 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     private List<String> cars;
     private List<String> drivers;
     private List<String> colors;
+    private double prevLat;
+    private double prevLon;
+    private double nextLat;
+    private double nextLon;
 
     private static final String TAG = MapsOverlayActivity.class.getSimpleName();
 
@@ -203,29 +208,50 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void moveIcons() {
-//        Iterator it = markers.entrySet().iterator();
-//        for (Map.Entry e = (Map.Entry) it.next(); it.hasNext(); e = (Map.Entry) it.next()) {
-//            Runnable runnable = new Runnable() {
-//                @Override
-//                public void run() {
-//                    boolean blah = false;
-//
-//                    while (true) {
-//                        try {
-//                            Thread.sleep(5000);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                        if (!blah)
-//                            e.getValue().setCameraPosition(new LatLng(-34, 151));
-//                        else
-//                            e.getValue().setCameraPosition(new LatLng(-34, 150));
-//                    }
-//                }
-//            };
-//
+        for (String key : markers.keySet()) {
+            Runnable runnable = () -> threadMovement(key);
+
+            Handler handler = new Handler();
+
 //            Thread thread = new Thread(runnable);
 //            thread.start();
-//        }
+            for (int i = 0; i < 10; ++i)
+                handler.postDelayed(runnable, 1000 + i * 100);
+        }
+    }
+
+    private void threadMovement(String key) {
+        Marker marker = markers.get(key);
+        int count = 20;
+        while (count > 0) {
+            try {
+                Thread.sleep(1000);
+
+                prevLat = marker.getPosition().latitude;
+                prevLon = marker.getPosition().longitude;
+
+                nextLat = prevLat + .001;
+                nextLon = prevLon + .005;
+
+                marker.setPosition(new LatLng(nextLat, nextLon));
+                marker.setRotation(getRotation());
+
+                count--;
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
+    private float getRotation() {
+        double prevLatRad = Math.toRadians(prevLat);
+        double nextLatRad = Math.toRadians(nextLat);
+        double lonDiff = Math.toRadians(nextLon - prevLon);
+
+        double y = Math.sin(lonDiff) * Math.cos(nextLatRad);
+        double x = Math.cos(prevLatRad) * Math.sin(nextLatRad) -
+                Math.sin(prevLatRad) * Math.cos(nextLatRad) * Math.cos(lonDiff);
+
+        return (float) (Math.toDegrees(Math.atan2(y, x)) + 360) % 360;
     }
 }
