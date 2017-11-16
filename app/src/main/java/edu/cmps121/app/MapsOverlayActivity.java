@@ -6,7 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.content.res.Resources;
@@ -52,6 +54,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     private double startingLat;
     private double startingLon;
     private double RADIUS = .05;
+    private boolean quadIorIV;
 
     private static final String TAG = MapsOverlayActivity.class.getSimpleName();
 
@@ -72,6 +75,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         mapFragment.getMapAsync(this);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
@@ -89,7 +93,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
 
         if (isValidString(userItem.getCar()))
             // TODO: get the driver of the car's gps coordinates
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(-34, 151)));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(0, 0)));
         else {
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -121,6 +125,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void setIcons() {
         List<Map<String, AttributeValue>> carsTable = dynamoDB.queryTableByParty("cars", state.party);
 
@@ -150,6 +155,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
             shortToast(this, "Create a car to view its location on the map");
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void spawnMarkers() {
         List<Map<String, AttributeValue>> usersTable = dynamoDB.queryTableByParty("users", state.party);
 
@@ -167,17 +173,18 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
             markers.put(
                     cars.get(i),
                     googleMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(-34, 151.0 + i / 10.0))
+                            .position(new LatLng(0, i / 10.0 + RADIUS))
                             .title(carName)
                             .snippet(snippet)
                             .icon(BitmapDescriptorFactory.fromBitmap(smallCar)))
             );
 
             // TODO: Remove me. Only for use in demo
-            startingPositions.put(cars.get(i), new LatLng(-34, 151.0 + (i / 10.0) - RADIUS));
+            startingPositions.put(cars.get(i), new LatLng(0, (i / 10.0)));
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private String createSnippet(List<Map<String, AttributeValue>> usersTable,
                                  String currentCar,
                                  String currentDriver) {
@@ -223,8 +230,9 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
 
                 Handler handler = new Handler();
 
-                handler.postDelayed(runnable, 1000 + count++ * 1000);
+                handler.postDelayed(runnable, 1000 + count * 1000);
             }
+            count++;
         }
     }
 
@@ -245,20 +253,26 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void findNextLat() {
-        if (prevLat > startingLat && prevLon > startingLon) // Quadrant I
+        if (prevLat > startingLat && prevLon > startingLon ||          // Quadrant I
+                prevLat <= startingLat && prevLon >= startingLon) {    // Quadrant IV
             nextLat = prevLat + .01;
-        else if (prevLat <= startingLat && prevLon >= startingLon) // Quadrant IV
+            quadIorIV = true;
+        } else if (prevLat >= startingLat && prevLon <= startingLon || // Quadrant II
+                prevLat < startingLat && prevLon < startingLon) {      // Quadrant III
             nextLat = prevLat - .01;
-        else if (prevLat < startingLat && prevLon < startingLon) // Quadrant III
-            nextLat = prevLat - .01;
-        else if (prevLat >= startingLat && prevLon <= startingLon) // Quadrant II
-            nextLat = prevLat - .01;
-        findNextLon();
-
+            quadIorIV = false;
+        }
     }
 
     private void findNextLon() {
-        nextLon = prevLon + (Math.sqrt(Math.pow(RADIUS, 2) - Math.pow(nextLat, 2)) - startingLon);
+        double lon = (quadIorIV)
+                ? (Math.sqrt(Math.pow(RADIUS, 2) - Math.pow((nextLat - startingLat), 2)) + startingLon)
+                : -(Math.sqrt(Math.pow(RADIUS, 2) - Math.pow((nextLat - startingLat), 2)) + startingLon);
+
+        if (Double.isNaN(lon))
+            nextLon = startingLon;
+        else
+            nextLon = lon;
     }
 
     private float getRotation() {
@@ -270,6 +284,6 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         double x = Math.cos(prevLatRad) * Math.sin(nextLatRad) -
                 Math.sin(prevLatRad) * Math.cos(nextLatRad) * Math.cos(lonDiff);
 
-        return (float) (Math.toDegrees(Math.atan2(y, x)) + 360) % 360;
+        return (float) -((Math.toDegrees(Math.atan2(y, x)) + 360) % 360);
     }
 }
