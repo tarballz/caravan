@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import edu.cmps121.app.api.DynamoDB;
 import edu.cmps121.app.api.State;
+import edu.cmps121.app.model.User;
 
 public class FindCarActivity extends AppCompatActivity {
     private State state;
@@ -42,6 +43,13 @@ public class FindCarActivity extends AppCompatActivity {
 
         carList.setOnItemClickListener((parent, v, position, id) -> {
             state.car = (String) parent.getItemAtPosition(position);
+
+            dynamoDB.updateItem(User.class, state.user, (obj) -> {
+                User user = (User) obj;
+                user.setCar(state.car);
+                dynamoDB.saveItem(user);
+            });
+
             state.nextActivity(parent.getContext(), PartyMenuActivity.class);
         });
     }

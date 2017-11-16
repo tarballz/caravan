@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import edu.cmps121.app.api.DynamoDB;
 import edu.cmps121.app.api.State;
 import edu.cmps121.app.model.Car;
+import edu.cmps121.app.model.User;
 
 import static edu.cmps121.app.api.CaravanUtils.isValidString;
 import static edu.cmps121.app.api.CaravanUtils.shortToast;
@@ -134,6 +135,13 @@ public class CreateCarActivity extends AppCompatActivity {
             state.car = carName;
 
             dynamoDB.saveItem(car);
+            dynamoDB.updateItem(User.class, state.user, (obj) -> {
+                User user = (User) obj;
+                user.setCar(carName);
+
+                dynamoDB.saveItem(user);
+            });
+
             state.nextActivity(this, PartyMenuActivity.class);
         }
     }

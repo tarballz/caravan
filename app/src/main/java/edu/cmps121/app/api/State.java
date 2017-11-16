@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import edu.cmps121.app.MainActivity;
 
+import static edu.cmps121.app.api.CaravanUtils.isValidString;
+
 /**
  * To be instantiated upon application start up. For sharing the user's key data between activities
  */
@@ -104,25 +106,25 @@ public class State implements Parcelable {
 
         switch (set) {
             case USER:
-                valid = isPopulated(user);
+                valid = isValidString(user);
                 break;
             case CAR:
-                valid = isPopulated(car);
+                valid = isValidString(car);
                 break;
             case PARTY:
-                valid = isPopulated(party);
+                valid = isValidString(party);
                 break;
             case USER_CAR:
-                valid = isPopulated(user) && isPopulated(car);
+                valid = isValidString(user) && isValidString(car);
                 break;
             case USER_PARTY:
-                valid = isPopulated(user) && isPopulated(party);
+                valid = isValidString(user) && isValidString(party);
                 break;
             case CAR_PARTY:
-                valid = isPopulated(car) && isPopulated(party);
+                valid = isValidString(car) && isValidString(party);
                 break;
             case USER_CAR_PARTY:
-                valid = isPopulated(user) && isPopulated(car) && isPopulated(party);
+                valid = isValidString(user) && isValidString(car) && isValidString(party);
                 break;
             default:
                 throw new RuntimeException("Bad switch case in State#validateUser");
@@ -130,10 +132,6 @@ public class State implements Parcelable {
 
         if (!valid)
             throw new RuntimeException("Required state fields not yet set. Terminating app");
-    }
-
-    private boolean isPopulated(String field) {
-        return field != null && !field.isEmpty();
     }
 }
 

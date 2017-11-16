@@ -32,6 +32,7 @@ import edu.cmps121.app.api.DynamoDB;
 import edu.cmps121.app.api.State;
 import edu.cmps121.app.model.User;
 
+import static edu.cmps121.app.api.CaravanUtils.isValidString;
 import static edu.cmps121.app.api.CaravanUtils.shortToast;
 
 public class MapsOverlayActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -76,7 +77,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         if (userItem == null)
             throw new RuntimeException("User does not exist in DB. Critical Failure");
 
-        if (userItem.getCar() != null && !userItem.getCar().isEmpty())
+        if (isValidString(userItem.getCar()))
             // TODO: get the driver of the car's gps coordinates
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(-34, 151)));
         else {
@@ -133,7 +134,10 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         if (cars.size() != drivers.size() || cars.size() != colors.size())
             throw new RuntimeException("Error in our DynamoDB cars table. |drivers| != |cars| != |colors|");
 
-        spawnMarkers();
+        if (cars.size() > 0)
+            spawnMarkers();
+        else
+            shortToast(this, "Create a car to view its location on the map");
     }
 
     private void spawnMarkers() {
@@ -153,7 +157,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
             markers.put(
                     cars.get(i),
                     googleMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(-34, 150 + i / 10))
+                            .position(new LatLng(-34, 151.0 + i / 10.0))
                             .title(carName)
                             .snippet(snippet)
                             .icon(BitmapDescriptorFactory.fromBitmap(smallCar)))
@@ -167,7 +171,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         String snippet = "Driver: " + currentDriver + "\n Occupants: ";
 
         List<String> occupants = usersTable.stream()
-                .filter(e -> e.get("car").getS().equals(currentCar))
+                .filter(e -> isOccupant(e, currentCar))
                 .map(e -> e.get("user").getS())
                 .collect(Collectors.toList());
 
@@ -175,6 +179,12 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
             snippet += occupant + "\n";
 
         return snippet;
+    }
+
+    private boolean isOccupant(Map<String, AttributeValue> item, String currentCar) {
+        AttributeValue carItem = item.get("car");
+
+        return carItem != null && isValidString(carItem.getS()) && carItem.getS().equals(currentCar);
     }
 
     private int getCarColor(String color) {
