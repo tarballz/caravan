@@ -124,8 +124,8 @@ public class MainActivity extends AppCompatActivity {
         if (!userItem.getPassword().equals(user.getPassword()))
             return AccountStatus.NO_MATCH_PASS_USER;
 
-        state.user = userItem.getUser();
-        state.car = userItem.getCar();
+        state.user  = userItem.getUser();
+        state.car   = userItem.getCar();
         state.party = userItem.getParty();
 
         return AccountStatus.ACCOUNT_EXISTS;

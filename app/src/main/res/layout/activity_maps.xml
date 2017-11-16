@@ -1,100 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/darker_gray"
-    tools:layout_editor_absoluteY="81dp"
-    tools:layout_editor_absoluteX="0dp">
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="81dp">
 
-    <Button
-        android:id="@+id/emergency_b"
-        android:layout_width="0dp"
-        android:layout_height="85dp"
-        android:text="@string/emergency"
-        android:background="@android:color/holo_red_dark"
-        android:onClick="notifyEmergency"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        app:layout_constraintRight_toRightOf="@+id/gas_b"
-        android:layout_marginTop="57dp"
-        app:layout_constraintTop_toBottomOf="@+id/gas_b"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="@+id/gas_b" />
+    <!--<Button-->
+    <!--android:id="@+id/emergency_b"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="85dp"-->
+    <!--android:background="@android:color/holo_red_dark"-->
+    <!--android:onClick="notifyEmergency"-->
+    <!--android:text="@string/emergency"-->
+    <!--tools:layout_constraintLeft_creator="1"-->
+    <!--tools:layout_constraintRight_creator="1"-->
+    <!--tools:layout_constraintTop_creator="1"-->
+    <!--tools:layout_editor_absoluteX="133dp"-->
+    <!--tools:layout_editor_absoluteY="283dp" />-->
 
     <Button
         android:id="@+id/rest_b"
-        android:layout_width="95dp"
-        android:layout_height="85dp"
-        android:layout_marginStart="66dp"
-        android:text="@string/rest"
+        android:layout_width="92dp"
+        android:layout_height="37dp"
+        android:layout_marginEnd="16dp"
         android:background="@android:color/holo_purple"
         android:onClick="notifyRest"
-        app:layout_constraintBaseline_toBaselineOf="@+id/emergency_b"
+        android:text="@string/rest"
+        app:layout_constraintBaseline_toBaselineOf="@+id/gas_b"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:layout_constraintBaseline_creator="1"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        tools:layout_constraintLeft_creator="1" />
 
     <Button
         android:id="@+id/gas_b"
-        android:layout_width="100dp"
-        android:layout_height="87dp"
-        android:text="@string/gas"
+        android:layout_width="92dp"
+        android:layout_height="37dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginTop="16dp"
         android:background="@android:color/holo_blue_bright"
         android:onClick="notifyGas"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        android:layout_marginEnd="70dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="82dp"
+        android:text="@string/gas"
+        app:layout_constraintEnd_toStartOf="@+id/rest_b"
+        app:layout_constraintHorizontal_bias="0.791"
+        app:layout_constraintStart_toEndOf="@+id/food_b"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginRight="70dp" />
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
 
     <Button
         android:id="@+id/food_b"
-        android:layout_width="0dp"
-        android:layout_height="85dp"
-        android:text="@string/food"
+        android:layout_width="92dp"
+        android:layout_height="37dp"
+        android:layout_marginStart="16dp"
         android:background="@android:color/holo_green_light"
         android:onClick="notifyFood"
-        tools:layout_constraintRight_creator="1"
-        app:layout_constraintRight_toRightOf="@+id/rest_b"
+        android:text="@string/food"
         app:layout_constraintBaseline_toBaselineOf="@+id/gas_b"
+        app:layout_constraintStart_toStartOf="parent"
         tools:layout_constraintBaseline_creator="1"
         tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="@+id/rest_b" />
+        tools:layout_constraintRight_creator="1" />
 
     <Button
         android:id="@+id/maps_menu_b"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:text="@string/go_to_google_maps"
-        android:layout_marginStart="70dp"
+        android:layout_marginBottom="76dp"
         android:layout_marginEnd="70dp"
+        android:layout_marginStart="70dp"
         android:background="@android:color/holo_orange_light"
         android:onClick="mapsRedirect"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
+        android:text="@string/go_to_google_maps"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
-        android:layout_marginBottom="76dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        tools:layout_constraintRight_creator="1" />
 
     <Button
         android:id="@+id/live_maps_b"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Live Maps"
-        android:onClick="mapsPage"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintLeft_creator="1"
         android:layout_marginBottom="18dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        android:onClick="mapsPage"
+        android:text="Live Maps"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1" />
+
+    <ListView
+        android:id="@+id/nearbyFoodLV"
+        android:layout_width="122dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="8dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/maps_menu_b"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/food_b"
+        app:layout_constraintVertical_bias="0.214" />
+
+    <ListView
+        android:id="@+id/nearbyGasLV"
+        android:layout_width="122dp"
+        android:layout_height="300dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/maps_menu_b"
+        app:layout_constraintEnd_toStartOf="@+id/nearbyRestLV"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/nearbyFoodLV"
+        app:layout_constraintTop_toBottomOf="@+id/gas_b"
+        app:layout_constraintVertical_bias="0.214" />
+
+    <ListView
+        android:id="@+id/nearbyRestLV"
+        android:layout_width="122dp"
+        android:layout_height="300dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginTop="8dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/maps_menu_b"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rest_b"
+        app:layout_constraintVertical_bias="0.214" />
 
 </android.support.constraint.ConstraintLayout>
