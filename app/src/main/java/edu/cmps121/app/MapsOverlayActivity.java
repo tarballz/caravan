@@ -41,6 +41,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     private DynamoDB dynamoDB;
     private GoogleMap googleMap;
     private HashMap<String, Marker> markers;
+    private HashMap<String, LatLng> startingPositions;
     private List<String> cars;
     private List<String> drivers;
     private List<String> colors;
@@ -48,6 +49,9 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     private double prevLon;
     private double nextLat;
     private double nextLon;
+    private double startingLat;
+    private double startingLon;
+    private double RADIUS = .05;
 
     private static final String TAG = MapsOverlayActivity.class.getSimpleName();
 
@@ -60,6 +64,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         dynamoDB = new DynamoDB(this);
 
         markers = new HashMap<>();
+        startingPositions = new HashMap<>();
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager()
@@ -167,6 +172,9 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
                             .snippet(snippet)
                             .icon(BitmapDescriptorFactory.fromBitmap(smallCar)))
             );
+
+            // TODO: Remove me. Only for use in demo
+            startingPositions.put(cars.get(i), new LatLng(-34, 151.0 + (i / 10.0) - RADIUS));
         }
     }
 
@@ -208,39 +216,49 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void moveIcons() {
-        for (String key : markers.keySet()) {
-            Runnable runnable = () -> threadMovement(key);
+        int count = 0;
+        while (count < 60) {
+            for (String key : markers.keySet()) {
+                Runnable runnable = () -> threadMovement(key);
 
-            Handler handler = new Handler();
+                Handler handler = new Handler();
 
-//            Thread thread = new Thread(runnable);
-//            thread.start();
-            for (int i = 0; i < 10; ++i)
-                handler.postDelayed(runnable, 1000 + i * 100);
+                handler.postDelayed(runnable, 1000 + count++ * 1000);
+            }
         }
     }
 
     private void threadMovement(String key) {
         Marker marker = markers.get(key);
-        int count = 20;
-        while (count > 0) {
-            try {
-                Thread.sleep(1000);
+        startingLat = startingPositions.get(key).latitude;
+        startingLon = startingPositions.get(key).longitude;
 
-                prevLat = marker.getPosition().latitude;
-                prevLon = marker.getPosition().longitude;
+        prevLat = marker.getPosition().latitude;
+        prevLon = marker.getPosition().longitude;
 
-                nextLat = prevLat + .001;
-                nextLon = prevLon + .005;
+        findNextLat();
+        findNextLon();
 
-                marker.setPosition(new LatLng(nextLat, nextLon));
-                marker.setRotation(getRotation());
+        marker.setPosition(new LatLng(nextLat, nextLon));
+        marker.setRotation(getRotation());
 
-                count--;
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
+    }
+
+    private void findNextLat() {
+        if (prevLat > startingLat && prevLon > startingLon) // Quadrant I
+            nextLat = prevLat + .01;
+        else if (prevLat <= startingLat && prevLon >= startingLon) // Quadrant IV
+            nextLat = prevLat - .01;
+        else if (prevLat < startingLat && prevLon < startingLon) // Quadrant III
+            nextLat = prevLat - .01;
+        else if (prevLat >= startingLat && prevLon <= startingLon) // Quadrant II
+            nextLat = prevLat - .01;
+        findNextLon();
+
+    }
+
+    private void findNextLon() {
+        nextLon = prevLon + (Math.sqrt(Math.pow(RADIUS, 2) - Math.pow(nextLat, 2)) - startingLon);
     }
 
     private float getRotation() {
