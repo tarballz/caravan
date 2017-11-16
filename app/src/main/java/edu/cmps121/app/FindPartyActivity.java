@@ -34,6 +34,7 @@ public class FindPartyActivity extends AppCompatActivity {
             shortToast(this, "Unable to find the party: " + partyName);
         else {
             state.party = partyName;
+            dynamoDB.updateUserParty(state.user, partyName);
             state.nextActivity(this, PartyMenuActivity.class);
         }
     }

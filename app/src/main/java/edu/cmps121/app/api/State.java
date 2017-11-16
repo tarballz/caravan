@@ -88,7 +88,7 @@ public class State implements Parcelable {
             case "FindCarActivity":
             case "CreateCarActivity":
             case "MapsActivity":
-            case "MapsActivityRaw":
+            case "MapsOverlayActivity":
                 validateFields(Validate.USER_PARTY);
                 break;
             case "MainActivity":

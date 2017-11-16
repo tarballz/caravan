@@ -36,7 +36,7 @@ public class FindCarActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
-                getCarsItems()
+                getCarsWithDrivers()
         );
         carList.setAdapter(adapter);
 
@@ -46,11 +46,10 @@ public class FindCarActivity extends AppCompatActivity {
         });
     }
 
-    private ArrayList<String> getCarsItems() {
+    private ArrayList<String> getCarsWithDrivers() {
         List<Map<String, AttributeValue>> itemList = dynamoDB.queryTableByParty("cars", state.party);
 
         return new ArrayList<>(itemList.stream()
-//                .filter(e -> e.get("party").getS().equals(state.party))
                 .map(e -> e.get("driver").getS() + "'s " + e.get("car").getS())
                 .collect(Collectors.toList()));
     }

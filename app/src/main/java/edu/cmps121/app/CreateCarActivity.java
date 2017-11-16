@@ -19,6 +19,7 @@ import edu.cmps121.app.api.DynamoDB;
 import edu.cmps121.app.api.State;
 import edu.cmps121.app.model.Car;
 
+import static edu.cmps121.app.api.CaravanUtils.isValidString;
 import static edu.cmps121.app.api.CaravanUtils.shortToast;
 
 public class CreateCarActivity extends AppCompatActivity {
@@ -42,8 +43,8 @@ public class CreateCarActivity extends AppCompatActivity {
 
     private void initializeColorSpinner() {
         Spinner colorSpinner = (Spinner) findViewById(R.id.select_color_sp);
-
         ArrayList<String> colors = new ArrayList<>();
+
         colors.add("cyan");
         colors.add("yellow");
         colors.add("red");
@@ -74,7 +75,7 @@ public class CreateCarActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
-                getDriverItem()
+                getDrivers()
         );
         carSpinner.setAdapter(adapter);
 
@@ -90,7 +91,7 @@ public class CreateCarActivity extends AppCompatActivity {
         });
     }
 
-    private ArrayList<String> getDriverItem() {
+    private ArrayList<String> getDrivers() {
         List<Map<String, AttributeValue>> driversItem = dynamoDB.queryTableByParty("cars", state.party);
         List<Map<String, AttributeValue>> usersItems = dynamoDB.queryTableByParty("users", state.party);
 
@@ -107,25 +108,33 @@ public class CreateCarActivity extends AppCompatActivity {
     public void onClickCreateCar(View view) {
         EditText editText = (EditText) findViewById(R.id.enter_create_car_name_et);
         carName = editText.getText().toString();
-
-        if (!carName.isEmpty() && driver != null && color != null) {
-            Car car = new Car();
-            car.setCar(carName);
-
-            if (!dynamoDB.itemExists(Car.class, carName)) {
-                state.car = car.getCar();
-                dynamoDB.saveItem(car);
-                state.nextActivity(this, PartyMenuActivity.class);
-            } else
-                // TODO: make sure this checks only current party
-                shortToast(this, carName + " has already been taken");
-        } else {
+        if (isValidString(carName) && isValidString(driver) && isValidString(color))
+            saveCar();
+        else
             shortToast(this,
-                    (carName.isEmpty()? "Name of car, " : "") +
-                            (color == null ? "Color, " : "") +
-                            (driver == null ? "Driver, " : "") +
+                    (isValidString(carName)? "Name of car, " : "") +
+                            (isValidString(color)? "Color, " : "") +
+                            (isValidString(driver)? "Driver, " : "") +
                             "cannot be left empty"
             );
+    }
+
+    private void saveCar() {
+        Car car = (Car) dynamoDB.getItem(Car.class, carName);
+
+        if (car != null && car.getParty().equals(state.party))
+            shortToast(this, carName + " has already been taken");
+        else {
+            car = new Car();
+            car.setDriver(driver);
+            car.setParty(state.party);
+            car.setCar(carName);
+            car.setColor(color);
+
+            state.car = carName;
+
+            dynamoDB.saveItem(car);
+            state.nextActivity(this, PartyMenuActivity.class);
         }
     }
 }

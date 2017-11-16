@@ -12,12 +12,7 @@ public class CaravanUtils {
         ).show();
     }
 
-    public static String strAppend(String inStr, String appStr) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        stringBuilder.append(inStr);
-        stringBuilder.append(appStr);
-
-        return stringBuilder.toString();
+    public static boolean isValidString(String str) {
+        return str != null && !str.isEmpty();
     }
 }
