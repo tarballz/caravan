@@ -18,6 +18,8 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,7 +31,7 @@ public class MapsActivityRaw extends AppCompatActivity implements OnMapReadyCall
     State state;
     DynamoDB dynamoDB;
     GoogleMap googleMap;
-    Map<String, Marker> markers;
+    HashMap<String, Marker> markers;
 
     private static final String TAG = MapsActivityRaw.class.getSimpleName();
 
@@ -40,6 +42,8 @@ public class MapsActivityRaw extends AppCompatActivity implements OnMapReadyCall
 
         state = new State(this);
         dynamoDB = new DynamoDB(this);
+
+        markers = new HashMap<>();
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager()
@@ -53,29 +57,7 @@ public class MapsActivityRaw extends AppCompatActivity implements OnMapReadyCall
         setStyle();
         setPosition();
         setIcons();
-
-//        // TODO: fix this. Make it stop after 20 seconds of alternating
-//        Runnable runnable = new Runnable() {
-//            @Override
-//            public void run() {
-//                boolean blah = false;
-//
-//                while (true) {
-//                    try {
-//                        Thread.sleep(5000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    if (!blah)
-//                        marker.setPosition(new LatLng(-34, 151));
-//                    else
-//                        marker.setPosition(new LatLng(-34, 150));
-//                }
-//            }
-//        };
-//
-//        Thread thread = new Thread(runnable);
-//        thread.start();
+        moveIcons();
     }
 
     private void setPosition() {
@@ -85,15 +67,12 @@ public class MapsActivityRaw extends AppCompatActivity implements OnMapReadyCall
 
     private void setStyle() {
         try {
-            // Customise the styling of the base map using a JSON object defined
-            // in a raw resource file.
             boolean success = googleMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
                             this, R.raw.style_json));
 
-            if (!success) {
+            if (!success)
                 Log.e(TAG, "Style parsing failed.");
-            }
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can't find style. Error: ", e);
         }
@@ -103,32 +82,37 @@ public class MapsActivityRaw extends AppCompatActivity implements OnMapReadyCall
         List<Map<String, AttributeValue>> itemList = dynamoDB.queryTableByParty("cars", state.party);
 
         List<String> cars = itemList.stream()
-//                .filter(e -> e.get("party").getS().equals(state.party))
                 .map(e -> e.get("car").getS())
                 .collect(Collectors.toList());
 
         List<String> drivers = itemList.stream()
-//                .filter(e -> e.get("party").getS().equals(state.party))
                 .map(e -> e.get("driver").getS())
                 .collect(Collectors.toList());
 
-        // TODO: implement this
-        List<String> positions = itemList.stream()
-//                .filter(e -> e.get("party").getS().equals(state.party))
-                .map(e -> e.get("position").getS())
-                .collect(Collectors.toList());
-
-        // TODO: implement me
-        List<String> colors = itemList.stream()
-//                .filter(e -> e.get("party").getS().equals(state.party))
-                .map(e -> e.get("color").getS())
-                .collect(Collectors.toList());
+//        // TODO: implement this
+//        List<String> positions = itemList.stream()
+//                .map(e -> e.get("position").getS())
+//                .collect(Collectors.toList());
+//
+//        // TODO: implement me
+//        List<String> colors = itemList.stream()
+//                .map(e -> e.get("color").getS())
+//                .collect(Collectors.toList());
 
         if (cars.size() != drivers.size())
             throw new RuntimeException("Error in our DynamoDB cars table. |drivers| != |cars|");
 
         for (int i = 0; i < cars.size(); ++i) {
-            int color = getCarColor(colors.get(i));
+            int color;
+            //TODO: replace with color from cars table in DB
+            if (i % 4 == 0)
+                color =  getCarColor("cyan");
+            else if (i % 3 == 0)
+                color = getCarColor("red");
+            else if (i % 2 == 0)
+                color = getCarColor("yellow");
+            else
+                color = getCarColor("green");
 
             BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(color, null);
             Bitmap bitmap = bitmapDrawable.getBitmap();
@@ -159,5 +143,32 @@ public class MapsActivityRaw extends AppCompatActivity implements OnMapReadyCall
             default:
                 throw new RuntimeException("Error in car table. Invalid color");
         }
+    }
+
+    private void moveIcons() {
+//        Iterator it = markers.entrySet().iterator();
+//        for (Map.Entry e = (Map.Entry) it.next(); it.hasNext(); e = (Map.Entry) it.next()) {
+//            Runnable runnable = new Runnable() {
+//                @Override
+//                public void run() {
+//                    boolean blah = false;
+//
+//                    while (true) {
+//                        try {
+//                            Thread.sleep(5000);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                        if (!blah)
+//                            e.getValue().setPosition(new LatLng(-34, 151));
+//                        else
+//                            e.getValue().setPosition(new LatLng(-34, 150));
+//                    }
+//                }
+//            };
+//
+//            Thread thread = new Thread(runnable);
+//            thread.start();
+//        }
     }
 }

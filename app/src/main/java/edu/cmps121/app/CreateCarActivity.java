@@ -117,6 +117,7 @@ public class CreateCarActivity extends AppCompatActivity {
                 dynamoDB.saveItem(car);
                 state.nextActivity(this, PartyMenuActivity.class);
             } else
+                // TODO: make sure this checks only current party
                 shortToast(this, carName + " has already been taken");
         } else {
             shortToast(this,
