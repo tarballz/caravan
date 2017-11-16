@@ -54,7 +54,7 @@
             android:parentActivityName=".PartyOptionsActivity" />
         <activity android:name=".PartyMenuActivity" />
         <activity android:name=".CreateCarActivity" />
-        <activity android:name=".MapsActivityRaw" />
+        <activity android:name=".MapsOverlayActivity" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"

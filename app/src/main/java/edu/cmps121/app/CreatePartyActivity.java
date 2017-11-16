@@ -16,6 +16,7 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import edu.cmps121.app.api.DynamoDB;
 import edu.cmps121.app.api.State;
 import edu.cmps121.app.model.Party;
+import edu.cmps121.app.model.User;
 
 import static edu.cmps121.app.api.CaravanUtils.shortToast;
 
@@ -78,7 +79,13 @@ public class CreatePartyActivity extends AppCompatActivity {
             party.setLng(destination.getLatLng().longitude);
 
             dynamoDB.saveItem(party);
-            dynamoDB.updateUserParty(state.user, partyName);
+//            dynamoDB.updateUserParty(state.user, partyName);
+            dynamoDB.updateItem(User.class, state.user, (obj) -> {
+                User user = (User) obj;
+                user.setParty(partyName);
+
+                dynamoDB.saveItem(user);
+            });
 
             state.party = partyName;
         } catch (ResourceNotFoundException e) {

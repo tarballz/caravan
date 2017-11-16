@@ -109,10 +109,16 @@ public class DynamoDB {
         thread.start();
     }
 
-    public void updateUserParty(String username, String partyName) {
-        User userItem = (User) getItem(User.class, username);
-        userItem.setParty(partyName);
+//    public void updateUserParty(String username, String partyName) {
+//        User userItem = (User) getItem(User.class, username);
+//        userItem.setParty(partyName);
+//
+//        saveItem(userItem);
+//    }
 
-        saveItem(userItem);
+    public <T> void updateItem(Class<T> itemClass, String primaryKey, ItemUpdater updater) {
+        Object item = getItem(itemClass, primaryKey);
+
+        updater.update(item);
     }
 }

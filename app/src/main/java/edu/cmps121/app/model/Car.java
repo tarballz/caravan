@@ -9,6 +9,7 @@ public class Car {
     private String car;
     private String driver;
     private String party;
+    private String color;
     private double lat;
     private double lng;
 
@@ -41,9 +42,20 @@ public class Car {
 
     @DynamoDBAttribute(attributeName = "lat")
     public double getLat() { return lat;}
+
     public void setLat(double lat) { this.lat = lat; }
 
     @DynamoDBAttribute(attributeName = "lng")
     public double getLng() { return lng; }
+
     public void setLng(double lng) { this.lng = lng; }
+
+    @DynamoDBAttribute(attributeName = "color")
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 }

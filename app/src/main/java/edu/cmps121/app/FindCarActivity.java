@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import edu.cmps121.app.api.DynamoDB;
 import edu.cmps121.app.api.State;
+import edu.cmps121.app.model.User;
 
 public class FindCarActivity extends AppCompatActivity {
     private State state;
@@ -36,21 +37,27 @@ public class FindCarActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_list_item_1,
-                getCarsItems()
+                getCarsWithDrivers()
         );
         carList.setAdapter(adapter);
 
         carList.setOnItemClickListener((parent, v, position, id) -> {
             state.car = (String) parent.getItemAtPosition(position);
+
+            dynamoDB.updateItem(User.class, state.user, (obj) -> {
+                User user = (User) obj;
+                user.setCar(state.car);
+                dynamoDB.saveItem(user);
+            });
+
             state.nextActivity(parent.getContext(), PartyMenuActivity.class);
         });
     }
 
-    private ArrayList<String> getCarsItems() {
+    private ArrayList<String> getCarsWithDrivers() {
         List<Map<String, AttributeValue>> itemList = dynamoDB.queryTableByParty("cars", state.party);
 
         return new ArrayList<>(itemList.stream()
-//                .filter(e -> e.get("party").getS().equals(state.party))
                 .map(e -> e.get("driver").getS() + "'s " + e.get("car").getS())
                 .collect(Collectors.toList()));
     }

@@ -91,7 +91,7 @@ public class MapsActivity extends AppCompatActivity {
     }
 
     public void mapsPage(View view) {
-        state.nextActivity(this, MapsActivityRaw.class);
+        state.nextActivity(this, MapsOverlayActivity.class);
     }
 
 
