@@ -1,5 +1,7 @@
 package edu.cmps121.app;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -20,6 +22,7 @@ public class FindCarActivity extends AppCompatActivity {
     private State state;
     DynamoDB dynamoDB;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +34,7 @@ public class FindCarActivity extends AppCompatActivity {
         createCarListView();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void createCarListView() {
         ListView carList = (ListView) findViewById(R.id.car_list_lv);
 
@@ -54,6 +58,7 @@ public class FindCarActivity extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private ArrayList<String> getCarsWithDrivers() {
         List<Map<String, AttributeValue>> itemList = dynamoDB.queryTableByParty("cars", state.party);
 

@@ -66,8 +66,8 @@
 
     <Button
         android:id="@+id/maps_menu_b"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_width="213dp"
+        android:layout_height="41dp"
         android:layout_marginBottom="76dp"
         android:layout_marginEnd="70dp"
         android:layout_marginStart="70dp"
@@ -83,17 +83,21 @@
 
     <Button
         android:id="@+id/live_maps_b"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
-        android:onClick="mapsPage"
-        android:text="Live Maps"
+        android:layout_width="217dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="mapsActivity"
+        android:text="@string/live_maps"
+        android:background="@android:color/holo_red_dark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1" />
+        tools:layout_constraintRight_creator="1"
+        tools:layout_editor_absoluteY="447dp"
+        tools:layout_editor_absoluteX="82dp"
+        app:layout_constraintHorizontal_bias="0.502" />
 
     <ListView
         android:id="@+id/nearbyFoodLV"

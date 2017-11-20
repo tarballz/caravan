@@ -1,5 +1,7 @@
 package edu.cmps121.app;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -30,6 +32,7 @@ public class CreateCarActivity extends AppCompatActivity {
     private String carName;
     private String color;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +73,7 @@ public class CreateCarActivity extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void initializeDriverSpinner() {
         Spinner carSpinner = (Spinner) findViewById(R.id.select_driver_sp);
 
@@ -92,6 +96,7 @@ public class CreateCarActivity extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private ArrayList<String> getDrivers() {
         List<Map<String, AttributeValue>> driversItem = dynamoDB.queryTableByParty("cars", state.party);
         List<Map<String, AttributeValue>> usersItems = dynamoDB.queryTableByParty("users", state.party);
