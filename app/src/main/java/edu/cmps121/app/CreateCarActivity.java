@@ -11,6 +11,7 @@ import android.widget.Spinner;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -93,14 +94,14 @@ public class CreateCarActivity extends AppCompatActivity {
     }
 
     private ArrayList<String> getDrivers() {
-        List<Map<String, AttributeValue>> driversItem = dynamoDB.queryTableByParty("cars", state.party);
-        List<Map<String, AttributeValue>> usersItems = dynamoDB.queryTableByParty("users", state.party);
+        List<Map<String, AttributeValue>> driverItems = dynamoDB.queryTableByParty("cars", state.party);
+        List<Map<String, AttributeValue>> userItems = dynamoDB.queryTableByParty("users", state.party);
 
-        List<String> driversList = driversItem.stream()
+        List<String> driversList = driverItems.stream()
                 .map(e -> e.get("driver").getS())
                 .collect(Collectors.toList());
 
-        return new ArrayList<>(usersItems.stream()
+        return new ArrayList<>(userItems.stream()
                 .filter(e -> !driversList.contains(e.get("user").getS()))
                 .map(e -> e.get("user").getS())
                 .collect(Collectors.toList()));

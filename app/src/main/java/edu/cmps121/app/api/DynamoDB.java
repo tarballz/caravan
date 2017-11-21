@@ -1,5 +1,6 @@
 package edu.cmps121.app.api;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -29,8 +30,12 @@ public class DynamoDB {
     private static final String TAG = DynamoDB.class.getSimpleName();
 
     public DynamoDB(AppCompatActivity activity) {
+        new DynamoDB(activity.getApplicationContext());
+    }
+
+    public DynamoDB(Context context) {
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                activity.getApplicationContext(),
+                context,
                 "us-west-2:3d86ea2c-db71-4953-bc20-8eb77c931e43", // Identity pool ID
                 Regions.US_WEST_2
         );

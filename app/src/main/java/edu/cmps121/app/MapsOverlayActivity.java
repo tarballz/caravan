@@ -10,6 +10,8 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -31,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import edu.cmps121.app.api.ButtonFragment;
 import edu.cmps121.app.api.DynamoDB;
 import edu.cmps121.app.api.State;
 import edu.cmps121.app.model.User;
@@ -71,8 +74,24 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.map);
+                        .findFragmentById(R.id.map_fragment);
         mapFragment.getMapAsync(this);
+
+        createButtonFragment();
+    }
+
+    private void createButtonFragment() {
+        ButtonFragment buttonFragment = new ButtonFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("party", state.party);
+        buttonFragment.setArguments(bundle);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        fragmentTransaction.add(R.id.button_frame, buttonFragment, null);
+
+        fragmentTransaction.commit();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
