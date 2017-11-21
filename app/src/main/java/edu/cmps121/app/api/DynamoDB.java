@@ -42,7 +42,7 @@ public class DynamoDB {
 
     public DynamoDB(Context context) {
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                context,
+                context.getApplicationContext(),
                 "us-west-2:3d86ea2c-db71-4953-bc20-8eb77c931e43", // Identity pool ID
                 Regions.US_WEST_2
         );
