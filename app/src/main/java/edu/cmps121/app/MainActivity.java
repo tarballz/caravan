@@ -1,20 +1,29 @@
 package edu.cmps121.app;
 
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import edu.cmps121.app.api.DynamoDB;
 import edu.cmps121.app.api.State;
 import edu.cmps121.app.model.User;
 
+import static edu.cmps121.app.api.CaravanUtils.isValidString;
 import static edu.cmps121.app.api.CaravanUtils.shortToast;
-
-// TODO: possibly override onBackPress() to also pass state when the back button is used
+import static edu.cmps121.app.api.CaravanUtils.startDriverService;
 
 public class MainActivity extends AppCompatActivity {
     private State state;
@@ -27,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private int MAX_PASS_LEN = 16;
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final int TAG_CODE_PERMISSION_LOCATION = 123;
 
     public enum AccountStatus {
         ACCOUNT_AVAILABLE, ACCOUNT_EXISTS, IMPROPER_USER, IMPROPER_PASS, NO_MATCH_PASS_USER;
@@ -36,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        requestPermissions();
 
         state = new State(this);
         dynamoDb = new DynamoDB(this);
@@ -67,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
                 shortToast(this, "Username incorrect");
                 break;
             case ACCOUNT_EXISTS:
+                trackDrivers();
                 state.nextActivity(this, PartyOptionsActivity.class);
                 break;
             case NO_MATCH_PASS_USER:
@@ -78,9 +91,24 @@ public class MainActivity extends AppCompatActivity {
             case IMPROPER_PASS:
                 shortToast(this, "Password must be 5 and 16 characters long");
                 break;
-             default:
+            default:
                 throw new RuntimeException("Bad switch case in MainActivity#onClickLogin");
         }
+    }
+
+    private void trackDrivers() {
+        if (!isValidString(state.party) || !isValidString(state.car) || !isValidString(state.user))
+            return;
+
+        List<Map<String, AttributeValue>> carItems = dynamoDb.queryTableByParty("cars", state.party);
+
+        Optional<String> driver = carItems.stream()
+                .filter(e -> isValidString(e.get("driver").getS()))
+                .filter(e -> e.get("driver").getS().equals(state.user))
+                .map(e -> e.get("car").getS())
+                .findFirst();
+
+        driver.ifPresent(s -> startDriverService(s, this));
     }
 
     private AccountStatus validateInfo() {
@@ -129,5 +157,18 @@ public class MainActivity extends AppCompatActivity {
         state.party = userItem.getParty();
 
         return AccountStatus.ACCOUNT_EXISTS;
+    }
+
+    private void requestPermissions() {
+        if (!(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED) &&
+                !(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                        PackageManager.PERMISSION_GRANTED))
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[] {
+                            android.Manifest.permission.ACCESS_FINE_LOCATION,
+                            android.Manifest.permission.ACCESS_COARSE_LOCATION },
+                    TAG_CODE_PERMISSION_LOCATION);
     }
 }

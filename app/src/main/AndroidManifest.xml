@@ -56,7 +56,12 @@
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".FindCarActivity"></activity>
+        <activity android:name=".FindCarActivity" />
+
+        <service
+            android:name=".api.DriverService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

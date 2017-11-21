@@ -1,5 +1,7 @@
 package edu.cmps121.app.api;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
@@ -14,5 +16,11 @@ public class CaravanUtils {
 
     public static boolean isValidString(String str) {
         return str != null && !str.isEmpty();
+    }
+
+    public static void startDriverService(String car, Context context) {
+        Intent serviceIntent = new Intent(context, DriverService.class);
+        serviceIntent.putExtra("car", car);
+        context.startService(serviceIntent);
     }
 }

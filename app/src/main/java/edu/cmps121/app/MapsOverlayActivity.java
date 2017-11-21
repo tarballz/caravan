@@ -1,5 +1,6 @@
 package edu.cmps121.app;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -29,6 +30,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
 import edu.cmps121.app.api.DynamoDB;
@@ -55,7 +57,9 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     private double startingLon;
     private double RADIUS = .05;
     private boolean quadIorIV;
+    private LocationManager locationManager;
 
+    private static final int REQUEST_CODE_ASK_PERMISSIONS = 123;
     private static final String TAG = MapsOverlayActivity.class.getSimpleName();
 
     @Override
@@ -79,6 +83,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
+
         setStyle();
         setCameraPosition();
         setIcons();
@@ -92,23 +97,11 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
             throw new RuntimeException("User does not exist in DB. Critical Failure");
 
         if (isValidString(userItem.getCar()))
-            // TODO: get the driver of the car's gps coordinates
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(0, 0)));
         else {
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                shortToast(this, "Please turn on GPS");
-                return;
-            }
-
-            Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
+            // TODO: re-implement me
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(
-                    new LatLng(locationGPS.getLatitude(), locationGPS.getLongitude())));
+                    new LatLng(0, 0)));
         }
     }
 

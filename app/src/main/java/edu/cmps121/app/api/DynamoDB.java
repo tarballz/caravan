@@ -1,5 +1,6 @@
 package edu.cmps121.app.api;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -18,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
-import edu.cmps121.app.model.User;
-
 public class DynamoDB {
     private DynamoDBMapper mapper;
     private AmazonDynamoDBClient client;
@@ -31,6 +30,19 @@ public class DynamoDB {
     public DynamoDB(AppCompatActivity activity) {
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
                 activity.getApplicationContext(),
+                "us-west-2:3d86ea2c-db71-4953-bc20-8eb77c931e43", // Identity pool ID
+                Regions.US_WEST_2
+        );
+
+        client = new AmazonDynamoDBClient(credentialsProvider);
+        client.setRegion(Region.getRegion(Regions.US_WEST_2));
+
+        mapper = new DynamoDBMapper(client);
+    }
+
+    public DynamoDB(Context context) {
+        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                context,
                 "us-west-2:3d86ea2c-db71-4953-bc20-8eb77c931e43", // Identity pool ID
                 Regions.US_WEST_2
         );
