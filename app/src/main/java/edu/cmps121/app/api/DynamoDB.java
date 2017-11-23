@@ -30,7 +30,17 @@ public class DynamoDB {
     private static final String TAG = DynamoDB.class.getSimpleName();
 
     public DynamoDB(AppCompatActivity activity) {
-        new DynamoDB(activity.getApplicationContext());
+//        new DynamoDB(activity.getApplicationContext());
+        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                activity.getApplicationContext(),
+                "us-west-2:3d86ea2c-db71-4953-bc20-8eb77c931e43", // Identity pool ID
+                Regions.US_WEST_2
+        );
+
+        client = new AmazonDynamoDBClient(credentialsProvider);
+        client.setRegion(Region.getRegion(Regions.US_WEST_2));
+
+        mapper = new DynamoDBMapper(client);
     }
 
     public DynamoDB(Context context) {

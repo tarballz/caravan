@@ -1,4 +1,4 @@
-package edu.cmps121.app.api;
+package edu.cmps121.app;
 
 import android.content.Context;
 import android.net.Uri;
@@ -19,9 +19,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import edu.cmps121.app.api.DynamoDB;
+
 public class ButtonFragment extends Fragment {
 
     private DynamoDB dynamoDB;
+    public int lon;
+    public int lat;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -50,8 +54,21 @@ public class ButtonFragment extends Fragment {
                 cars
         );
 
+        // need to reintroduce context, as when we set it up before it didn't work and broke app
         LinearLayout linearLayout = new LinearLayout(getContext());
 
+        /* TODO: set up an onClickListener like the one in FindCarActivity. When a car is selected,
+         * call dynamoDb.getItem using the car's primary key, then set the lon and lat to local
+         * variables.
+         */
+
+        listView.setOnClickListener((parent, v, position, id) -> {
+            state.cars = (String) parent.getItemAtPosition(position);
+        };
+
+        // figure out how to use primary key to get car
+        // set lon and lat to these new values from dynamoDB.getItem()
+        lon = dynamoDB.getItem()
 //         Button button = new Button(getContext());
 //         linearLayout.addView(button);
 
