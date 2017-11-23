@@ -1,15 +1,25 @@
 package edu.cmps121.app;
 
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -29,9 +39,9 @@ import java.util.stream.Collectors;
 
 import edu.cmps121.app.api.DynamoDB;
 import edu.cmps121.app.api.State;
+import edu.cmps121.app.model.Car;
 import edu.cmps121.app.model.User;
 
-import static edu.cmps121.app.api.CaravanUtils.trackingEnabled;
 import static edu.cmps121.app.api.CaravanUtils.isValidString;
 import static edu.cmps121.app.api.CaravanUtils.shortToast;
 
@@ -44,6 +54,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     private List<String> cars;
     private List<String> drivers;
     private List<String> colors;
+    private List<LatLng> positions;
     private double prevLat;
     private double prevLon;
     private double nextLat;
@@ -52,9 +63,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     private double startingLon;
     private double RADIUS = .05;
     private boolean quadIorIV;
-    private LocationManager locationManager;
 
-    private static final int REQUEST_CODE_ASK_PERMISSIONS = 123;
     private static final String TAG = MapsOverlayActivity.class.getSimpleName();
 
     @Override
@@ -92,22 +101,34 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
             throw new RuntimeException("User does not exist in DB. Critical Failure");
 
         if (isValidString(userItem.getCar()))
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(0, 0)));
-        else {
-            // TODO: re-implement me
-            if (!trackingEnabled(this))
-                throw new RuntimeException("Location permissions not yet granted");
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(getCarPosition(userItem.getCar())));
+        else
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(getUserPosition()));
+    }
 
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(
-                    new LatLng(0, 0)));
-        }
+    private LatLng getCarPosition(String car) {
+        Car carItem = (Car) dynamoDB.getItem(Car.class, car);
+
+        return new LatLng(carItem.getLat(), carItem.getLng());
+    }
+
+    private LatLng getUserPosition() {
+        LocationManager locationManager =
+                (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            throw new RuntimeException("Permission should be requested upon starting the app");
+
+        Location currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        return new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
     }
 
     private void setStyle() {
         try {
             boolean success = googleMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
-                            this, R.raw.style_json));
+                            this, R.raw.mapstyle_night));
 
             if (!success)
                 Log.e(TAG, "Style parsing failed.");
@@ -128,17 +149,19 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
                 .map(e -> e.get("driver").getS())
                 .collect(Collectors.toList());
 
-//        // TODO: implement this
-//        List<String> positions = itemList.stream()
-//                .map(e -> e.get("position").getS())
-//                .collect(Collectors.toList());
-//
+        positions = carsTable.stream()
+                .map(e -> new LatLng(Float.valueOf(e.get("lat").getN()), Float.valueOf(e.get("lng").getN())))
+                .collect(Collectors.toList());
+
         colors = carsTable.stream()
                 .map(e -> e.get("color").getS())
                 .collect(Collectors.toList());
 
-        if (cars.size() != drivers.size() || cars.size() != colors.size())
-            throw new RuntimeException("Error in our DynamoDB cars table. |drivers| != |cars| != |colors|");
+        if (cars.size() != drivers.size() ||
+                cars.size() != colors.size() ||
+                cars.size() != positions.size())
+            throw new RuntimeException("Error in our DynamoDB cars table. " +
+                    "|drivers| != |cars| != |colors| != |positions|");
 
         if (cars.size() > 0)
             spawnMarkers();
@@ -276,5 +299,75 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
                 Math.sin(prevLatRad) * Math.cos(nextLatRad) * Math.cos(lonDiff);
 
         return (float) -((Math.toDegrees(Math.atan2(y, x)) + 360) % 360);
+    }
+
+    /**
+     * Customizes a marker's info window and its contents.
+     */
+    class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
+        private final View mWindow;
+        private final View mContents;
+        private final String color;
+
+        CustomInfoWindowAdapter(String color) {
+            mWindow = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+            mContents = getLayoutInflater().inflate(R.layout.custom_info_contents, null);
+            this.color = color;
+        }
+
+        @Override
+        public View getInfoWindow(Marker marker) {
+            render(marker, mWindow);
+            return mWindow;
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+            render(marker, mContents);
+            return mContents;
+        }
+
+        private void render(Marker marker, View view) {
+            int badge;
+            switch (color) {
+                case "green":
+                    badge = R.drawable.badge_green;
+                    break;
+                case "yellow":
+                    badge = R.drawable.badge_yellow;
+                    break;
+                case "blue":
+                    badge = R.drawable.badge_blue;
+                    break;
+                case "red":
+                    badge = R.drawable.badge_blue;
+                    break;
+                default:
+                    badge = 0;
+            }
+            ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);
+
+            String title = marker.getTitle();
+            TextView titleUi = ((TextView) view.findViewById(R.id.title));
+            if (title != null) {
+                SpannableString titleText = new SpannableString(title);
+                titleText.setSpan(new ForegroundColorSpan(Color.RED), 0, titleText.length(), 0);
+
+                titleUi.setText(titleText);
+            } else
+                titleUi.setText("");
+
+            String snippet = marker.getSnippet();
+            TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
+            if (snippet != null && snippet.length() > 12) {
+                SpannableString snippetText = new SpannableString(snippet);
+
+                snippetText.setSpan(new ForegroundColorSpan(Color.MAGENTA), 0, 10, 0);
+                snippetText.setSpan(new ForegroundColorSpan(Color.BLUE), 12, snippet.length(), 0);
+
+                snippetUi.setText(snippetText);
+            } else
+                snippetUi.setText("");
+        }
     }
 }
