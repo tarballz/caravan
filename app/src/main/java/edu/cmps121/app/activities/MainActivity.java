@@ -1,4 +1,4 @@
-package edu.cmps121.app;
+package edu.cmps121.app.activities;
 
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -14,14 +14,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import edu.cmps121.app.api.DynamoDB;
-import edu.cmps121.app.api.State;
-import edu.cmps121.app.model.User;
+import edu.cmps121.app.R;
+import edu.cmps121.app.dynamo.DynamoDB;
+import edu.cmps121.app.utilities.State;
+import edu.cmps121.app.dynamo.User;
 
-import static edu.cmps121.app.api.CaravanUtils.isValidString;
-import static edu.cmps121.app.api.CaravanUtils.shortToast;
-import static edu.cmps121.app.api.CaravanUtils.startDriverService;
-import static edu.cmps121.app.api.CaravanUtils.trackingEnabled;
+import static edu.cmps121.app.utilities.CaravanUtils.isValidString;
+import static edu.cmps121.app.utilities.CaravanUtils.shortToast;
+import static edu.cmps121.app.utilities.CaravanUtils.startDriverService;
+import static edu.cmps121.app.utilities.CaravanUtils.trackingEnabled;
 
 public class MainActivity extends AppCompatActivity {
     private State state;

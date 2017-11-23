@@ -1,4 +1,4 @@
-package edu.cmps121.app;
+package edu.cmps121.app.activities;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -8,7 +8,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
-import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -37,13 +36,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import edu.cmps121.app.api.DynamoDB;
-import edu.cmps121.app.api.State;
-import edu.cmps121.app.model.Car;
-import edu.cmps121.app.model.User;
+import edu.cmps121.app.R;
+import edu.cmps121.app.dynamo.DynamoDB;
+import edu.cmps121.app.utilities.State;
+import edu.cmps121.app.dynamo.Car;
+import edu.cmps121.app.dynamo.User;
 
-import static edu.cmps121.app.api.CaravanUtils.isValidString;
-import static edu.cmps121.app.api.CaravanUtils.shortToast;
+import static edu.cmps121.app.utilities.CaravanUtils.isValidString;
+import static edu.cmps121.app.utilities.CaravanUtils.shortToast;
 
 public class MapsOverlayActivity extends AppCompatActivity implements OnMapReadyCallback {
     private State state;
@@ -63,6 +63,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     private double startingLon;
     private double RADIUS = .05;
     private boolean quadIorIV;
+    private String currentColor;
 
     private static final String TAG = MapsOverlayActivity.class.getSimpleName();
 
@@ -87,11 +88,12 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
+        this.googleMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
 
         setStyle();
         setCameraPosition();
         setIcons();
-        moveIcons();
+        startLocationStream();
     }
 
     private void setCameraPosition() {
@@ -174,7 +176,8 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         List<Map<String, AttributeValue>> usersTable = dynamoDB.queryTableByParty("users", state.party);
 
         for (int i = 0; i < cars.size(); ++i) {
-            int color = getCarColor(colors.get(i));
+            currentColor = colors.get(i);
+            int color = getCarColor(currentColor);
 
             String carName = cars.get(i);
             String carDriver = drivers.get(i);
@@ -187,14 +190,11 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
             markers.put(
                     cars.get(i),
                     googleMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(0, i / 10.0 + RADIUS))
+                            .position(positions.get(i))
                             .title(carName)
                             .snippet(snippet)
                             .icon(BitmapDescriptorFactory.fromBitmap(smallCar)))
             );
-
-            // TODO: Remove me. Only for use in demo
-            startingPositions.put(cars.get(i), new LatLng(0, (i / 10.0)));
         }
     }
 
@@ -236,70 +236,74 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         }
     }
 
-    private void moveIcons() {
-        int count = 0;
-        while (count < 60) {
-            for (String key : markers.keySet()) {
-                Runnable runnable = () -> threadMovement(key);
-
-                Handler handler = new Handler();
-
-                handler.postDelayed(runnable, 1000 + count * 1000);
-            }
-            count++;
-        }
+    private void startLocationStream() {
+        // TODO: figure out amazon stream stuff here
     }
 
-    private void threadMovement(String key) {
-        Marker marker = markers.get(key);
-        startingLat = startingPositions.get(key).latitude;
-        startingLon = startingPositions.get(key).longitude;
-
-        prevLat = marker.getPosition().latitude;
-        prevLon = marker.getPosition().longitude;
-
-        findNextLat();
-        findNextLon();
-
-        marker.setPosition(new LatLng(nextLat, nextLon));
-        marker.setRotation(getRotation());
-
-    }
-
-    private void findNextLat() {
-        if (prevLat > startingLat && prevLon > startingLon ||          // Quadrant I
-                prevLat <= startingLat && prevLon >= startingLon) {    // Quadrant IV
-            nextLat = prevLat + .01;
-            quadIorIV = true;
-        } else if (prevLat >= startingLat && prevLon <= startingLon || // Quadrant II
-                prevLat < startingLat && prevLon < startingLon) {      // Quadrant III
-            nextLat = prevLat - .01;
-            quadIorIV = false;
-        }
-    }
-
-    private void findNextLon() {
-        double lon = (quadIorIV)
-                ? (Math.sqrt(Math.pow(RADIUS, 2) - Math.pow((nextLat - startingLat), 2)) + startingLon)
-                : -(Math.sqrt(Math.pow(RADIUS, 2) - Math.pow((nextLat - startingLat), 2)) + startingLon);
-
-        if (Double.isNaN(lon))
-            nextLon = startingLon;
-        else
-            nextLon = lon;
-    }
-
-    private float getRotation() {
-        double prevLatRad = Math.toRadians(prevLat);
-        double nextLatRad = Math.toRadians(nextLat);
-        double lonDiff = Math.toRadians(nextLon - prevLon);
-
-        double y = Math.sin(lonDiff) * Math.cos(nextLatRad);
-        double x = Math.cos(prevLatRad) * Math.sin(nextLatRad) -
-                Math.sin(prevLatRad) * Math.cos(nextLatRad) * Math.cos(lonDiff);
-
-        return (float) -((Math.toDegrees(Math.atan2(y, x)) + 360) % 360);
-    }
+//    private void moveIcons() {
+//        int count = 0;
+//        while (count < 60) {
+//            for (String key : markers.keySet()) {
+//                Runnable runnable = () -> threadMovement(key);
+//
+//                Handler handler = new Handler();
+//
+//                handler.postDelayed(runnable, 1000 + count * 1000);
+//            }
+//            count++;
+//        }
+//    }
+//
+//    private void threadMovement(String key) {
+//        Marker marker = markers.get(key);
+//        startingLat = startingPositions.get(key).latitude;
+//        startingLon = startingPositions.get(key).longitude;
+//
+//        prevLat = marker.getPosition().latitude;
+//        prevLon = marker.getPosition().longitude;
+//
+//        findNextLat();
+//        findNextLon();
+//
+//        marker.setPosition(new LatLng(nextLat, nextLon));
+//        marker.setRotation(getRotation());
+//
+//    }
+//
+//    private void findNextLat() {
+//        if (prevLat > startingLat && prevLon > startingLon ||          // Quadrant I
+//                prevLat <= startingLat && prevLon >= startingLon) {    // Quadrant IV
+//            nextLat = prevLat + .01;
+//            quadIorIV = true;
+//        } else if (prevLat >= startingLat && prevLon <= startingLon || // Quadrant II
+//                prevLat < startingLat && prevLon < startingLon) {      // Quadrant III
+//            nextLat = prevLat - .01;
+//            quadIorIV = false;
+//        }
+//    }
+//
+//    private void findNextLon() {
+//        double lon = (quadIorIV)
+//                ? (Math.sqrt(Math.pow(RADIUS, 2) - Math.pow((nextLat - startingLat), 2)) + startingLon)
+//                : -(Math.sqrt(Math.pow(RADIUS, 2) - Math.pow((nextLat - startingLat), 2)) + startingLon);
+//
+//        if (Double.isNaN(lon))
+//            nextLon = startingLon;
+//        else
+//            nextLon = lon;
+//    }
+//
+//    private float getRotation() {
+//        double prevLatRad = Math.toRadians(prevLat);
+//        double nextLatRad = Math.toRadians(nextLat);
+//        double lonDiff = Math.toRadians(nextLon - prevLon);
+//
+//        double y = Math.sin(lonDiff) * Math.cos(nextLatRad);
+//        double x = Math.cos(prevLatRad) * Math.sin(nextLatRad) -
+//                Math.sin(prevLatRad) * Math.cos(nextLatRad) * Math.cos(lonDiff);
+//
+//        return (float) -((Math.toDegrees(Math.atan2(y, x)) + 360) % 360);
+//    }
 
     /**
      * Customizes a marker's info window and its contents.
@@ -307,12 +311,10 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         private final View mWindow;
         private final View mContents;
-        private final String color;
 
-        CustomInfoWindowAdapter(String color) {
+        CustomInfoWindowAdapter() {
             mWindow = getLayoutInflater().inflate(R.layout.custom_info_window, null);
             mContents = getLayoutInflater().inflate(R.layout.custom_info_contents, null);
-            this.color = color;
         }
 
         @Override
@@ -329,14 +331,14 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
 
         private void render(Marker marker, View view) {
             int badge;
-            switch (color) {
+            switch (currentColor) {
                 case "green":
                     badge = R.drawable.badge_green;
                     break;
                 case "yellow":
                     badge = R.drawable.badge_yellow;
                     break;
-                case "blue":
+                case "cyan":
                     badge = R.drawable.badge_blue;
                     break;
                 case "red":

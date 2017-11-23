@@ -1,4 +1,4 @@
-package edu.cmps121.app.api;
+package edu.cmps121.app.utilities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,9 +6,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 
-import edu.cmps121.app.MainActivity;
+import edu.cmps121.app.activities.MainActivity;
 
-import static edu.cmps121.app.api.CaravanUtils.isValidString;
+import static edu.cmps121.app.utilities.CaravanUtils.isValidString;
 
 /**
  * To be instantiated upon application start up. For sharing the user's key data between activities

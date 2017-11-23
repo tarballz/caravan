@@ -1,4 +1,4 @@
-package edu.cmps121.app.api;
+package edu.cmps121.app.dynamo;
 
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+
+import edu.cmps121.app.utilities.ItemUpdater;
 
 public class DynamoDB {
     private DynamoDBMapper mapper;
@@ -125,5 +127,8 @@ public class DynamoDB {
         Object item = getItem(itemClass, primaryKey);
 
         updater.update(item);
+    }
+
+    private void test() {
     }
 }

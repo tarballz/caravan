@@ -1,4 +1,4 @@
-package edu.cmps121.app.model;
+package edu.cmps121.app.dynamo;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;

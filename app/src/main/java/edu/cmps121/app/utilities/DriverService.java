@@ -1,4 +1,4 @@
-package edu.cmps121.app.api;
+package edu.cmps121.app.utilities;
 
 import android.app.Service;
 import android.content.Context;
@@ -9,9 +9,10 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
-import edu.cmps121.app.model.Car;
+import edu.cmps121.app.dynamo.Car;
+import edu.cmps121.app.dynamo.DynamoDB;
 
-import static edu.cmps121.app.api.CaravanUtils.trackingEnabled;
+import static edu.cmps121.app.utilities.CaravanUtils.trackingEnabled;
 
 public class DriverService extends Service {
     private LocationManager locationManager;

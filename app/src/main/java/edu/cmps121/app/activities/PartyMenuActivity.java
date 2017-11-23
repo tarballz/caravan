@@ -1,11 +1,12 @@
-package edu.cmps121.app;
+package edu.cmps121.app.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import edu.cmps121.app.api.State;
+import edu.cmps121.app.R;
+import edu.cmps121.app.utilities.State;
 
 public class PartyMenuActivity extends AppCompatActivity {
     private State state;

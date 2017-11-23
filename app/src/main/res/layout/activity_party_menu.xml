@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.cmps121.app.PartyMenuActivity">
+    tools:context="edu.cmps121.app.activities.PartyMenuActivity">
 
     <TextView
         android:id="@+id/team_name_tv"

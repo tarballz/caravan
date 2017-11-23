@@ -1,4 +1,4 @@
-package edu.cmps121.app.api;
+package edu.cmps121.app.utilities;
 
 import android.content.Context;
 import android.content.Intent;
