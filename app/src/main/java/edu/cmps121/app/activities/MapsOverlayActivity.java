@@ -244,14 +244,17 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
 
     private void startTrackingThread() {
         ThreadHandler handler = new ThreadHandler(this);
-        Runnable runnable = () -> trackDynamo(handler);
+        Runnable runnable = () -> trackDynamo(handler, markers);
+
+//        handler.post(runnable);
 
         Thread thread = new Thread(runnable);
         thread.setName("TrackingThread");
         thread.start();
     }
 
-    private void trackDynamo(ThreadHandler handler) {
+    private void trackDynamo(ThreadHandler handler, Map<String, Marker> markers) {
+        android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
         long endTime = System.currentTimeMillis() + 500000;
 
         while (System.currentTimeMillis() < endTime) {
@@ -261,6 +264,10 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
                 String carName = cars.get(i);
                 LatLng newPosition = positions.get(i);
                 LatLng oldPosition = markers.get(carName).getPosition();
+                // TODO: Problem is that I'm trying to make google api calls off the main thread.
+                /* If you can't sleep the main thread, how am I supposed to constantly compare the
+                 * positions of the markers to the database?
+                 */
 
                 if (newPosition.latitude != oldPosition.latitude ||
                         newPosition.longitude != oldPosition.longitude) {
@@ -293,6 +300,8 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
             throw new RuntimeException("Error in thread data transfer");
 
         markers.get(carName).setPosition(new LatLng(lat, lng));
+
+        Log.i(TAG, "Successfully updated " + carName + " marker position");
     }
 
 
