@@ -1,9 +1,6 @@
 package edu.cmps121.app;
 
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +21,7 @@ import edu.cmps121.app.model.User;
 import static edu.cmps121.app.api.CaravanUtils.isValidString;
 import static edu.cmps121.app.api.CaravanUtils.shortToast;
 import static edu.cmps121.app.api.CaravanUtils.startDriverService;
+import static edu.cmps121.app.api.CaravanUtils.trackingEnabled;
 
 public class MainActivity extends AppCompatActivity {
     private State state;
@@ -160,10 +158,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestPermissions() {
-        if (!(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED) &&
-                !(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) ==
-                        PackageManager.PERMISSION_GRANTED))
+        if (!trackingEnabled(this))
             ActivityCompat.requestPermissions(
                     this,
                     new String[] {

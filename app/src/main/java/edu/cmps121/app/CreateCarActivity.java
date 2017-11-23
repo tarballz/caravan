@@ -22,6 +22,7 @@ import edu.cmps121.app.model.User;
 
 import static edu.cmps121.app.api.CaravanUtils.isValidString;
 import static edu.cmps121.app.api.CaravanUtils.shortToast;
+import static edu.cmps121.app.api.CaravanUtils.startDriverService;
 
 public class CreateCarActivity extends AppCompatActivity {
     private State state;
@@ -141,6 +142,9 @@ public class CreateCarActivity extends AppCompatActivity {
 
                 dynamoDB.saveItem(user);
             });
+
+            if (state.user.equals(driver))
+                startDriverService(carName, this);
 
             state.nextActivity(this, PartyMenuActivity.class);
         }

@@ -3,23 +3,18 @@ package edu.cmps121.app.api;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import edu.cmps121.app.model.Car;
 
+import static edu.cmps121.app.api.CaravanUtils.trackingEnabled;
+
 public class DriverService extends Service {
     private LocationManager locationManager;
-//    LocationListener[] locationListeners = new LocationListener[]{
-//            new LocationListener(LocationManager.GPS_PROVIDER),
-//            new LocationListener(LocationManager.NETWORK_PROVIDER)
-//    };
-
     private LocationListener gpsLocationListener;
     private LocationListener networkLocationListener;
     private DynamoDB dynamoDB;
@@ -48,12 +43,14 @@ public class DriverService extends Service {
                     + " Lon: "
                     + location.getLongitude());
             lastLocation.set(location);
-            Car carItem = (Car) dynamoDB.getItem(Car.class, car);
 
-            carItem.setLat(lastLocation.getLatitude());
-            carItem.setLng(lastLocation.getLongitude());
+            dynamoDB.updateItem(Car.class, car, (obj) -> {
+                Car carItem = (Car) obj;
+                carItem.setLat(lastLocation.getLatitude());
+                carItem.setLng(lastLocation.getLongitude());
 
-            dynamoDB.saveItem(carItem);
+                dynamoDB.saveItem(carItem);
+            });
         }
 
         @Override
@@ -75,17 +72,13 @@ public class DriverService extends Service {
         super.onStartCommand(intent, flags, startId);
 
         car = intent.getStringExtra("car");
-        Log.i(TAG, "onStartCommand intent car: " + car);
 
         return START_STICKY;
     }
 
     @Override
     public void onCreate() {
-        if (!(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED) &&
-                !(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) ==
-                        PackageManager.PERMISSION_GRANTED))
+        if (!trackingEnabled(this))
             throw new RuntimeException("Location permissions not yet granted");
 
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
@@ -93,24 +86,19 @@ public class DriverService extends Service {
         gpsLocationListener = new LocationListener(LocationManager.GPS_PROVIDER);
         dynamoDB = new DynamoDB(this);
 
-        try {
-            locationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
-                    gpsLocationListener);
-        } catch (java.lang.SecurityException ex) {
-            Log.i(TAG, "fail to request location update, ignore", ex);
-        } catch (IllegalArgumentException ex) {
-            Log.d(TAG, "network provider does not exist, " + ex.getMessage());
-        }
+        instantiateListener(networkLocationListener, LocationManager.NETWORK_PROVIDER);
+        instantiateListener(gpsLocationListener, LocationManager.GPS_PROVIDER);
+    }
 
+    private void instantiateListener(LocationListener listener, String provider) {
         try {
             locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
-                    networkLocationListener);
+                    provider, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                    listener);
         } catch (java.lang.SecurityException ex) {
             Log.i(TAG, "fail to request location update, ignore", ex);
         } catch (IllegalArgumentException ex) {
-            Log.d(TAG, "gps provider does not exist " + ex.getMessage());
+            Log.d(TAG, provider + " provider does not exist, " + ex.getMessage());
         }
     }
 
@@ -126,15 +114,5 @@ public class DriverService extends Service {
             Log.i(TAG, "Failed to removed location listeners");
         }
 
-
-//        if (locationManager != null) {
-//            for (int i = 0; i < locationListeners.length; i++) {
-//                try {
-//                    locationManager.removeUpdates(locationListeners[i]);
-//                } catch (Exception ex) {
-//                    Log.i(TAG, "fail to remove location listners, ignore", ex);
-//                }
-//            }
-//        }
     }
 }

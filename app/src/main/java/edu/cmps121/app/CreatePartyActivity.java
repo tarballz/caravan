@@ -79,7 +79,7 @@ public class CreatePartyActivity extends AppCompatActivity {
             party.setLng(destination.getLatLng().longitude);
 
             dynamoDB.saveItem(party);
-//            dynamoDB.updateUserParty(state.user, partyName);
+
             dynamoDB.updateItem(User.class, state.user, (obj) -> {
                 User user = (User) obj;
                 user.setParty(partyName);

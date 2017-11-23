@@ -1,16 +1,11 @@
 package edu.cmps121.app;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -30,13 +25,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
 import edu.cmps121.app.api.DynamoDB;
 import edu.cmps121.app.api.State;
 import edu.cmps121.app.model.User;
 
+import static edu.cmps121.app.api.CaravanUtils.trackingEnabled;
 import static edu.cmps121.app.api.CaravanUtils.isValidString;
 import static edu.cmps121.app.api.CaravanUtils.shortToast;
 
@@ -100,6 +95,9 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(0, 0)));
         else {
             // TODO: re-implement me
+            if (!trackingEnabled(this))
+                throw new RuntimeException("Location permissions not yet granted");
+
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(
                     new LatLng(0, 0)));
         }
