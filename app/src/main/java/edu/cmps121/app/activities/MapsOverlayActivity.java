@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Message;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -41,6 +42,7 @@ import edu.cmps121.app.dynamo.DynamoDB;
 import edu.cmps121.app.utilities.State;
 import edu.cmps121.app.dynamo.Car;
 import edu.cmps121.app.dynamo.User;
+import edu.cmps121.app.utilities.ThreadHandler;
 
 import static edu.cmps121.app.utilities.CaravanUtils.isValidString;
 import static edu.cmps121.app.utilities.CaravanUtils.shortToast;
@@ -93,7 +95,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         setStyle();
         setCameraPosition();
         setIcons();
-        startLocationStream();
+        startTrackingThread();
     }
 
     private void setCameraPosition() {
@@ -141,6 +143,15 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void setIcons() {
+        checkCarsTable();
+
+        if (cars.size() > 0)
+            spawnMarkers();
+        else
+            shortToast(this, "Create a car to view its location on the map");
+    }
+
+    private void checkCarsTable() {
         List<Map<String, AttributeValue>> carsTable = dynamoDB.queryTableByParty("cars", state.party);
 
         cars = carsTable.stream()
@@ -164,11 +175,6 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
                 cars.size() != positions.size())
             throw new RuntimeException("Error in our DynamoDB cars table. " +
                     "|drivers| != |cars| != |colors| != |positions|");
-
-        if (cars.size() > 0)
-            spawnMarkers();
-        else
-            shortToast(this, "Create a car to view its location on the map");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -236,9 +242,59 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         }
     }
 
-    private void startLocationStream() {
-        // TODO: figure out amazon stream stuff here
+    private void startTrackingThread() {
+        ThreadHandler handler = new ThreadHandler(this);
+        Runnable runnable = () -> trackDynamo(handler);
+
+        Thread thread = new Thread(runnable);
+        thread.setName("TrackingThread");
+        thread.start();
     }
+
+    private void trackDynamo(ThreadHandler handler) {
+        long endTime = System.currentTimeMillis() + 500000;
+
+        while (System.currentTimeMillis() < endTime) {
+            checkCarsTable();
+
+            for (int i = 0; i < cars.size(); ++i) {
+                String carName = cars.get(i);
+                LatLng newPosition = positions.get(i);
+                LatLng oldPosition = markers.get(carName).getPosition();
+
+                if (newPosition.latitude != oldPosition.latitude ||
+                        newPosition.longitude != oldPosition.longitude) {
+                    Message msg = new Message();
+                    Bundle bundle = new Bundle();
+
+                    bundle.putString("carName", carName);
+                    bundle.putDouble("lat", newPosition.latitude);
+                    bundle.putDouble("lng", newPosition.longitude);
+
+                    msg.setData(bundle);
+                    handler.sendMessage(msg);
+                }
+            }
+
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
+    public void processBundle(Bundle bundle) {
+        String carName = bundle.getString("carName");
+        double lat = bundle.getDouble("lat");
+        double lng = bundle.getDouble("lng");
+
+        if (!isValidString(carName) || lat != 0.0 || lng != 0.0)
+            throw new RuntimeException("Error in thread data transfer");
+
+        markers.get(carName).setPosition(new LatLng(lat, lng));
+    }
+
 
 //    private void moveIcons() {
 //        int count = 0;
