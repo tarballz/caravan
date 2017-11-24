@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -243,17 +244,18 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void startTrackingThread() {
-        ThreadHandler handler = new ThreadHandler(this);
-        Runnable runnable = () -> trackDynamo(handler, markers);
+        ArrayList<LatLng> oldPositions = new ArrayList<>(positions);
 
-//        handler.post(runnable);
+        ThreadHandler handler = new ThreadHandler(this);
+        Runnable runnable = () -> trackDynamo(handler, oldPositions);
+
 
         Thread thread = new Thread(runnable);
         thread.setName("TrackingThread");
         thread.start();
     }
 
-    private void trackDynamo(ThreadHandler handler, Map<String, Marker> markers) {
+    private void trackDynamo(ThreadHandler handler, ArrayList<LatLng> oldPositions) {
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
         long endTime = System.currentTimeMillis() + 500000;
 
@@ -263,16 +265,14 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
             for (int i = 0; i < cars.size(); ++i) {
                 String carName = cars.get(i);
                 LatLng newPosition = positions.get(i);
-                LatLng oldPosition = markers.get(carName).getPosition();
-                // TODO: Problem is that I'm trying to make google api calls off the main thread.
-                /* If you can't sleep the main thread, how am I supposed to constantly compare the
-                 * positions of the markers to the database?
-                 */
+                LatLng oldPosition = oldPositions.get(i);
 
                 if (newPosition.latitude != oldPosition.latitude ||
                         newPosition.longitude != oldPosition.longitude) {
                     Message msg = new Message();
                     Bundle bundle = new Bundle();
+
+                    oldPositions.set(i, newPosition);
 
                     bundle.putString("carName", carName);
                     bundle.putDouble("lat", newPosition.latitude);
@@ -296,7 +296,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         double lat = bundle.getDouble("lat");
         double lng = bundle.getDouble("lng");
 
-        if (!isValidString(carName) || lat != 0.0 || lng != 0.0)
+        if (!isValidString(carName) || lat == 0.0 || lng == 0.0)
             throw new RuntimeException("Error in thread data transfer");
 
         markers.get(carName).setPosition(new LatLng(lat, lng));
