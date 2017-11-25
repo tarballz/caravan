@@ -95,15 +95,10 @@ public class CreateCarActivity extends AppCompatActivity {
     }
 
     private ArrayList<String> getDrivers() {
-        List<Map<String, AttributeValue>> driversItem = dynamoDB.queryTableByParty("cars", state.party);
         List<Map<String, AttributeValue>> usersItems = dynamoDB.queryTableByParty("users", state.party);
 
-        List<String> driversList = driversItem.stream()
-                .map(e -> e.get("driver").getS())
-                .collect(Collectors.toList());
-
         return new ArrayList<>(usersItems.stream()
-                .filter(e -> !driversList.contains(e.get("user").getS()))
+                .filter(e -> e.get("car") == null)
                 .map(e -> e.get("user").getS())
                 .collect(Collectors.toList()));
     }
@@ -115,9 +110,9 @@ public class CreateCarActivity extends AppCompatActivity {
             saveCar();
         else
             shortToast(this,
-                    (isValidString(carName)? "Name of car, " : "") +
-                            (isValidString(color)? "Color, " : "") +
-                            (isValidString(driver)? "Driver, " : "") +
+                    (isValidString(carName) ? "Name of car, " : "") +
+                            (isValidString(color) ? "Color, " : "") +
+                            (isValidString(driver) ? "Driver, " : "") +
                             "cannot be left empty"
             );
     }
@@ -137,17 +132,29 @@ public class CreateCarActivity extends AppCompatActivity {
             state.car = carName;
 
             dynamoDB.saveItem(car);
-            dynamoDB.updateItem(User.class, state.user, (obj) -> {
+            updateUsers();
+
+            state.nextActivity(this, PartyMenuActivity.class);
+        }
+    }
+
+    private void updateUsers() {
+        if (state.user.equals(driver))
+            startDriverService(carName, this);
+        else {
+            dynamoDB.updateItem(User.class, driver, (obj) -> {
                 User user = (User) obj;
                 user.setCar(carName);
 
                 dynamoDB.saveItem(user);
             });
-
-            if (state.user.equals(driver))
-                startDriverService(carName, this);
-
-            state.nextActivity(this, PartyMenuActivity.class);
         }
+
+        dynamoDB.updateItem(User.class, state.user, (obj) -> {
+            User user = (User) obj;
+            user.setCar(carName);
+
+            dynamoDB.saveItem(user);
+        });
     }
 }

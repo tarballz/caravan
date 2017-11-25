@@ -52,23 +52,17 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     private State state;
     private DynamoDB dynamoDB;
     private GoogleMap googleMap;
+    private Thread trackingThread;
     private HashMap<String, Marker> markers;
-    private HashMap<String, LatLng> startingPositions;
     private List<String> cars;
     private List<String> drivers;
     private List<String> colors;
     private List<LatLng> positions;
-    private double prevLat;
-    private double prevLon;
-    private double nextLat;
-    private double nextLon;
-    private double startingLat;
-    private double startingLon;
-    private double RADIUS = .05;
-    private boolean quadIorIV;
+    private List<Float> bearings;
     private String currentColor;
 
     private static final String TAG = MapsOverlayActivity.class.getSimpleName();
+    private static final int TIME_LIMIT_MILLI = 500000000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,14 +71,33 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
 
         state = new State(this);
         dynamoDB = new DynamoDB(this);
-
         markers = new HashMap<>();
-        startingPositions = new HashMap<>();
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        startTrackingThread();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        trackingThread.interrupt();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        trackingThread.interrupt();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -153,29 +166,37 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void checkCarsTable() {
-        List<Map<String, AttributeValue>> carsTable = dynamoDB.queryTableByParty("cars", state.party);
+        try {
+            List<Map<String, AttributeValue>> carsTable = dynamoDB.queryTableByParty("cars", state.party);
 
-        cars = carsTable.stream()
-                .map(e -> e.get("car").getS())
-                .collect(Collectors.toList());
+            cars = carsTable.stream()
+                    .map(e -> e.get("car").getS())
+                    .collect(Collectors.toList());
 
-        drivers = carsTable.stream()
-                .map(e -> e.get("driver").getS())
-                .collect(Collectors.toList());
+            drivers = carsTable.stream()
+                    .map(e -> e.get("driver").getS())
+                    .collect(Collectors.toList());
 
-        positions = carsTable.stream()
-                .map(e -> new LatLng(Float.valueOf(e.get("lat").getN()), Float.valueOf(e.get("lng").getN())))
-                .collect(Collectors.toList());
+            positions = carsTable.stream()
+                    .map(e -> new LatLng(Float.valueOf(e.get("lat").getN()), Float.valueOf(e.get("lng").getN())))
+                    .collect(Collectors.toList());
 
-        colors = carsTable.stream()
-                .map(e -> e.get("color").getS())
-                .collect(Collectors.toList());
+            bearings = carsTable.stream()
+                    .map(e -> Float.valueOf(e.get("bearing").getN()))
+                    .collect(Collectors.toList());
 
-        if (cars.size() != drivers.size() ||
-                cars.size() != colors.size() ||
-                cars.size() != positions.size())
-            throw new RuntimeException("Error in our DynamoDB cars table. " +
-                    "|drivers| != |cars| != |colors| != |positions|");
+            colors = carsTable.stream()
+                    .map(e -> e.get("color").getS())
+                    .collect(Collectors.toList());
+
+            if (cars.size() != drivers.size() ||
+                    cars.size() != colors.size() ||
+                    cars.size() != positions.size())
+                throw new RuntimeException("Error in our DynamoDB cars table. " +
+                        "|drivers| != |cars| != |colors| != |positions|");
+        } catch (NullPointerException e) {
+            Log.i(TAG, "Cars table could not be loaded, leaving values");
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -200,7 +221,8 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
                             .position(positions.get(i))
                             .title(carName)
                             .snippet(snippet)
-                            .icon(BitmapDescriptorFactory.fromBitmap(smallCar)))
+                            .icon(BitmapDescriptorFactory.fromBitmap(smallCar))
+                            .rotation(bearings.get(i)))
             );
         }
     }
@@ -244,20 +266,21 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void startTrackingThread() {
+        checkCarsTable();
         ArrayList<LatLng> oldPositions = new ArrayList<>(positions);
 
         ThreadHandler handler = new ThreadHandler(this);
         Runnable runnable = () -> trackDynamo(handler, oldPositions);
 
 
-        Thread thread = new Thread(runnable);
-        thread.setName("TrackingThread");
-        thread.start();
+        trackingThread = new Thread(runnable);
+        trackingThread.setName("TrackingThread");
+        trackingThread.start();
     }
 
     private void trackDynamo(ThreadHandler handler, ArrayList<LatLng> oldPositions) {
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
-        long endTime = System.currentTimeMillis() + 500000;
+        long endTime = System.currentTimeMillis() + TIME_LIMIT_MILLI;
 
         while (System.currentTimeMillis() < endTime) {
             checkCarsTable();
@@ -266,6 +289,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
                 String carName = cars.get(i);
                 LatLng newPosition = positions.get(i);
                 LatLng oldPosition = oldPositions.get(i);
+                float newBearing = bearings.get(i);
 
                 if (newPosition.latitude != oldPosition.latitude ||
                         newPosition.longitude != oldPosition.longitude) {
@@ -277,6 +301,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
                     bundle.putString("carName", carName);
                     bundle.putDouble("lat", newPosition.latitude);
                     bundle.putDouble("lng", newPosition.longitude);
+                    bundle.putFloat("bearing", newBearing);
 
                     msg.setData(bundle);
                     handler.sendMessage(msg);
@@ -293,82 +318,19 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
 
     public void processBundle(Bundle bundle) {
         String carName = bundle.getString("carName");
+        Marker marker = markers.get(carName);
         double lat = bundle.getDouble("lat");
         double lng = bundle.getDouble("lng");
+        float bearing = bundle.getFloat("bearing");
 
         if (!isValidString(carName) || lat == 0.0 || lng == 0.0)
             throw new RuntimeException("Error in thread data transfer");
 
-        markers.get(carName).setPosition(new LatLng(lat, lng));
+        marker.setPosition(new LatLng(lat, lng));
+        marker.setRotation(bearing);
 
         Log.i(TAG, "Successfully updated " + carName + " marker position");
     }
-
-
-//    private void moveIcons() {
-//        int count = 0;
-//        while (count < 60) {
-//            for (String key : markers.keySet()) {
-//                Runnable runnable = () -> threadMovement(key);
-//
-//                Handler handler = new Handler();
-//
-//                handler.postDelayed(runnable, 1000 + count * 1000);
-//            }
-//            count++;
-//        }
-//    }
-//
-//    private void threadMovement(String key) {
-//        Marker marker = markers.get(key);
-//        startingLat = startingPositions.get(key).latitude;
-//        startingLon = startingPositions.get(key).longitude;
-//
-//        prevLat = marker.getPosition().latitude;
-//        prevLon = marker.getPosition().longitude;
-//
-//        findNextLat();
-//        findNextLon();
-//
-//        marker.setPosition(new LatLng(nextLat, nextLon));
-//        marker.setRotation(getRotation());
-//
-//    }
-//
-//    private void findNextLat() {
-//        if (prevLat > startingLat && prevLon > startingLon ||          // Quadrant I
-//                prevLat <= startingLat && prevLon >= startingLon) {    // Quadrant IV
-//            nextLat = prevLat + .01;
-//            quadIorIV = true;
-//        } else if (prevLat >= startingLat && prevLon <= startingLon || // Quadrant II
-//                prevLat < startingLat && prevLon < startingLon) {      // Quadrant III
-//            nextLat = prevLat - .01;
-//            quadIorIV = false;
-//        }
-//    }
-//
-//    private void findNextLon() {
-//        double lon = (quadIorIV)
-//                ? (Math.sqrt(Math.pow(RADIUS, 2) - Math.pow((nextLat - startingLat), 2)) + startingLon)
-//                : -(Math.sqrt(Math.pow(RADIUS, 2) - Math.pow((nextLat - startingLat), 2)) + startingLon);
-//
-//        if (Double.isNaN(lon))
-//            nextLon = startingLon;
-//        else
-//            nextLon = lon;
-//    }
-//
-//    private float getRotation() {
-//        double prevLatRad = Math.toRadians(prevLat);
-//        double nextLatRad = Math.toRadians(nextLat);
-//        double lonDiff = Math.toRadians(nextLon - prevLon);
-//
-//        double y = Math.sin(lonDiff) * Math.cos(nextLatRad);
-//        double x = Math.cos(prevLatRad) * Math.sin(nextLatRad) -
-//                Math.sin(prevLatRad) * Math.cos(nextLatRad) * Math.cos(lonDiff);
-//
-//        return (float) -((Math.toDegrees(Math.atan2(y, x)) + 360) % 360);
-//    }
 
     /**
      * Customizes a marker's info window and its contents.

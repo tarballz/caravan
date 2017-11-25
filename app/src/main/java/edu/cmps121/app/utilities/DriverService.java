@@ -49,6 +49,7 @@ public class DriverService extends Service {
                 Car carItem = (Car) obj;
                 carItem.setLat(lastLocation.getLatitude());
                 carItem.setLng(lastLocation.getLongitude());
+                carItem.setBearing(lastLocation.getBearing());
 
                 dynamoDB.saveItem(carItem);
             });
