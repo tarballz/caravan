@@ -34,4 +34,5 @@
     <string name="welcome">Welcome!</string>
     <string name="select_color">Select Color</string>
     <string name="create_an_account">Create an account</string>
+    <string name="logout">Logout</string>
 </resources>

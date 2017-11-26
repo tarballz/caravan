@@ -12,21 +12,21 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.503" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/party_menu_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="@string/party_menu"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/team_name_tv"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="8dp" />
+        app:layout_constraintTop_toBottomOf="@+id/team_name_tv" />
 
     <Button
         android:id="@+id/find_car_menu_b"
@@ -34,10 +34,10 @@
         android:layout_height="69dp"
         android:layout_marginTop="24dp"
         android:background="@android:color/holo_blue_dark"
+        android:onClick="onClickFindCarMenu"
         android:text="@string/find_car"
         android:textAllCaps="false"
         android:textSize="24sp"
-        android:onClick="onClickFindCarMenu"
         app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -49,10 +49,10 @@
         android:layout_height="69dp"
         android:layout_marginTop="24dp"
         android:background="@android:color/holo_orange_dark"
+        android:onClick="onClickMapsMenu"
         android:text="@string/maps"
         android:textAllCaps="false"
         android:textSize="24sp"
-        android:onClick="onClickMapsMenu"
         app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -62,16 +62,16 @@
         android:id="@+id/settings_menu_b"
         android:layout_width="291dp"
         android:layout_height="69dp"
+        android:layout_marginTop="26dp"
         android:background="@android:color/holo_orange_light"
+        android:onClick="onClickSettingsMenu"
         android:text="@string/settings"
         android:textAllCaps="false"
         android:textSize="24sp"
-        android:onClick="onClickSettingsMenu"
         app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/maps_menu_b"
-        android:layout_marginTop="26dp" />
+        app:layout_constraintTop_toBottomOf="@+id/maps_menu_b" />
 
     <Button
         android:id="@+id/create_car_menu_b"
@@ -79,13 +79,24 @@
         android:layout_height="69dp"
         android:layout_marginTop="29dp"
         android:background="@android:color/holo_purple"
+        android:onClick="onClickCreateCarMenu"
         android:text="@string/create_car"
         android:textAllCaps="false"
         android:textSize="24sp"
-        android:onClick="onClickCreateCarMenu"
         app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/party_menu_tv" />
+
+    <Button
+        android:id="@+id/logout_b"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:layout_marginEnd="1dp"
+        android:text="@string/logout"
+        android:onClick="onClickLogout"
+        app:layout_constraintBottom_toTopOf="@+id/party_menu_tv"
+        app:layout_constraintEnd_toStartOf="@+id/party_menu_tv" />
 
 </android.support.constraint.ConstraintLayout>

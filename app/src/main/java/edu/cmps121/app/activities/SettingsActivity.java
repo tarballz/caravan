@@ -72,4 +72,10 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
+    // This allows us to pass the updated state value back to the rest of the app
+    @Override
+    public void onBackPressed() {
+        state.nextActivity(this, PartyMenuActivity.class);
+    }
+
 }

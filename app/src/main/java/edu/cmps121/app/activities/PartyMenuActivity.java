@@ -37,4 +37,12 @@ public class PartyMenuActivity extends AppCompatActivity {
     public void onClickSettingsMenu(View view) {
         state.nextActivity(this, SettingsActivity.class);
     }
+
+    public void onClickLogout(View view) { state.nextActivity(this, MainActivity.class);}
+
+    // Do nothing, force user to log out if they want to return
+    @Override
+    public void onBackPressed() {
+
+    }
 }
