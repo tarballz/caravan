@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import edu.cmps121.app.activities.MainActivity;
 
+import static edu.cmps121.app.utilities.CaravanUtils.JsonOptions.*;
 import static edu.cmps121.app.utilities.CaravanUtils.isValidString;
 
 /**
@@ -18,6 +19,7 @@ public class State implements Parcelable {
     public String party;
     public String car;
     public String user;
+    public CaravanUtils.JsonOptions jsonOption;
 
     private enum Validate {
         USER, CAR, PARTY, USER_CAR, USER_PARTY, CAR_PARTY, USER_CAR_PARTY;
@@ -32,11 +34,13 @@ public class State implements Parcelable {
             party = state.party;
             car = state.car;
             user = state.user;
+            jsonOption = state.jsonOption;
 
             testActivityRequirements();
         } catch (NullPointerException e) {
             if (!currentActivity.getClass().equals(MainActivity.class))
                 throw new RuntimeException("State can only be null at start of MainActivity" + e);
+            jsonOption = RETRO;
         }
     }
 

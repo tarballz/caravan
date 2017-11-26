@@ -64,6 +64,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
 
     private static final String TAG = MapsOverlayActivity.class.getSimpleName();
     private static final int TIME_LIMIT_MILLI = 500000000;
+    private static final float INITIAL_ZOOM = 14.0f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,9 +121,13 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
             throw new RuntimeException("User does not exist in DB. Critical Failure");
 
         if (isValidString(userItem.getCar()))
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(getCarPosition(userItem.getCar())));
+            googleMap.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(getCarPosition(userItem.getCar()), INITIAL_ZOOM)
+            );
         else
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(getUserPosition()));
+            googleMap.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(getUserPosition(), INITIAL_ZOOM)
+            );
     }
 
     private LatLng getCarPosition(String car) {
@@ -145,9 +150,26 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
 
     private void setStyle() {
         try {
-            boolean success = googleMap.setMapStyle(
-                    MapStyleOptions.loadRawResourceStyle(
-                            this, R.raw.mapstyle_night));
+            boolean success;
+            switch (state.jsonOption) {
+                case NIGHT:
+                    success = googleMap.setMapStyle(
+                            MapStyleOptions.loadRawResourceStyle(
+                                    this, R.raw.mapstyle_night));
+                    break;
+                case GREYSCALE:
+                    success = googleMap.setMapStyle(
+                            MapStyleOptions.loadRawResourceStyle(
+                                    this, R.raw.mapstyle_greyscale));
+                    break;
+                case RETRO:
+                    success = googleMap.setMapStyle(
+                            MapStyleOptions.loadRawResourceStyle(
+                                    this, R.raw.mapstyle_retro));
+                    break;
+                default:
+                    throw new RuntimeException("Json style was not initialized");
+            }
 
             if (!success)
                 Log.e(TAG, "Style parsing failed.");
