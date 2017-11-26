@@ -48,6 +48,20 @@ public class State implements Parcelable {
         party = in.readString();
         car = in.readString();
         user = in.readString();
+        switch (in.readString()) {
+            case "retro":
+                jsonOption = RETRO;
+                break;
+            case "night":
+                jsonOption = NIGHT;
+                break;
+            case "greyscale":
+                jsonOption = GREYSCALE;
+                break;
+            default:
+                throw new RuntimeException("Bad switch case");
+        }
+
     }
 
     @Override
@@ -55,6 +69,19 @@ public class State implements Parcelable {
         dest.writeString(party);
         dest.writeString(car);
         dest.writeString(user);
+        switch (jsonOption) {
+            case RETRO:
+                dest.writeString("retro");
+                break;
+            case NIGHT:
+                dest.writeString("night");
+                break;
+            case GREYSCALE:
+                dest.writeString("greyscale");
+                break;
+            default:
+                throw new RuntimeException("Bad switch case");
+        }
     }
 
     @Override
@@ -81,7 +108,7 @@ public class State implements Parcelable {
         currentActivity.startActivity(intent);
     }
 
-    // TODO: add checks here as necessary
+    // Add checks here as necessary
     private void testActivityRequirements() {
         switch (currentActivityName) {
             case "PartyMenuActivity":
