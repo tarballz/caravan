@@ -1,4 +1,4 @@
-package edu.cmps121.app.model;
+package edu.cmps121.app.dynamo;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
@@ -9,8 +9,10 @@ public class Car {
     private String car;
     private String driver;
     private String party;
+    private String color;
     private double lat;
     private double lng;
+    private float bearing;
 
     @DynamoDBHashKey(attributeName = "car")
     public String getCar() {
@@ -41,9 +43,29 @@ public class Car {
 
     @DynamoDBAttribute(attributeName = "lat")
     public double getLat() { return lat;}
+
     public void setLat(double lat) { this.lat = lat; }
 
     @DynamoDBAttribute(attributeName = "lng")
     public double getLng() { return lng; }
+
     public void setLng(double lng) { this.lng = lng; }
+
+    @DynamoDBAttribute(attributeName = "color")
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    @DynamoDBAttribute(attributeName = "bearing")
+    public float getBearing() {
+        return bearing;
+    }
+
+    public void setBearing(float bearing) {
+        this.bearing = bearing;
+    }
 }

@@ -1,11 +1,12 @@
-package edu.cmps121.app;
+package edu.cmps121.app.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import edu.cmps121.app.api.State;
+import edu.cmps121.app.R;
+import edu.cmps121.app.utilities.State;
 
 public class PartyMenuActivity extends AppCompatActivity {
     private State state;
@@ -35,5 +36,13 @@ public class PartyMenuActivity extends AppCompatActivity {
 
     public void onClickSettingsMenu(View view) {
         state.nextActivity(this, SettingsActivity.class);
+    }
+
+    public void onClickLogout(View view) { state.nextActivity(this, MainActivity.class);}
+
+    // Do nothing, force user to log out if they want to return
+    @Override
+    public void onBackPressed() {
+
     }
 }

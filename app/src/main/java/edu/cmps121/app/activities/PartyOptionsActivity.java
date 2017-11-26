@@ -1,14 +1,17 @@
-package edu.cmps121.app;
+package edu.cmps121.app.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import edu.cmps121.app.api.State;
+import edu.cmps121.app.R;
+import edu.cmps121.app.utilities.State;
 
 public class PartyOptionsActivity extends AppCompatActivity {
-    private State state; 
+    private State state;
+
+    private static final String TAG = PartyOptionsActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,8 +20,11 @@ public class PartyOptionsActivity extends AppCompatActivity {
 
         state = new State(this);
 
+        if (state.party != null && !state.party.isEmpty())
+            state.nextActivity(this, PartyMenuActivity.class);
+
         TextView textView = (TextView) findViewById(R.id.display_name_tv);
-        textView.setText("Hello " + state.username + "!");
+        textView.setText("Hello " + state.user + "!");
     }
 
     public void onClickCreatePartyOptions(View view) {

@@ -1,4 +1,4 @@
-package edu.cmps121.app;
+package edu.cmps121.app.activities;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -6,9 +6,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import edu.cmps121.app.api.State;
+import edu.cmps121.app.R;
+import edu.cmps121.app.utilities.State;
 
-import static edu.cmps121.app.api.CaravanUtils.shortToast;
+import static edu.cmps121.app.utilities.CaravanUtils.shortToast;
 
 public class MapsActivity extends AppCompatActivity {
     private State state;
@@ -49,5 +50,9 @@ public class MapsActivity extends AppCompatActivity {
             startActivity(mapIntent);
         else
             shortToast(MapsActivity.this, "Please install Google Maps on your device");
+    }
+
+    public void mapsPage(View view) {
+        state.nextActivity(this, MapsOverlayActivity.class);
     }
 }

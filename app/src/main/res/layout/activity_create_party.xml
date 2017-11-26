@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.cmps121.app.CreatePartyActivity">
+    tools:context="edu.cmps121.app.activities.CreatePartyActivity">
 
     <EditText
         android:id="@+id/enter_create_party_name_et"

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.cmps121.app.CreateCarActivity"
+    tools:context="edu.cmps121.app.activities.CreateCarActivity"
     tools:layout_editor_absoluteY="81dp"
     tools:layout_editor_absoluteX="0dp">
 
@@ -67,10 +67,10 @@
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
-        android:id="@+id/select_icon_tv"
+        android:id="@+id/select_color_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Icon"
+        android:text="@string/select_color"
         tools:layout_constraintTop_creator="1"
         tools:layout_constraintRight_creator="1"
         app:layout_constraintRight_toRightOf="parent"
@@ -80,7 +80,7 @@
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <Spinner
-        android:id="@+id/select_icon_sp"
+        android:id="@+id/select_color_sp"
         android:layout_width="178dp"
         android:layout_height="39dp"
         tools:layout_constraintTop_creator="1"
@@ -92,7 +92,7 @@
         tools:layout_constraintLeft_creator="1"
         android:layout_marginBottom="37dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/select_icon_tv" />
+        app:layout_constraintTop_toTopOf="@+id/select_color_tv" />
 
     <TextView
         android:id="@+id/select_driver_tv"
@@ -123,6 +123,6 @@
         tools:layout_constraintLeft_creator="1"
         android:layout_marginBottom="101dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/select_icon_sp" />
+        app:layout_constraintTop_toTopOf="@+id/select_color_sp" />
 
 </android.support.constraint.ConstraintLayout>
