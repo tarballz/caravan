@@ -22,6 +22,7 @@ import edu.cmps121.app.dynamo.User;
 import static edu.cmps121.app.utilities.CaravanUtils.isValidString;
 import static edu.cmps121.app.utilities.CaravanUtils.shortToast;
 import static edu.cmps121.app.utilities.CaravanUtils.startDriverService;
+import static edu.cmps121.app.utilities.CaravanUtils.stopDriverService;
 import static edu.cmps121.app.utilities.CaravanUtils.trackingEnabled;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,6 +51,12 @@ public class MainActivity extends AppCompatActivity {
 
         state = new State(this);
         dynamoDb = new DynamoDB(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        stopDriverService(this);
     }
 
     public void onClickCreateAccount(View view) {

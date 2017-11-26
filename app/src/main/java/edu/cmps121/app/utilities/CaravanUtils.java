@@ -26,6 +26,11 @@ public class CaravanUtils {
         context.startService(serviceIntent);
     }
 
+    public static void stopDriverService(Context context) {
+        Intent serviceIntent = new Intent(context, DriverService.class);
+        context.stopService(serviceIntent);
+    }
+
     public static boolean trackingEnabled(Context context) {
         return ((ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) &&

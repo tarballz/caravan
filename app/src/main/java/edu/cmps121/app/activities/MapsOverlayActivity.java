@@ -60,6 +60,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     private List<LatLng> positions;
     private List<Float> bearings;
     private String currentColor;
+    private boolean threadStop;
 
     private static final String TAG = MapsOverlayActivity.class.getSimpleName();
     private static final int TIME_LIMIT_MILLI = 500000000;
@@ -72,6 +73,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         state = new State(this);
         dynamoDB = new DynamoDB(this);
         markers = new HashMap<>();
+        threadStop = false;
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager()
@@ -83,21 +85,20 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     protected void onResume() {
         super.onResume();
 
+        threadStop = false;
         startTrackingThread();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
-        trackingThread.interrupt();
+        threadStop = true;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        trackingThread.interrupt();
+        threadStop = true;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -266,23 +267,29 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void startTrackingThread() {
-        checkCarsTable();
-        ArrayList<LatLng> oldPositions = new ArrayList<>(positions);
+        try {
+            checkCarsTable();
+            ArrayList<LatLng> oldPositions = new ArrayList<>(positions);
 
-        ThreadHandler handler = new ThreadHandler(this);
-        Runnable runnable = () -> trackDynamo(handler, oldPositions);
+            ThreadHandler handler = new ThreadHandler(this);
+            Runnable runnable = () -> trackDynamo(handler, oldPositions);
 
-
-        trackingThread = new Thread(runnable);
-        trackingThread.setName("TrackingThread");
-        trackingThread.start();
+            if (trackingThread == null || !trackingThread.isAlive()) {
+                trackingThread = new Thread(runnable);
+                trackingThread.setName("TrackingThread");
+                trackingThread.start();
+            }
+        } catch (IndexOutOfBoundsException e) {
+            Log.i(TAG, "Cars table was updated, resulting in |positions| > |oldPositions|");
+            startTrackingThread();
+        }
     }
 
-    private void trackDynamo(ThreadHandler handler, ArrayList<LatLng> oldPositions) {
+    private void trackDynamo(ThreadHandler handler, ArrayList<LatLng> oldPositions) throws IndexOutOfBoundsException {
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
         long endTime = System.currentTimeMillis() + TIME_LIMIT_MILLI;
 
-        while (System.currentTimeMillis() < endTime) {
+        while (System.currentTimeMillis() < endTime && !threadStop) {
             checkCarsTable();
 
             for (int i = 0; i < cars.size(); ++i) {
