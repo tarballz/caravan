@@ -75,6 +75,11 @@ public class DriverService extends Service {
 
         car = intent.getStringExtra("car");
 
+        if (car == null) {
+            Log.e(TAG, "Service cannot be started without a car primary key. Halting Service");
+            this.stopSelf();
+        }
+
         return START_STICKY;
     }
 
