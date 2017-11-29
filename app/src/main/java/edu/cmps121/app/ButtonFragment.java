@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import edu.cmps121.app.api.DynamoDB;
+import edu.cmps121.app.model.Car;
 
 public class ButtonFragment extends Fragment {
 
@@ -63,7 +64,7 @@ public class ButtonFragment extends Fragment {
          */
 
         listView.setOnClickListener((parent, v, position, id) -> {
-            state.cars = (String) parent.getItemAtPosition(position);
+            String carName = (String) parent.getItemAtPosition(position);
             (Car) carItem = (Car) dynamoDB.getItem(Car.class, carName);
 
             if (carItem == null)
