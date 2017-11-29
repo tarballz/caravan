@@ -140,6 +140,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         LocationManager locationManager =
                 (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
+        assert locationManager != null;
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             throw new RuntimeException("Permission should be requested upon starting the app");
 

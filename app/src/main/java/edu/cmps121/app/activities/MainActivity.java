@@ -30,16 +30,20 @@ public class MainActivity extends AppCompatActivity {
     private DynamoDB dynamoDb;
     private User user;
 
-    private int MIN_USER_LEN = 3;
-    private int MAX_USER_LEN = 8;
-    private int MIN_PASS_LEN = 5;
-    private int MAX_PASS_LEN = 16;
-
-    private static final String TAG = MainActivity.class.getSimpleName();
     private static final int TAG_CODE_PERMISSION_LOCATION = 123;
+    @SuppressWarnings("All")
+    private static final int MIN_USER_LEN = 3;
+    @SuppressWarnings("All")
+    private static final int MAX_USER_LEN = 8;
+    @SuppressWarnings("All")
+    private static final int MIN_PASS_LEN = 5;
+    @SuppressWarnings("All")
+    private static final int MAX_PASS_LEN = 16;
+    @SuppressWarnings("unused")
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     public enum AccountStatus {
-        ACCOUNT_AVAILABLE, ACCOUNT_EXISTS, IMPROPER_USER, IMPROPER_PASS, NO_MATCH_PASS_USER;
+        ACCOUNT_AVAILABLE, ACCOUNT_EXISTS, IMPROPER_USER, IMPROPER_PASS, NO_MATCH_PASS_USER
     }
 
     @Override
