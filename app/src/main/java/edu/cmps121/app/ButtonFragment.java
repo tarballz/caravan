@@ -64,16 +64,23 @@ public class ButtonFragment extends Fragment {
 
         listView.setOnClickListener((parent, v, position, id) -> {
             state.cars = (String) parent.getItemAtPosition(position);
+            (Car) carItem = (Car) dynamoDB.getItem(Car.class, carName);
+
+            if (carItem == null)
+                throw new RuntimeException("Car could not be found in the DB");
+
+            Bundle bundle = new Bundle();
+
         };
 
         // figure out how to use primary key to get car
         // set lon and lat to these new values from dynamoDB.getItem()
-        lon = dynamoDB.getItem()
+
+
 //         Button button = new Button(getContext());
 //         linearLayout.addView(button);
 
         return linearLayout;
-
     }
 
 }
