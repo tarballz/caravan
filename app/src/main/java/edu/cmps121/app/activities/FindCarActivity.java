@@ -43,7 +43,8 @@ public class FindCarActivity extends AppCompatActivity {
         carList.setAdapter(adapter);
 
         carList.setOnItemClickListener((parent, v, position, id) -> {
-            state.car = (String) parent.getItemAtPosition(position);
+            String carAndDriver= (String) parent.getItemAtPosition(position);
+            state.car = carAndDriver.substring(carAndDriver.indexOf("'s ") + 3);
 
             dynamoDB.updateItem(User.class, state.user, (obj) -> {
                 User user = (User) obj;

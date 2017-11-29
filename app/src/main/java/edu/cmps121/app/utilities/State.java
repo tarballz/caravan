@@ -40,7 +40,7 @@ public class State implements Parcelable {
         } catch (NullPointerException e) {
             if (!currentActivity.getClass().equals(MainActivity.class))
                 throw new RuntimeException("State can only be null at start of MainActivity" + e);
-            jsonOption = RETRO;
+            jsonOption = NIGHT;
         }
     }
 
