@@ -36,9 +36,6 @@ public class NavigationFragment extends Fragment {
         dynamoDB = new DynamoDB(getContext());
         listView = (ListView) navigationLayout.findViewById(R.id.navigation_lv);
 
-        listCars();
-        setListener();
-
         return navigationLayout;
     }
 
@@ -69,9 +66,12 @@ public class NavigationFragment extends Fragment {
         });
     }
 
-    public void establishCommunication(CameraMovement callback, String party) {
+    public void initializeNavFragment(CameraMovement callback, String party) {
         this.callback = callback;
         this.party = party;
+
+        listCars();
+        setListener();
     }
 
     public interface CameraMovement {

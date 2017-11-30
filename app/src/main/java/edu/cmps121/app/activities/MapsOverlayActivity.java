@@ -64,12 +64,8 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     private boolean threadStop;
 
     private static final String TAG = MapsOverlayActivity.class.getSimpleName();
-    private static final String NAV_FLAG = "nav";
-    private static final String MAP_FLAG = "map";
-    private static final int NAV_ID = 0;
-    private static final int MAP_ID = 1;
-    private static final int TIME_LIMIT_MILLI = 500000000;
     private static final float INITIAL_ZOOM = 14.0f;
+    private static final int TIME_LIMIT_MILLI = 500000000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,41 +81,13 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void instantiateFragments() {
-//        LinearLayout rootLayout = new LinearLayout(this);
-//        FrameLayout navigationLayout = new FrameLayout(this);
-//        FrameLayout mapsLayout = new FrameLayout(this);
-//        NavigationFragment navigationFragment = new NavigationFragment();
-//        SupportMapFragment mapFragment = new SupportMapFragment();
-//
-//        navigationLayout.setId(NAV_ID);
-//        mapsLayout.setId(MAP_ID);
-//
-//        rootLayout.setOrientation(LinearLayout.VERTICAL);
-//        rootLayout.addView(navigationLayout, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 0.2f));
-//        rootLayout.addView(mapsLayout, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 0.8f));
-//
-//        navigationFragment.establishCommunication(this);
-//        mapFragment.getMapAsync(this);
-//
-//        addArguments(navigationFragment);
-//
-//        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//        fragmentTransaction.add(navigationLayout.getId(), navigationFragment, NAV_FLAG);
-//        fragmentTransaction.add(mapsLayout.getId(), mapFragment, MAP_FLAG);
-//        fragmentTransaction.commit();
-//
-//        setContentView(rootLayout);
-
-
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.map_fragment);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map_fragment);
         mapFragment.getMapAsync(this);
 
-        NavigationFragment navFragment =
-                (NavigationFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.nav_fragment);
-        navFragment.establishCommunication(this, state.party);
+        NavigationFragment navFragment = (NavigationFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.nav_fragment);
+        navFragment.initializeNavFragment(this, state.party);
     }
 
     @Override
