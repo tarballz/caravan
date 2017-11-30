@@ -239,15 +239,15 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
             Bitmap bitmap = bitmapDrawable.getBitmap();
             Bitmap smallCar = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
 
-            markers.put(
-                    cars.get(i),
-                    googleMap.addMarker(new MarkerOptions()
-                            .position(positions.get(i))
-                            .title(carName)
-                            .snippet(snippet)
-                            .icon(BitmapDescriptorFactory.fromBitmap(smallCar))
-                            .rotation(bearings.get(i)))
-            );
+            Marker marker = googleMap.addMarker(new MarkerOptions()
+                    .position(positions.get(i))
+                    .title(carName)
+                    .snippet(snippet)
+                    .icon(BitmapDescriptorFactory.fromBitmap(smallCar))
+                    .rotation(bearings.get(i)));
+            marker.setTag(currentColor);
+
+            markers.put(cars.get(i), marker);
         }
     }
 
@@ -308,6 +308,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         }
     }
 
+    // TODO: remove endTime
     private void trackDynamo(ThreadHandler handler, ArrayList<LatLng> oldPositions) throws IndexOutOfBoundsException {
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
         long endTime = System.currentTimeMillis() + TIME_LIMIT_MILLI;
@@ -387,8 +388,15 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         }
 
         private void render(Marker marker, View view) {
+            TextView titleUi = ((TextView) view.findViewById(R.id.title));
+            TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
+            String title = marker.getTitle();
+            String snippet = marker.getSnippet();
+            String color = (String) marker.getTag();
+            assert color != null;
+
             int badge;
-            switch (currentColor) {
+            switch (color) {
                 case "green":
                     badge = R.drawable.badge_green;
                     break;
@@ -404,10 +412,9 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
                 default:
                     badge = 0;
             }
+
             ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);
 
-            String title = marker.getTitle();
-            TextView titleUi = ((TextView) view.findViewById(R.id.title));
             if (title != null) {
                 SpannableString titleText = new SpannableString(title);
                 titleText.setSpan(new ForegroundColorSpan(Color.RED), 0, titleText.length(), 0);
@@ -416,8 +423,6 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
             } else
                 titleUi.setText("");
 
-            String snippet = marker.getSnippet();
-            TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
             if (snippet != null && snippet.length() > 12) {
                 SpannableString snippetText = new SpannableString(snippet);
 
