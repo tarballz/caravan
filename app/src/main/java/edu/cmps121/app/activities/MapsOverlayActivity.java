@@ -265,6 +265,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
 
         List<String> occupants = usersTable.stream()
                 .filter(e -> isOccupant(e, currentCar))
+                .filter(e -> !e.get("user").getS().equals(currentDriver))
                 .map(e -> e.get("user").getS())
                 .collect(Collectors.toList());
 
@@ -424,11 +425,10 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
 
             String snippet = marker.getSnippet();
             TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
-            if (snippet != null && snippet.length() > 12) {
+            if (snippet != null) {
                 SpannableString snippetText = new SpannableString(snippet);
 
-                snippetText.setSpan(new ForegroundColorSpan(Color.MAGENTA), 0, 10, 0);
-                snippetText.setSpan(new ForegroundColorSpan(Color.BLUE), 12, snippet.length(), 0);
+                snippetText.setSpan(new ForegroundColorSpan(Color.BLUE), 0, snippet.length(), 0);
 
                 snippetUi.setText(snippetText);
             } else
