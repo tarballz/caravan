@@ -245,15 +245,15 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
             Bitmap bitmap = bitmapDrawable.getBitmap();
             Bitmap smallCar = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
 
-            markers.put(
-                    cars.get(i),
-                    googleMap.addMarker(new MarkerOptions()
-                            .position(positions.get(i))
-                            .title(carName)
-                            .snippet(snippet)
-                            .icon(BitmapDescriptorFactory.fromBitmap(smallCar))
-                            .rotation(bearings.get(i)))
-            );
+            Marker marker = googleMap.addMarker(new MarkerOptions()
+                    .position(positions.get(i))
+                    .title(carName)
+                    .snippet(snippet)
+                    .icon(BitmapDescriptorFactory.fromBitmap(smallCar))
+                    .rotation(bearings.get(i)));
+            marker.setTag(currentColor);
+
+            markers.put(cars.get(i), marker);
         }
     }
 
@@ -315,6 +315,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         }
     }
 
+    // TODO: remove endTime
     private void trackDynamo(ThreadHandler handler, ArrayList<LatLng> oldPositions) throws IndexOutOfBoundsException {
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
         long endTime = System.currentTimeMillis() + TIME_LIMIT_MILLI;
@@ -394,45 +395,50 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         }
 
         private void render(Marker marker, View view) {
-            int badge;
-            switch (currentColor) {
+            TextView titleUi = ((TextView) view.findViewById(R.id.title));
+            TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
+
+            String title = marker.getTitle();
+            String snippet = marker.getSnippet();
+            String color = (String) marker.getTag();
+            int badge = 0;
+
+            assert color != null;
+
+            switch (color) {
                 case "green":
                     badge = R.drawable.badge_green;
                     break;
                 case "yellow":
                     badge = R.drawable.badge_yellow;
                     break;
-                case "cyan":
-                    badge = R.drawable.badge_blue;
-                    break;
                 case "red":
-                    badge = R.drawable.badge_blue;
+                    badge = R.drawable.badge_red;
                     break;
                 default:
-                    badge = 0;
+                    badge = R.drawable.badge_blue;
             }
+
             ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);
 
-            String title = marker.getTitle();
-            TextView titleUi = ((TextView) view.findViewById(R.id.title));
-            if (title != null) {
+            if (title == null)
+                titleUi.setText("");
+            else {
                 SpannableString titleText = new SpannableString(title);
                 titleText.setSpan(new ForegroundColorSpan(Color.RED), 0, titleText.length(), 0);
 
                 titleUi.setText(titleText);
-            } else
-                titleUi.setText("");
+            }
 
-            String snippet = marker.getSnippet();
-            TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
-            if (snippet != null) {
+            if (snippet == null)
+                snippetUi.setText("");
+            else {
                 SpannableString snippetText = new SpannableString(snippet);
 
                 snippetText.setSpan(new ForegroundColorSpan(Color.BLUE), 0, snippet.length(), 0);
 
                 snippetUi.setText(snippetText);
-            } else
-                snippetUi.setText("");
+            }
         }
     }
 
