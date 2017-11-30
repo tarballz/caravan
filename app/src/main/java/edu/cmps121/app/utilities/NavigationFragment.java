@@ -1,4 +1,4 @@
-package edu.cmps121.app;
+package edu.cmps121.app.utilities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,14 +16,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import edu.cmps121.app.api.DynamoDB;
-import edu.cmps121.app.model.Car;
+import edu.cmps121.app.dynamo.Car;
+import edu.cmps121.app.dynamo.DynamoDB;
 
-public class ButtonFragment extends Fragment {
+public class NavigationFragment extends Fragment {
 
     private DynamoDB dynamoDB;
     private ListView listView;
     private String party;
+    private CameraMovement callback;
     public int lon;
     public int lat;
 
@@ -42,7 +43,6 @@ public class ButtonFragment extends Fragment {
         listView = new ListView(getContext());
 
         listCars();
-        setListener();
 
         linearLayout.addView(listView);
         return linearLayout;
@@ -55,9 +55,6 @@ public class ButtonFragment extends Fragment {
 
             if (carItem == null)
                 throw new RuntimeException("Car could not be found in the DB");
-
-            Bundle bundle = new Bundle();
-
         });
     }
 
@@ -77,7 +74,16 @@ public class ButtonFragment extends Fragment {
         listView.setAdapter(adapter);
     }
 
+    /**
+     * Allows us to move the camera in MapsOverlayActivity. We don't want to set the listener until
+     * we know we can make the callback.
+     */
+    public void setCallback(CameraMovement callback) {
+        this.callback = callback;
+        setListener();
+    }
+
     public interface CameraMovement {
-        void moveCamera();
+        void moveCamera(String carName);
     }
 }

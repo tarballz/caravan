@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Message;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -18,7 +19,9 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -40,6 +43,7 @@ import java.util.stream.Collectors;
 
 import edu.cmps121.app.R;
 import edu.cmps121.app.dynamo.DynamoDB;
+import edu.cmps121.app.utilities.NavigationFragment;
 import edu.cmps121.app.utilities.State;
 import edu.cmps121.app.dynamo.Car;
 import edu.cmps121.app.dynamo.User;
@@ -48,7 +52,7 @@ import edu.cmps121.app.utilities.ThreadHandler;
 import static edu.cmps121.app.utilities.CaravanUtils.isValidString;
 import static edu.cmps121.app.utilities.CaravanUtils.shortToast;
 
-public class MapsOverlayActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsOverlayActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationFragment.CameraMovement {
     private State state;
     private DynamoDB dynamoDB;
     private GoogleMap googleMap;
@@ -63,23 +67,49 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     private boolean threadStop;
 
     private static final String TAG = MapsOverlayActivity.class.getSimpleName();
+    private static final String NAV_FLAG = "nav";
+    private static final String MAP_FLAG = "map";
+    private static final int NAV_ID = 0;
+    private static final int MAP_ID = 1;
     private static final int TIME_LIMIT_MILLI = 500000000;
     private static final float INITIAL_ZOOM = 14.0f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps_overlay);
+//        setContentView(R.layout.activity_maps_overlay);
 
         state = new State(this);
         dynamoDB = new DynamoDB(this);
         markers = new HashMap<>();
         threadStop = false;
 
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.map);
+        instantiateFragments();
+    }
+
+    private void instantiateFragments() {
+        LinearLayout rootLayout = new LinearLayout(this);
+        FrameLayout navigationLayout = new FrameLayout(this);
+        FrameLayout mapsLayout = new FrameLayout(this);
+
+        navigationLayout.setId(NAV_ID);
+        mapsLayout.setId(MAP_ID);
+
+        NavigationFragment navigationFragment = new NavigationFragment();
+        navigationFragment.setCallback(this);
+
+//        SupportMapFragment mapFragment =
+//                (SupportMapFragment) getSupportFragmentManager()
+//                        .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = new SupportMapFragment();
         mapFragment.getMapAsync(this);
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(navigationLayout.getId(), navigationFragment, NAV_FLAG);
+        fragmentTransaction.add(mapsLayout.getId(), mapFragment, MAP_FLAG);
+        fragmentTransaction.commit();
+
+        setContentView(rootLayout);
     }
 
     @Override
@@ -428,5 +458,12 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
             } else
                 snippetUi.setText("");
         }
+    }
+
+    @Override
+    public void moveCamera(String carName) {
+        Marker marker = markers.get(carName);
+
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), INITIAL_ZOOM));
     }
 }
