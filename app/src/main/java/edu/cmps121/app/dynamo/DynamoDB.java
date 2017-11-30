@@ -1,4 +1,4 @@
-package edu.cmps121.app.api;
+package edu.cmps121.app.dynamo;
 
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
-import edu.cmps121.app.model.User;
+import edu.cmps121.app.utilities.ItemUpdater;
 
 public class DynamoDB {
     private DynamoDBMapper mapper;
@@ -45,7 +45,7 @@ public class DynamoDB {
 
     public DynamoDB(Context context) {
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                context,
+                context.getApplicationContext(),
                 "us-west-2:3d86ea2c-db71-4953-bc20-8eb77c931e43", // Identity pool ID
                 Regions.US_WEST_2
         );
@@ -124,16 +124,12 @@ public class DynamoDB {
         thread.start();
     }
 
-//    public void updateUserParty(String username, String partyName) {
-//        User userItem = (User) getItem(User.class, username);
-//        userItem.setParty(partyName);
-//
-//        saveItem(userItem);
-//    }
-
     public <T> void updateItem(Class<T> itemClass, String primaryKey, ItemUpdater updater) {
         Object item = getItem(itemClass, primaryKey);
 
         updater.update(item);
+    }
+
+    private void test() {
     }
 }

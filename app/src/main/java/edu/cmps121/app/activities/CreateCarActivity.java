@@ -1,4 +1,4 @@
-package edu.cmps121.app;
+package edu.cmps121.app.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,13 +16,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import edu.cmps121.app.api.DynamoDB;
-import edu.cmps121.app.api.State;
-import edu.cmps121.app.model.Car;
-import edu.cmps121.app.model.User;
+import edu.cmps121.app.R;
+import edu.cmps121.app.dynamo.DynamoDB;
+import edu.cmps121.app.utilities.State;
+import edu.cmps121.app.dynamo.Car;
+import edu.cmps121.app.dynamo.User;
 
-import static edu.cmps121.app.api.CaravanUtils.isValidString;
-import static edu.cmps121.app.api.CaravanUtils.shortToast;
+import static edu.cmps121.app.utilities.CaravanUtils.isValidString;
+import static edu.cmps121.app.utilities.CaravanUtils.shortToast;
+import static edu.cmps121.app.utilities.CaravanUtils.startDriverService;
 
 public class CreateCarActivity extends AppCompatActivity {
     private State state;
@@ -94,15 +96,10 @@ public class CreateCarActivity extends AppCompatActivity {
     }
 
     private ArrayList<String> getDrivers() {
-        List<Map<String, AttributeValue>> driverItems = dynamoDB.queryTableByParty("cars", state.party);
-        List<Map<String, AttributeValue>> userItems = dynamoDB.queryTableByParty("users", state.party);
+        List<Map<String, AttributeValue>> usersItems = dynamoDB.queryTableByParty("users", state.party);
 
-        List<String> driversList = driverItems.stream()
-                .map(e -> e.get("driver").getS())
-                .collect(Collectors.toList());
-
-        return new ArrayList<>(userItems.stream()
-                .filter(e -> !driversList.contains(e.get("user").getS()))
+        return new ArrayList<>(usersItems.stream()
+                .filter(e -> e.get("car") == null)
                 .map(e -> e.get("user").getS())
                 .collect(Collectors.toList()));
     }
@@ -114,9 +111,9 @@ public class CreateCarActivity extends AppCompatActivity {
             saveCar();
         else
             shortToast(this,
-                    (isValidString(carName)? "Name of car, " : "") +
-                            (isValidString(color)? "Color, " : "") +
-                            (isValidString(driver)? "Driver, " : "") +
+                    (isValidString(carName) ? "Name of car, " : "") +
+                            (isValidString(color) ? "Color, " : "") +
+                            (isValidString(driver) ? "Driver, " : "") +
                             "cannot be left empty"
             );
     }
@@ -136,14 +133,29 @@ public class CreateCarActivity extends AppCompatActivity {
             state.car = carName;
 
             dynamoDB.saveItem(car);
-            dynamoDB.updateItem(User.class, state.user, (obj) -> {
+            updateUsers();
+
+            state.nextActivity(this, PartyMenuActivity.class);
+        }
+    }
+
+    private void updateUsers() {
+        if (state.user.equals(driver))
+            startDriverService(carName, this);
+        else {
+            dynamoDB.updateItem(User.class, driver, (obj) -> {
                 User user = (User) obj;
                 user.setCar(carName);
 
                 dynamoDB.saveItem(user);
             });
-
-            state.nextActivity(this, PartyMenuActivity.class);
         }
+
+        dynamoDB.updateItem(User.class, state.user, (obj) -> {
+            User user = (User) obj;
+            user.setCar(carName);
+
+            dynamoDB.saveItem(user);
+        });
     }
 }

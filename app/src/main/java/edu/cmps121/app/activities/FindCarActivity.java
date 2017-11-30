@@ -1,4 +1,4 @@
-package edu.cmps121.app;
+package edu.cmps121.app.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,9 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import edu.cmps121.app.api.DynamoDB;
-import edu.cmps121.app.api.State;
-import edu.cmps121.app.model.User;
+import edu.cmps121.app.R;
+import edu.cmps121.app.dynamo.DynamoDB;
+import edu.cmps121.app.utilities.State;
+import edu.cmps121.app.dynamo.User;
 
 public class FindCarActivity extends AppCompatActivity {
     private State state;
@@ -42,7 +43,8 @@ public class FindCarActivity extends AppCompatActivity {
         carList.setAdapter(adapter);
 
         carList.setOnItemClickListener((parent, v, position, id) -> {
-            state.car = (String) parent.getItemAtPosition(position);
+            String carAndDriver= (String) parent.getItemAtPosition(position);
+            state.car = carAndDriver.substring(carAndDriver.indexOf("'s ") + 3);
 
             dynamoDB.updateItem(User.class, state.user, (obj) -> {
                 User user = (User) obj;
