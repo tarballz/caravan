@@ -26,6 +26,7 @@ import static edu.cmps121.app.utilities.CaravanUtils.shortToast;
 import static edu.cmps121.app.utilities.CaravanUtils.startDriverService;
 
 public class CreateCarActivity extends AppCompatActivity {
+
     private State state;
     private DynamoDB dynamoDB;
     private String driver;
@@ -45,6 +46,7 @@ public class CreateCarActivity extends AppCompatActivity {
     }
 
     private void initializeColorSpinner() {
+        @SuppressWarnings("All")
         Spinner colorSpinner = (Spinner) findViewById(R.id.select_color_sp);
         ArrayList<String> colors = new ArrayList<>();
 
@@ -73,6 +75,7 @@ public class CreateCarActivity extends AppCompatActivity {
     }
 
     public void initializeDriverSpinner() {
+        @SuppressWarnings("All")
         Spinner carSpinner = (Spinner) findViewById(R.id.select_driver_sp);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
@@ -104,6 +107,7 @@ public class CreateCarActivity extends AppCompatActivity {
     }
 
     public void onClickCreateCar(View view) {
+        @SuppressWarnings("All")
         EditText editText = (EditText) findViewById(R.id.enter_create_car_name_et);
         carName = editText.getText().toString();
         if (isValidString(carName) && isValidString(driver) && isValidString(color))

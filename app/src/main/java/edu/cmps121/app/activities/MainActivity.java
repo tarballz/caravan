@@ -26,6 +26,7 @@ import static edu.cmps121.app.utilities.CaravanUtils.stopDriverService;
 import static edu.cmps121.app.utilities.CaravanUtils.trackingEnabled;
 
 public class MainActivity extends AppCompatActivity {
+
     private State state;
     private DynamoDB dynamoDb;
     private User user;

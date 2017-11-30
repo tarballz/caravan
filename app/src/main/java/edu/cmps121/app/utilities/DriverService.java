@@ -15,6 +15,7 @@ import edu.cmps121.app.dynamo.DynamoDB;
 import static edu.cmps121.app.utilities.CaravanUtils.trackingEnabled;
 
 public class DriverService extends Service {
+
     private LocationManager locationManager;
     private LocationListener gpsLocationListener;
     private LocationListener networkLocationListener;
@@ -28,7 +29,7 @@ public class DriverService extends Service {
     private class LocationListener implements android.location.LocationListener {
         Location lastLocation;
 
-        public LocationListener(String provider) {
+        LocationListener(String provider) {
             Log.i(TAG, "New LocationListener: " + provider);
             lastLocation = new Location(provider);
         }

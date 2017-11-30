@@ -50,17 +50,18 @@ import static edu.cmps121.app.utilities.CaravanUtils.isValidString;
 import static edu.cmps121.app.utilities.CaravanUtils.shortToast;
 
 public class MapsOverlayActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationFragment.CameraMovement {
+
     private State state;
     private DynamoDB dynamoDB;
     private GoogleMap googleMap;
     private Thread trackingThread;
+
     private HashMap<String, Marker> markers;
     private List<String> cars;
     private List<String> drivers;
     private List<String> colors;
     private List<LatLng> positions;
     private List<Float> bearings;
-    private String currentColor;
     private boolean threadStop;
 
     private static final String TAG = MapsOverlayActivity.class.getSimpleName();
@@ -234,12 +235,12 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         List<Map<String, AttributeValue>> usersTable = dynamoDB.queryTableByParty("users", state.party);
 
         for (int i = 0; i < cars.size(); ++i) {
-            currentColor = colors.get(i);
-            int color = getCarColor(currentColor);
-
             String carName = cars.get(i);
             String carDriver = drivers.get(i);
+            String currentColor = colors.get(i);
             String snippet = createSnippet(usersTable, carName, carDriver);
+
+            int color = getCarColor(currentColor);
 
             BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(color, null);
             Bitmap bitmap = bitmapDrawable.getBitmap();
@@ -261,7 +262,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     private String createSnippet(List<Map<String, AttributeValue>> usersTable,
                                  String currentCar,
                                  String currentDriver) {
-        String snippet = "Driver: " + currentDriver + "\n Occupants: ";
+        StringBuilder snippet = new StringBuilder("Driver: " + currentDriver + "\n Occupants: ");
 
         List<String> occupants = usersTable.stream()
                 .filter(e -> isOccupant(e, currentCar))
@@ -270,9 +271,9 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
                 .collect(Collectors.toList());
 
         for (String occupant : occupants)
-            snippet += occupant + "\n";
+            snippet.append(occupant).append("\n");
 
-        return snippet;
+        return snippet.toString();
     }
 
     private boolean isOccupant(Map<String, AttributeValue> item, String currentCar) {
@@ -395,13 +396,15 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         }
 
         private void render(Marker marker, View view) {
+            @SuppressWarnings("All")
             TextView titleUi = ((TextView) view.findViewById(R.id.title));
+            @SuppressWarnings("All")
             TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
 
             String title = marker.getTitle();
             String snippet = marker.getSnippet();
             String color = (String) marker.getTag();
-            int badge = 0;
+            int badge;
 
             assert color != null;
 

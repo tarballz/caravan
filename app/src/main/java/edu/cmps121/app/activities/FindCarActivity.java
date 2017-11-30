@@ -24,6 +24,7 @@ public class FindCarActivity extends AppCompatActivity {
 
     private State state;
     private DynamoDB dynamoDB;
+    @SuppressWarnings("All")
     private Optional<String> carName;
 
     @Override

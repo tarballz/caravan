@@ -31,10 +31,11 @@ public class NavigationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        @SuppressWarnings("All")
         LinearLayout navigationLayout = (LinearLayout) inflater.inflate(R.layout.fragment_navigation, null);
 
-        dynamoDB = new DynamoDB(getContext());
         listView = (ListView) navigationLayout.findViewById(R.id.navigation_lv);
+        dynamoDB = new DynamoDB(getContext());
 
         return navigationLayout;
     }
@@ -46,7 +47,7 @@ public class NavigationFragment extends Fragment {
                 .map(e -> e.get("car").getS())
                 .collect(Collectors.toList());
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this.getContext(),
                 android.R.layout.simple_list_item_1,
                 cars

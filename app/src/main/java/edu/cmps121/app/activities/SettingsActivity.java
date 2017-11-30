@@ -14,9 +14,8 @@ import edu.cmps121.app.R;
 import edu.cmps121.app.utilities.CaravanUtils;
 import edu.cmps121.app.utilities.State;
 
-// TODO: allow users to delete cars and change parties.
-// Also let them customize the layout for the maps fragment. See res/raw
 public class SettingsActivity extends AppCompatActivity {
+
     State state;
 
     @Override
@@ -34,13 +33,13 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void initializeThemeSpinner() {
         Spinner carSpinner = (Spinner) findViewById(R.id.select_theme_sp);
-        ArrayList<String> themes = new ArrayList<String>();
+        ArrayList<String> themes = new ArrayList<>();
 
         themes.add("Retro");
         themes.add("GreyScale");
         themes.add("Night");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
                 themes

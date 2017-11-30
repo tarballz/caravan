@@ -14,10 +14,9 @@ import edu.cmps121.app.dynamo.User;
 import static edu.cmps121.app.utilities.CaravanUtils.shortToast;
 
 public class FindPartyActivity extends AppCompatActivity {
+
     private State state;
     private DynamoDB dynamoDB;
-
-    private static final String TAG = FindPartyActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
