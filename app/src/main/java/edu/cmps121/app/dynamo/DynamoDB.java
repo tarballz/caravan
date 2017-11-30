@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
-import edu.cmps121.app.utilities.ItemUpdater;
-
 public class DynamoDB {
 
     private DynamoDBMapper mapper;
@@ -130,6 +128,7 @@ public class DynamoDB {
         updater.update(item);
     }
 
-    private void test() {
+    public interface ItemUpdater {
+        void update(Object item);
     }
 }
