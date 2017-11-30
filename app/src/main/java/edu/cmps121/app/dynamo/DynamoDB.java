@@ -22,6 +22,7 @@ import java.util.concurrent.CountDownLatch;
 import edu.cmps121.app.utilities.ItemUpdater;
 
 public class DynamoDB {
+
     private DynamoDBMapper mapper;
     private AmazonDynamoDBClient client;
     private List<Map<String, AttributeValue>> itemsList;

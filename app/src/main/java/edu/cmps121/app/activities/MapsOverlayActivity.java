@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Message;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -19,9 +18,7 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -77,7 +74,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_maps_overlay);
+        setContentView(R.layout.activity_maps_overlay);
 
         state = new State(this);
         dynamoDB = new DynamoDB(this);
@@ -88,28 +85,41 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void instantiateFragments() {
-        LinearLayout rootLayout = new LinearLayout(this);
-        FrameLayout navigationLayout = new FrameLayout(this);
-        FrameLayout mapsLayout = new FrameLayout(this);
+//        LinearLayout rootLayout = new LinearLayout(this);
+//        FrameLayout navigationLayout = new FrameLayout(this);
+//        FrameLayout mapsLayout = new FrameLayout(this);
+//        NavigationFragment navigationFragment = new NavigationFragment();
+//        SupportMapFragment mapFragment = new SupportMapFragment();
+//
+//        navigationLayout.setId(NAV_ID);
+//        mapsLayout.setId(MAP_ID);
+//
+//        rootLayout.setOrientation(LinearLayout.VERTICAL);
+//        rootLayout.addView(navigationLayout, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 0.2f));
+//        rootLayout.addView(mapsLayout, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 0.8f));
+//
+//        navigationFragment.establishCommunication(this);
+//        mapFragment.getMapAsync(this);
+//
+//        addArguments(navigationFragment);
+//
+//        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//        fragmentTransaction.add(navigationLayout.getId(), navigationFragment, NAV_FLAG);
+//        fragmentTransaction.add(mapsLayout.getId(), mapFragment, MAP_FLAG);
+//        fragmentTransaction.commit();
+//
+//        setContentView(rootLayout);
 
-        navigationLayout.setId(NAV_ID);
-        mapsLayout.setId(MAP_ID);
 
-        NavigationFragment navigationFragment = new NavigationFragment();
-        navigationFragment.setCallback(this);
-
-//        SupportMapFragment mapFragment =
-//                (SupportMapFragment) getSupportFragmentManager()
-//                        .findFragmentById(R.id.map);
-        SupportMapFragment mapFragment = new SupportMapFragment();
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.map_fragment);
         mapFragment.getMapAsync(this);
 
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(navigationLayout.getId(), navigationFragment, NAV_FLAG);
-        fragmentTransaction.add(mapsLayout.getId(), mapFragment, MAP_FLAG);
-        fragmentTransaction.commit();
-
-        setContentView(rootLayout);
+        NavigationFragment navFragment =
+                (NavigationFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.nav_fragment);
+        navFragment.establishCommunication(this, state.party);
     }
 
     @Override
@@ -181,26 +191,24 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
 
     private void setStyle() {
         try {
-            boolean success;
+            int style;
             switch (state.jsonOption) {
                 case NIGHT:
-                    success = googleMap.setMapStyle(
-                            MapStyleOptions.loadRawResourceStyle(
-                                    this, R.raw.mapstyle_night));
+                    style = R.raw.mapstyle_night;
                     break;
                 case GREYSCALE:
-                    success = googleMap.setMapStyle(
-                            MapStyleOptions.loadRawResourceStyle(
-                                    this, R.raw.mapstyle_greyscale));
+                    style = R.raw.mapstyle_greyscale;
                     break;
                 case RETRO:
-                    success = googleMap.setMapStyle(
-                            MapStyleOptions.loadRawResourceStyle(
-                                    this, R.raw.mapstyle_retro));
+                    style = R.raw.mapstyle_retro;
                     break;
                 default:
                     throw new RuntimeException("Json style was not initialized");
             }
+
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, style));
 
             if (!success)
                 Log.e(TAG, "Style parsing failed.");

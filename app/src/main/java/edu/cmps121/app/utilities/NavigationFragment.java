@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import edu.cmps121.app.R;
 import edu.cmps121.app.dynamo.Car;
 import edu.cmps121.app.dynamo.DynamoDB;
 
@@ -25,37 +26,20 @@ public class NavigationFragment extends Fragment {
     private ListView listView;
     private String party;
     private CameraMovement callback;
-    public int lon;
-    public int lat;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        LinearLayout linearLayout = new LinearLayout(getContext());
-        Bundle arguments = this.getArguments();
+        LinearLayout navigationLayout = (LinearLayout) inflater.inflate(R.layout.fragment_navigation, null);
 
-        if(arguments == null)
-            throw new RuntimeException("Party was not passed within Bundle. Halting execution");
-
-        party = arguments.getString("party");
         dynamoDB = new DynamoDB(getContext());
-        listView = new ListView(getContext());
+        listView = (ListView) navigationLayout.findViewById(R.id.navigation_lv);
 
         listCars();
+        setListener();
 
-        linearLayout.addView(listView);
-        return linearLayout;
-    }
-
-    private void setListener() {
-        listView.setOnItemClickListener((parent, v, position, id) -> {
-            String carName = (String) parent.getItemAtPosition(position);
-            Car carItem = (Car) dynamoDB.getItem(Car.class, carName);
-
-            if (carItem == null)
-                throw new RuntimeException("Car could not be found in the DB");
-        });
+        return navigationLayout;
     }
 
     private void listCars() {
@@ -74,13 +58,20 @@ public class NavigationFragment extends Fragment {
         listView.setAdapter(adapter);
     }
 
-    /**
-     * Allows us to move the camera in MapsOverlayActivity. We don't want to set the listener until
-     * we know we can make the callback.
-     */
-    public void setCallback(CameraMovement callback) {
+    private void setListener() {
+        listView.setOnItemClickListener((parent, v, position, id) -> {
+            String carName = (String) parent.getItemAtPosition(position);
+
+            if (!dynamoDB.itemExists(Car.class, carName))
+                throw new RuntimeException("Car could not be found in the DB");
+
+            callback.moveCamera(carName);
+        });
+    }
+
+    public void establishCommunication(CameraMovement callback, String party) {
         this.callback = callback;
-        setListener();
+        this.party = party;
     }
 
     public interface CameraMovement {
