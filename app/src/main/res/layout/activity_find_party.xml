@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.cmps121.app.FindPartyActivity">
+    tools:context="edu.cmps121.app.activities.FindPartyActivity">
 
     <EditText
         android:id="@+id/enter_find_party_name_et"

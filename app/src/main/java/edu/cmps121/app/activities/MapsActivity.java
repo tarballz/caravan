@@ -1,4 +1,4 @@
-package edu.cmps121.app;
+package edu.cmps121.app.activities;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -9,13 +9,15 @@ import android.widget.ListView;
 ;
 import java.util.List;
 
-import edu.cmps121.app.api.CustomListViewAdapter;
-import edu.cmps121.app.api.State;
-import edu.cmps121.app.api.NearbyPlace;
+import edu.cmps121.app.utilities.CustomListViewAdapter;
+import edu.cmps121.app.utilities.NearbyPlace;
+import edu.cmps121.app.R;
+import edu.cmps121.app.utilities.State;
 
-import static edu.cmps121.app.api.CaravanUtils.shortToast;
+import static edu.cmps121.app.utilities.CaravanUtils.shortToast;
 
 public class MapsActivity extends AppCompatActivity {
+
     private State state;
     ListView foodListView;
     ListView gasListView;
@@ -56,24 +58,6 @@ public class MapsActivity extends AppCompatActivity {
         customListViewAdapter = new CustomListViewAdapter(this, restNames);
         restListView = (ListView) findViewById(R.id.nearbyRestLV);
         restListView.setAdapter(customListViewAdapter);
-
-    }
-
-    public void notifyFood(View view) {
-        /** Uri gmmIntentUri = Uri.parse("geo:37.7749,-122.4194?q=restaurants"); searches all
-         * restaurants near those coordinates
-         */
-    }
-
-    public void notifyGas(View view) {
-
-    }
-
-    public void notifyRest(View view) {
-
-    }
-
-    public void notifyEmergency(View view) {
 
     }
 

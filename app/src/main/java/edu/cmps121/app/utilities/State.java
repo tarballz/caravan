@@ -1,4 +1,4 @@
-package edu.cmps121.app.api;
+package edu.cmps121.app.utilities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,21 +6,24 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 
-import edu.cmps121.app.MainActivity;
+import edu.cmps121.app.activities.MainActivity;
 
-import static edu.cmps121.app.api.CaravanUtils.isValidString;
+import static edu.cmps121.app.utilities.CaravanUtils.JsonOptions.*;
+import static edu.cmps121.app.utilities.CaravanUtils.isValidString;
 
 /**
  * To be instantiated upon application start up. For sharing the user's key data between activities
  */
 public class State implements Parcelable {
+
     private String currentActivityName;
     public String party;
     public String car;
     public String user;
+    public CaravanUtils.JsonOptions jsonOption;
 
     private enum Validate {
-        USER, CAR, PARTY, USER_CAR, USER_PARTY, CAR_PARTY, USER_CAR_PARTY;
+        USER, CAR, PARTY, USER_CAR, USER_PARTY, CAR_PARTY, USER_CAR_PARTY
     }
 
     public State(AppCompatActivity currentActivity) {
@@ -32,11 +35,13 @@ public class State implements Parcelable {
             party = state.party;
             car = state.car;
             user = state.user;
+            jsonOption = state.jsonOption;
 
             testActivityRequirements();
         } catch (NullPointerException e) {
             if (!currentActivity.getClass().equals(MainActivity.class))
                 throw new RuntimeException("State can only be null at start of MainActivity" + e);
+            jsonOption = NIGHT;
         }
     }
 
@@ -44,6 +49,20 @@ public class State implements Parcelable {
         party = in.readString();
         car = in.readString();
         user = in.readString();
+        switch (in.readString()) {
+            case "retro":
+                jsonOption = RETRO;
+                break;
+            case "night":
+                jsonOption = NIGHT;
+                break;
+            case "greyscale":
+                jsonOption = GREYSCALE;
+                break;
+            default:
+                throw new RuntimeException("Bad switch case");
+        }
+
     }
 
     @Override
@@ -51,6 +70,19 @@ public class State implements Parcelable {
         dest.writeString(party);
         dest.writeString(car);
         dest.writeString(user);
+        switch (jsonOption) {
+            case RETRO:
+                dest.writeString("retro");
+                break;
+            case NIGHT:
+                dest.writeString("night");
+                break;
+            case GREYSCALE:
+                dest.writeString("greyscale");
+                break;
+            default:
+                throw new RuntimeException("Bad switch case");
+        }
     }
 
     @Override
@@ -77,7 +109,7 @@ public class State implements Parcelable {
         currentActivity.startActivity(intent);
     }
 
-    // TODO: add checks here as necessary
+    // Add checks here as necessary
     private void testActivityRequirements() {
         switch (currentActivityName) {
             case "PartyMenuActivity":

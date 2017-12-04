@@ -1,5 +1,6 @@
-package edu.cmps121.app.api;
+package edu.cmps121.app.dynamo;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -18,9 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
-import edu.cmps121.app.model.User;
-
 public class DynamoDB {
+
     private DynamoDBMapper mapper;
     private AmazonDynamoDBClient client;
     private List<Map<String, AttributeValue>> itemsList;
@@ -31,6 +31,19 @@ public class DynamoDB {
     public DynamoDB(AppCompatActivity activity) {
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
                 activity.getApplicationContext(),
+                "us-west-2:3d86ea2c-db71-4953-bc20-8eb77c931e43", // Identity pool ID
+                Regions.US_WEST_2
+        );
+
+        client = new AmazonDynamoDBClient(credentialsProvider);
+        client.setRegion(Region.getRegion(Regions.US_WEST_2));
+
+        mapper = new DynamoDBMapper(client);
+    }
+
+    public DynamoDB(Context context) {
+        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                context.getApplicationContext(),
                 "us-west-2:3d86ea2c-db71-4953-bc20-8eb77c931e43", // Identity pool ID
                 Regions.US_WEST_2
         );
@@ -61,13 +74,10 @@ public class DynamoDB {
         }
     }
 
-    public boolean itemExists(Class itemClass, String primaryKey) {
+    public <T> boolean itemExists(Class<T> itemClass, String primaryKey) {
         Object item = getItem(itemClass, primaryKey);
 
-        if (item == null)
-            return false;
-        else
-            return true;
+        return item != null;
     }
 
     public List<Map<String, AttributeValue>> queryTableByParty(String table, String party) {
@@ -75,7 +85,7 @@ public class DynamoDB {
             CountDownLatch latch = new CountDownLatch(1);
 
             Map<String, AttributeValue> expressionAttributeValues;
-            expressionAttributeValues = new HashMap<String, AttributeValue>();
+            expressionAttributeValues = new HashMap<>();
             expressionAttributeValues.put(":val", new AttributeValue().withS(party));
 
             Runnable runnable = () -> {
@@ -109,16 +119,13 @@ public class DynamoDB {
         thread.start();
     }
 
-//    public void updateUserParty(String username, String partyName) {
-//        User userItem = (User) getItem(User.class, username);
-//        userItem.setParty(partyName);
-//
-//        saveItem(userItem);
-//    }
-
     public <T> void updateItem(Class<T> itemClass, String primaryKey, ItemUpdater updater) {
         Object item = getItem(itemClass, primaryKey);
 
         updater.update(item);
+    }
+
+    public interface ItemUpdater {
+        void update(Object item);
     }
 }

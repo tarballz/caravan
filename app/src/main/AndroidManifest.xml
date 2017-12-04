@@ -21,7 +21,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,25 +41,30 @@
             android:value="AIzaSyDaj0E9W6fqT2mN0PiHOYKze3hVNuoVbBY" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name=".activities.MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity
-            android:name=".PartyOptionsActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".activities.PartyOptionsActivity"
+            android:parentActivityName=".activities.MainActivity" />
         <activity
-            android:name=".CreatePartyActivity"
-            android:parentActivityName=".PartyOptionsActivity" />
+            android:name=".activities.CreatePartyActivity"
+            android:parentActivityName=".activities.PartyOptionsActivity" />
         <activity
-            android:name=".FindPartyActivity"
-            android:parentActivityName=".PartyOptionsActivity" />
-        <activity android:name=".PartyMenuActivity" />
-        <activity android:name=".CreateCarActivity" />
-        <activity android:name=".MapsOverlayActivity" />
+            android:name=".activities.FindPartyActivity"
+            android:parentActivityName=".activities.PartyOptionsActivity" />
+        <activity android:name=".activities.PartyMenuActivity" />
+        <activity android:name=".activities.CreateCarActivity" />
+        <activity android:name=".activities.MapsOverlayActivity" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".FindCarActivity"></activity>
+        <activity android:name=".activities.FindCarActivity" />
+
+        <service
+            android:name=".utilities.DriverService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

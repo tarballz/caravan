@@ -1,4 +1,4 @@
-package edu.cmps121.app;
+package edu.cmps121.app.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,14 +13,16 @@ import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
 
-import edu.cmps121.app.api.DynamoDB;
-import edu.cmps121.app.api.State;
-import edu.cmps121.app.model.Party;
-import edu.cmps121.app.model.User;
+import edu.cmps121.app.R;
+import edu.cmps121.app.dynamo.DynamoDB;
+import edu.cmps121.app.utilities.State;
+import edu.cmps121.app.dynamo.Party;
+import edu.cmps121.app.dynamo.User;
 
-import static edu.cmps121.app.api.CaravanUtils.shortToast;
+import static edu.cmps121.app.utilities.CaravanUtils.shortToast;
 
 public class CreatePartyActivity extends AppCompatActivity {
+
     private State state;
     private DynamoDB dynamoDB;
     private Place destination;
@@ -79,7 +81,7 @@ public class CreatePartyActivity extends AppCompatActivity {
             party.setLng(destination.getLatLng().longitude);
 
             dynamoDB.saveItem(party);
-//            dynamoDB.updateUserParty(state.user, partyName);
+
             dynamoDB.updateItem(User.class, state.user, (obj) -> {
                 User user = (User) obj;
                 user.setParty(partyName);
