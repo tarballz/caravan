@@ -67,6 +67,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     private static final String TAG = MapsOverlayActivity.class.getSimpleName();
     private static final float INITIAL_ZOOM = 14.0f;
     private static final int TIME_LIMIT_MILLI = 500000000;
+    private static final int SLEEP_MILLI = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -348,7 +349,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
             }
 
             try {
-                Thread.sleep(5000);
+                Thread.sleep(SLEEP_MILLI);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }

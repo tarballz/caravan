@@ -22,7 +22,7 @@ public class DriverService extends Service {
     private DynamoDB dynamoDB;
     private String car;
 
-    private static final int LOCATION_INTERVAL = 5000;
+    private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 10f;
     private static final String TAG = DriverService.class.getSimpleName();
 
