@@ -8,8 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 public class CaravanUtils {
+
     public enum JsonOptions {
-        GREYSCALE, NIGHT, RETRO;
+        GREYSCALE, NIGHT, RETRO
     }
 
     public static void shortToast(AppCompatActivity activity, String msg) {

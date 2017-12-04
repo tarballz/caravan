@@ -19,9 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
-import edu.cmps121.app.utilities.ItemUpdater;
-
 public class DynamoDB {
+
     private DynamoDBMapper mapper;
     private AmazonDynamoDBClient client;
     private List<Map<String, AttributeValue>> itemsList;
@@ -75,13 +74,10 @@ public class DynamoDB {
         }
     }
 
-    public boolean itemExists(Class itemClass, String primaryKey) {
+    public <T> boolean itemExists(Class<T> itemClass, String primaryKey) {
         Object item = getItem(itemClass, primaryKey);
 
-        if (item == null)
-            return false;
-        else
-            return true;
+        return item != null;
     }
 
     public List<Map<String, AttributeValue>> queryTableByParty(String table, String party) {
@@ -89,7 +85,7 @@ public class DynamoDB {
             CountDownLatch latch = new CountDownLatch(1);
 
             Map<String, AttributeValue> expressionAttributeValues;
-            expressionAttributeValues = new HashMap<String, AttributeValue>();
+            expressionAttributeValues = new HashMap<>();
             expressionAttributeValues.put(":val", new AttributeValue().withS(party));
 
             Runnable runnable = () -> {
@@ -129,6 +125,7 @@ public class DynamoDB {
         updater.update(item);
     }
 
-    private void test() {
+    public interface ItemUpdater {
+        void update(Object item);
     }
 }

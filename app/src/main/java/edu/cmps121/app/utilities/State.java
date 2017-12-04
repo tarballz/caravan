@@ -15,6 +15,7 @@ import static edu.cmps121.app.utilities.CaravanUtils.isValidString;
  * To be instantiated upon application start up. For sharing the user's key data between activities
  */
 public class State implements Parcelable {
+
     private String currentActivityName;
     public String party;
     public String car;
@@ -22,7 +23,7 @@ public class State implements Parcelable {
     public CaravanUtils.JsonOptions jsonOption;
 
     private enum Validate {
-        USER, CAR, PARTY, USER_CAR, USER_PARTY, CAR_PARTY, USER_CAR_PARTY;
+        USER, CAR, PARTY, USER_CAR, USER_PARTY, CAR_PARTY, USER_CAR_PARTY
     }
 
     public State(AppCompatActivity currentActivity) {

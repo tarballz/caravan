@@ -9,6 +9,7 @@ import edu.cmps121.app.R;
 import edu.cmps121.app.utilities.State;
 
 public class PartyMenuActivity extends AppCompatActivity {
+
     private State state;
 
     @Override
@@ -16,10 +17,11 @@ public class PartyMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_party_menu);
 
+        TextView textView = (TextView) findViewById(R.id.team_name_tv);
         state = new State(this);
 
-        TextView textView = (TextView) findViewById(R.id.team_name_tv);
-        textView.setText(state.party + "\'s");
+        String welcomeText = state.party + "\'s";
+        textView.setText(welcomeText);
     }
 
     public void onClickCreateCarMenu(View view) {
@@ -40,9 +42,8 @@ public class PartyMenuActivity extends AppCompatActivity {
 
     public void onClickLogout(View view) { state.nextActivity(this, MainActivity.class);}
 
-    // Do nothing, force user to log out if they want to return
+    /** Do nothing, force user to log out if they want to return **/
     @Override
     public void onBackPressed() {
-
     }
 }

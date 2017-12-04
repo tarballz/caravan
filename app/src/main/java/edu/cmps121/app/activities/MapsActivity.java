@@ -12,6 +12,7 @@ import edu.cmps121.app.utilities.State;
 import static edu.cmps121.app.utilities.CaravanUtils.shortToast;
 
 public class MapsActivity extends AppCompatActivity {
+
     private State state;
 
     @Override
@@ -20,24 +21,6 @@ public class MapsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_maps);
 
         state = new State(this);
-    }
-
-    public void notifyFood(View view) {
-        /** Uri gmmIntentUri = Uri.parse("geo:37.7749,-122.4194?q=restaurants"); searches all
-         * restaurants near those coordinates
-         */
-    }
-
-    public void notifyGas(View view) {
-
-    }
-
-    public void notifyRest(View view) {
-
-    }
-
-    public void notifyEmergency(View view) {
-
     }
 
     public void mapsRedirect(View view) {

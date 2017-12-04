@@ -10,6 +10,7 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import edu.cmps121.app.R;
@@ -17,9 +18,14 @@ import edu.cmps121.app.dynamo.DynamoDB;
 import edu.cmps121.app.utilities.State;
 import edu.cmps121.app.dynamo.User;
 
+import static edu.cmps121.app.utilities.CaravanUtils.shortToast;
+
 public class FindCarActivity extends AppCompatActivity {
+
     private State state;
-    DynamoDB dynamoDB;
+    private DynamoDB dynamoDB;
+    @SuppressWarnings("All")
+    private Optional<String> carName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,21 +49,30 @@ public class FindCarActivity extends AppCompatActivity {
         carList.setAdapter(adapter);
 
         carList.setOnItemClickListener((parent, v, position, id) -> {
-            String carAndDriver= (String) parent.getItemAtPosition(position);
-            state.car = carAndDriver.substring(carAndDriver.indexOf("'s ") + 3);
+            if (carName.isPresent())
+                shortToast(this, "You are already driving " + carName + ". You cannot join another car");
+            else {
+                String carAndDriver = (String) parent.getItemAtPosition(position);
+                state.car = carAndDriver.substring(carAndDriver.indexOf("'s ") + 3);
 
-            dynamoDB.updateItem(User.class, state.user, (obj) -> {
-                User user = (User) obj;
-                user.setCar(state.car);
-                dynamoDB.saveItem(user);
-            });
+                dynamoDB.updateItem(User.class, state.user, (obj) -> {
+                    User user = (User) obj;
+                    user.setCar(state.car);
+                    dynamoDB.saveItem(user);
+                });
 
-            state.nextActivity(parent.getContext(), PartyMenuActivity.class);
+                state.nextActivity(parent.getContext(), PartyMenuActivity.class);
+            }
         });
     }
 
     private ArrayList<String> getCarsWithDrivers() {
         List<Map<String, AttributeValue>> itemList = dynamoDB.queryTableByParty("cars", state.party);
+
+        carName = itemList.stream()
+                .filter(e -> e.get("driver").getS().equals(state.user))
+                .map(e -> e.get("car").getS())
+                .findFirst();
 
         return new ArrayList<>(itemList.stream()
                 .map(e -> e.get("driver").getS() + "'s " + e.get("car").getS())

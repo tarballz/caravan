@@ -6,7 +6,7 @@ import android.os.Message;
 import edu.cmps121.app.activities.MapsOverlayActivity;
 
 public class ThreadHandler extends Handler {
-    MapsOverlayActivity activity;
+    private MapsOverlayActivity activity;
 
     public ThreadHandler(MapsOverlayActivity activity) {
         this.activity = activity;

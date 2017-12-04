@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 
 import edu.cmps121.app.R;
 import edu.cmps121.app.dynamo.DynamoDB;
+import edu.cmps121.app.utilities.NavigationFragment;
 import edu.cmps121.app.utilities.State;
 import edu.cmps121.app.dynamo.Car;
 import edu.cmps121.app.dynamo.User;
@@ -48,23 +49,25 @@ import edu.cmps121.app.utilities.ThreadHandler;
 import static edu.cmps121.app.utilities.CaravanUtils.isValidString;
 import static edu.cmps121.app.utilities.CaravanUtils.shortToast;
 
-public class MapsOverlayActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsOverlayActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationFragment.CameraMovement {
+
     private State state;
     private DynamoDB dynamoDB;
     private GoogleMap googleMap;
     private Thread trackingThread;
+
     private HashMap<String, Marker> markers;
     private List<String> cars;
     private List<String> drivers;
     private List<String> colors;
     private List<LatLng> positions;
     private List<Float> bearings;
-    private String currentColor;
     private boolean threadStop;
 
     private static final String TAG = MapsOverlayActivity.class.getSimpleName();
-    private static final int TIME_LIMIT_MILLI = 500000000;
     private static final float INITIAL_ZOOM = 14.0f;
+    private static final int TIME_LIMIT_MILLI = 500000000;
+    private static final int SLEEP_MILLI = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +79,17 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         markers = new HashMap<>();
         threadStop = false;
 
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.map);
+        instantiateFragments();
+    }
+
+    private void instantiateFragments() {
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map_fragment);
         mapFragment.getMapAsync(this);
+
+        NavigationFragment navFragment = (NavigationFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.nav_fragment);
+        navFragment.initializeNavFragment(this, state.party);
     }
 
     @Override
@@ -151,26 +161,24 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
 
     private void setStyle() {
         try {
-            boolean success;
+            int style;
             switch (state.jsonOption) {
                 case NIGHT:
-                    success = googleMap.setMapStyle(
-                            MapStyleOptions.loadRawResourceStyle(
-                                    this, R.raw.mapstyle_night));
+                    style = R.raw.mapstyle_night;
                     break;
                 case GREYSCALE:
-                    success = googleMap.setMapStyle(
-                            MapStyleOptions.loadRawResourceStyle(
-                                    this, R.raw.mapstyle_greyscale));
+                    style = R.raw.mapstyle_greyscale;
                     break;
                 case RETRO:
-                    success = googleMap.setMapStyle(
-                            MapStyleOptions.loadRawResourceStyle(
-                                    this, R.raw.mapstyle_retro));
+                    style = R.raw.mapstyle_retro;
                     break;
                 default:
                     throw new RuntimeException("Json style was not initialized");
             }
+
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, style));
 
             if (!success)
                 Log.e(TAG, "Style parsing failed.");
@@ -228,26 +236,26 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         List<Map<String, AttributeValue>> usersTable = dynamoDB.queryTableByParty("users", state.party);
 
         for (int i = 0; i < cars.size(); ++i) {
-            currentColor = colors.get(i);
-            int color = getCarColor(currentColor);
-
             String carName = cars.get(i);
             String carDriver = drivers.get(i);
+            String currentColor = colors.get(i);
             String snippet = createSnippet(usersTable, carName, carDriver);
+
+            int color = getCarColor(currentColor);
 
             BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(color, null);
             Bitmap bitmap = bitmapDrawable.getBitmap();
             Bitmap smallCar = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
 
-            markers.put(
-                    cars.get(i),
-                    googleMap.addMarker(new MarkerOptions()
-                            .position(positions.get(i))
-                            .title(carName)
-                            .snippet(snippet)
-                            .icon(BitmapDescriptorFactory.fromBitmap(smallCar))
-                            .rotation(bearings.get(i)))
-            );
+            Marker marker = googleMap.addMarker(new MarkerOptions()
+                    .position(positions.get(i))
+                    .title(carName)
+                    .snippet(snippet)
+                    .icon(BitmapDescriptorFactory.fromBitmap(smallCar))
+                    .rotation(bearings.get(i)));
+            marker.setTag(currentColor);
+
+            markers.put(cars.get(i), marker);
         }
     }
 
@@ -255,17 +263,18 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     private String createSnippet(List<Map<String, AttributeValue>> usersTable,
                                  String currentCar,
                                  String currentDriver) {
-        String snippet = "Driver: " + currentDriver + "\n Occupants: ";
+        StringBuilder snippet = new StringBuilder("Driver: " + currentDriver + "\n Occupants: ");
 
         List<String> occupants = usersTable.stream()
                 .filter(e -> isOccupant(e, currentCar))
+                .filter(e -> !e.get("user").getS().equals(currentDriver))
                 .map(e -> e.get("user").getS())
                 .collect(Collectors.toList());
 
         for (String occupant : occupants)
-            snippet += occupant + "\n";
+            snippet.append(occupant).append("\n");
 
-        return snippet;
+        return snippet.toString();
     }
 
     private boolean isOccupant(Map<String, AttributeValue> item, String currentCar) {
@@ -310,9 +319,8 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
 
     private void trackDynamo(ThreadHandler handler, ArrayList<LatLng> oldPositions) throws IndexOutOfBoundsException {
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
-        long endTime = System.currentTimeMillis() + TIME_LIMIT_MILLI;
 
-        while (System.currentTimeMillis() < endTime && !threadStop) {
+        while (!threadStop) {
             checkCarsTable();
 
             for (int i = 0; i < cars.size(); ++i) {
@@ -339,7 +347,7 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
             }
 
             try {
-                Thread.sleep(5000);
+                Thread.sleep(SLEEP_MILLI);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -387,46 +395,59 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         }
 
         private void render(Marker marker, View view) {
+            @SuppressWarnings("All")
+            TextView titleUi = ((TextView) view.findViewById(R.id.title));
+            @SuppressWarnings("All")
+            TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
+
+            String title = marker.getTitle();
+            String snippet = marker.getSnippet();
+            String color = (String) marker.getTag();
             int badge;
-            switch (currentColor) {
+
+            assert color != null;
+
+            switch (color) {
                 case "green":
                     badge = R.drawable.badge_green;
                     break;
                 case "yellow":
                     badge = R.drawable.badge_yellow;
                     break;
-                case "cyan":
-                    badge = R.drawable.badge_blue;
-                    break;
                 case "red":
-                    badge = R.drawable.badge_blue;
+                    badge = R.drawable.badge_red;
                     break;
                 default:
-                    badge = 0;
+                    badge = R.drawable.badge_blue;
             }
+
             ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);
 
-            String title = marker.getTitle();
-            TextView titleUi = ((TextView) view.findViewById(R.id.title));
-            if (title != null) {
+            if (title == null)
+                titleUi.setText("");
+            else {
                 SpannableString titleText = new SpannableString(title);
                 titleText.setSpan(new ForegroundColorSpan(Color.RED), 0, titleText.length(), 0);
 
                 titleUi.setText(titleText);
-            } else
-                titleUi.setText("");
+            }
 
-            String snippet = marker.getSnippet();
-            TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
-            if (snippet != null && snippet.length() > 12) {
+            if (snippet == null)
+                snippetUi.setText("");
+            else {
                 SpannableString snippetText = new SpannableString(snippet);
 
-                snippetText.setSpan(new ForegroundColorSpan(Color.MAGENTA), 0, 10, 0);
-                snippetText.setSpan(new ForegroundColorSpan(Color.BLUE), 12, snippet.length(), 0);
+                snippetText.setSpan(new ForegroundColorSpan(Color.BLUE), 0, snippet.length(), 0);
 
                 snippetUi.setText(snippetText);
-            } else
-                snippetUi.setText("");
+            }
         }
+    }
+
+    @Override
+    public void moveCamera(String carName) {
+        Marker marker = markers.get(carName);
+
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), INITIAL_ZOOM));
     }
 }
