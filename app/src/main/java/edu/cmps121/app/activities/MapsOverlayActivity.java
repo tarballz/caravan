@@ -317,12 +317,10 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         }
     }
 
-    // TODO: remove endTime
     private void trackDynamo(ThreadHandler handler, ArrayList<LatLng> oldPositions) throws IndexOutOfBoundsException {
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
-        long endTime = System.currentTimeMillis() + TIME_LIMIT_MILLI;
 
-        while (System.currentTimeMillis() < endTime && !threadStop) {
+        while (!threadStop) {
             checkCarsTable();
 
             for (int i = 0; i < cars.size(); ++i) {
