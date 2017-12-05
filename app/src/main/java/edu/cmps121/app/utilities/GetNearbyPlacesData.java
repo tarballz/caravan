@@ -16,16 +16,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static edu.cmps121.app.activities.PartyMenuActivity.addNearbyFoodPlace;
-import static edu.cmps121.app.activities.PartyMenuActivity.addNearbyGasPlace;
-import static edu.cmps121.app.activities.PartyMenuActivity.addNearbyRestPlace;
-
 public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
     private String keyword;
+    private Callback callback;
 
     private final String TAG = GetNearbyPlacesData.class.getSimpleName();
 
+    public GetNearbyPlacesData(Callback callback) {
+        this.callback = callback;
+    }
+
+    /**
+     * Runs in its own thread. Do not make UI calls here
+     **/
     @Override
     protected String doInBackground(Object... params) {
         try {
@@ -38,29 +42,30 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         }
     }
 
+    /**
+     * Runs in the UI thread
+     **/
     @Override
     protected void onPostExecute(String result) {
         DataParser dataParser = new DataParser();
-        ShowNearbyPlaces(dataParser.parse(result));
-    }
 
-    private void ShowNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList) {
-        for (int i = 0; i < nearbyPlacesList.size(); i++) {
-            HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
-            double lat = Double.parseDouble(googlePlace.get("lat"));
-            double lng = Double.parseDouble(googlePlace.get("lng"));
-            String placeName = googlePlace.get("place_name");
-            String vicinity = googlePlace.get("vicinity");
+        List<HashMap<String, String>> nearbyPlaces = dataParser.parse(result);
+
+        for (HashMap<String, String> place : nearbyPlaces) {
+            String placeName = place.get("place_name");
+            String vicinity = place.get("vicinity");
+            double lat = Double.parseDouble(place.get("lat"));
+            double lng = Double.parseDouble(place.get("lng"));
 
             switch (keyword) {
                 case "food":
-                    addNearbyFoodPlace(new NearbyPlace(placeName, vicinity, lat, lng));
+                    callback.addPlace("food", placeName);
                     break;
                 case "gas":
-                    addNearbyGasPlace(new NearbyPlace(placeName, vicinity, lat, lng));
+                    callback.addPlace("gas", placeName);
                     break;
                 case "rest":
-                    addNearbyRestPlace(new NearbyPlace(placeName, vicinity, lat, lng));
+                    callback.addPlace("rest", placeName);
                     break;
                 default:
                     throw new RuntimeException("Bad switch case. Invalid keyword");
@@ -145,5 +150,8 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         }
     }
 
+    public interface Callback {
+        void addPlace(String placeType, String placeName);
+    }
 
 }

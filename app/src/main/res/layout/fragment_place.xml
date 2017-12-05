@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/backsplash"
+    android:orientation="horizontal"
+    tools:layout_editor_absoluteY="25dp">
+
+    <Button
+        android:id="@+id/rest_places_b"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/round_button_blue"
+        android:fontFamily="@font/droid_sans"
+        android:onClick="onClickRest"
+        android:text="@string/rest"
+        android:textColor="@color/cardview_light_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/food_places_b"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/gas_places_b"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/round_button_green"
+        android:fontFamily="@font/droid_sans"
+        android:onClick="onClickGas"
+        android:text="@string/gas"
+        android:textColor="@color/cardview_light_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/food_places_b"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/food_places_b"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/round_button_yellow"
+        android:fontFamily="@font/droid_sans"
+        android:onClick="onClickFood"
+        android:text="@string/food"
+        android:textColor="@color/cardview_light_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/gas_places_b"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/rest_places_b"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

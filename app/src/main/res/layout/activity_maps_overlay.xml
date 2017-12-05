@@ -8,33 +8,47 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.2">
+        android:layout_weight=".13">
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map_fragment"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        map:cameraZoom="10"
+        tools:context="edu.cmps121.app.activities.MapsOverlayActivity" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="75dp">
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:map="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/map_fragment"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:id="@+id/place_fragment"
+            android:name="edu.cmps121.app.utilities.PlaceFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            map:cameraZoom="10"
             tools:context="edu.cmps121.app.activities.MapsOverlayActivity" />
 
+        </FrameLayout>
     </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.8">
+        android:layout_weight=".87">
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:map="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/nav_fragment"
-            android:name="edu.cmps121.app.utilities.NavigationFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context="edu.cmps121.app.activities.MapsOverlayActivity" />
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/nav_fragment"
+        android:name="edu.cmps121.app.utilities.NavigationFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="edu.cmps121.app.activities.MapsOverlayActivity" />
 
     </FrameLayout>
 

@@ -41,6 +41,8 @@ import java.util.stream.Collectors;
 import edu.cmps121.app.R;
 import edu.cmps121.app.dynamo.DynamoDB;
 import edu.cmps121.app.utilities.NavigationFragment;
+import edu.cmps121.app.utilities.NearbyPlace;
+import edu.cmps121.app.utilities.PlaceFragment;
 import edu.cmps121.app.utilities.State;
 import edu.cmps121.app.dynamo.Car;
 import edu.cmps121.app.dynamo.User;
@@ -49,7 +51,8 @@ import edu.cmps121.app.utilities.ThreadHandler;
 import static edu.cmps121.app.utilities.CaravanUtils.isValidString;
 import static edu.cmps121.app.utilities.CaravanUtils.shortToast;
 
-public class MapsOverlayActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationFragment.CameraMovement {
+public class MapsOverlayActivity extends AppCompatActivity
+        implements OnMapReadyCallback, NavigationFragment.CameraMovement, PlaceFragment.FoundPlace {
 
     private State state;
     private DynamoDB dynamoDB;
@@ -62,11 +65,13 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
     private List<String> colors;
     private List<LatLng> positions;
     private List<Float> bearings;
+    private ArrayList<NearbyPlace> foodPlaces;
+    private ArrayList<NearbyPlace> gasPlaces;
+    private ArrayList<NearbyPlace> restPlaces;
     private boolean threadStop;
 
     private static final String TAG = MapsOverlayActivity.class.getSimpleName();
     private static final float INITIAL_ZOOM = 14.0f;
-    private static final int TIME_LIMIT_MILLI = 500000000;
     private static final int SLEEP_MILLI = 1000;
 
     @Override
@@ -76,8 +81,12 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
 
         state = new State(this);
         dynamoDB = new DynamoDB(this);
-        markers = new HashMap<>();
         threadStop = false;
+
+        markers = new HashMap<>();
+        foodPlaces = new ArrayList<>();
+        gasPlaces = new ArrayList<>();
+        restPlaces = new ArrayList<>();
 
         instantiateFragments();
     }
@@ -90,6 +99,10 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         NavigationFragment navFragment = (NavigationFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_fragment);
         navFragment.initializeNavFragment(this, state.party);
+
+        PlaceFragment placeFragment = (PlaceFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.place_fragment);
+        placeFragment.initializePlaceFragment(this);
     }
 
     @Override
@@ -370,6 +383,52 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
         Log.i(TAG, "Successfully updated " + carName + " marker position");
     }
 
+    @Override
+    public void moveCamera(String carName) {
+        Marker marker = markers.get(carName);
+
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), INITIAL_ZOOM));
+    }
+
+    @Override
+    public void addFoodMarkers() {
+       addPlaceMarkers("food");
+    }
+
+    @Override
+    public void addGasMarkers() {
+        addPlaceMarkers("gas");
+    }
+
+    @Override
+    public void addRestMarkers() {
+        addPlaceMarkers("rest");
+    }
+
+    private void addPlaceMarkers(String type) {
+        ArrayList<NearbyPlace> places;
+        switch (type) {
+            case "food":
+                places = foodPlaces;
+                break;
+            case "gas":
+                places = gasPlaces;
+                break;
+            case "rest":
+                places = restPlaces;
+                break;
+            default:
+                throw new RuntimeException("Bad case. Invalid place type");
+        }
+
+        for (NearbyPlace place : places) {
+            googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(place.lat, place.lng))
+                    .title(place.name)
+                    .snippet(place.link));
+        }
+    }
+
     /**
      * Customizes a marker's info window and its contents.
      */
@@ -442,12 +501,5 @@ public class MapsOverlayActivity extends AppCompatActivity implements OnMapReady
                 snippetUi.setText(snippetText);
             }
         }
-    }
-
-    @Override
-    public void moveCamera(String carName) {
-        Marker marker = markers.get(carName);
-
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), INITIAL_ZOOM));
     }
 }

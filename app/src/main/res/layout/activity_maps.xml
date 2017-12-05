@@ -22,12 +22,12 @@
     <!--tools:layout_editor_absoluteY="283dp" />-->
 
     <Button
-        android:id="@+id/rest_b"
+        android:id="@+id/rest_places_b"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:background="@drawable/round_button_blue"
         android:fontFamily="@font/droid_sans"
-        android:onClick="notifyRest"
+        android:onClick="onClickRest"
         android:text="@string/rest"
         android:textColor="@color/cardview_light_background"
         app:layout_constraintBottom_toTopOf="@+id/nearby_places_lv"
@@ -39,12 +39,12 @@
         tools:layout_constraintLeft_creator="1" />
 
     <Button
-        android:id="@+id/gas_b"
+        android:id="@+id/gas_places_b"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:background="@drawable/round_button_green"
         android:fontFamily="@font/droid_sans"
-        android:onClick="notifyGas"
+        android:onClick="onClickGas"
         android:text="@string/gas"
         android:textColor="@color/cardview_light_background"
         app:layout_constraintBottom_toTopOf="@+id/nearby_places_lv"
@@ -54,13 +54,14 @@
         tools:layout_constraintTop_creator="1" />
 
     <Button
-        android:id="@+id/food_b"
+        android:id="@+id/food_places_b"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:background="@drawable/round_button_yellow"
         android:fontFamily="@font/droid_sans"
         android:text="@string/food"
         android:textColor="@color/cardview_light_background"
+        android:onClick="onClickFood"
         app:layout_constraintBottom_toTopOf="@+id/nearby_places_lv"
         app:layout_constraintStart_toStartOf="@+id/pit_stop_tv"
         app:layout_constraintTop_toBottomOf="@+id/pit_stop_tv"
@@ -74,10 +75,10 @@
         android:layout_height="50dp"
         android:background="@color/theme_orange"
         android:fontFamily="@font/droid_sans"
-        android:onClick="mapsActivity"
+        android:onClick="onClickTrackParty"
         android:text="@string/track_your_party"
         android:textColor="@color/cardview_light_background"
-        app:layout_constraintBottom_toTopOf="@+id/textView8"
+        app:layout_constraintBottom_toTopOf="@+id/maps_redirect_tv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -95,7 +96,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rest_b" />
+        app:layout_constraintTop_toBottomOf="@+id/rest_places_b" />
 
     <TextView
         android:id="@+id/pit_stop_tv"
@@ -106,19 +107,20 @@
         android:textColor="@color/theme_orange"
         android:textSize="36sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/rest_b"
+        app:layout_constraintBottom_toTopOf="@+id/rest_places_b"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView8"
+        android:id="@+id/maps_redirect_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/click_here_for_directions"
         android:textAlignment="center"
         android:textColor="@color/theme_orange"
+        android:onClick="onClickDirections"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
