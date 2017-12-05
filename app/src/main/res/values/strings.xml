@@ -3,7 +3,6 @@
     <string name="title_activity_maps">Map</string>
     <string name="send">Send</string>
     <string name="create_party">Create a Party</string>
-    <string name="find_party">Find a Party</string>
     <string name="party_menu">Party Menu</string>
     <string name="create_car">Create Car</string>
     <string name="maps">Maps</string>
@@ -19,7 +18,6 @@
     <string name="change_username">Change Username</string>
     <string name="change_car_name">Change Car Name</string>
     <string name="delete_party">Delete Party</string>
-    <string name="enter_party_name">Enter party name</string>
     <string name="search">Search</string>
     <string name="create">Create</string>
     <string name="dreamteam">DreamTeam</string>
@@ -44,4 +42,6 @@
     <string name="click_here_for_directions">Click here for directions</string>
     <string name="track_your_party">Track Your Party</string>
     <string name="name_your_car">Name Your Car</string>
+    <string name="enter_party_name">Enter Party Name</string>
+    <string name="find_party">Find Party</string>
 </resources>
