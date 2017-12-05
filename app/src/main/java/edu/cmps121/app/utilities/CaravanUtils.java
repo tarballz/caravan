@@ -7,6 +7,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class CaravanUtils {
 
     public static final int PROXIMITY_RADIUS = 10000;
@@ -45,11 +47,23 @@ public class CaravanUtils {
                         PackageManager.PERMISSION_GRANTED));
     }
 
-    public static String getPlaceUrl(double latitude, double longitude, String nearbyPlace) {
+    public static String getPlaceUrl(LatLng latLng, String type) {
+        switch (type) {
+            case "food":
+                break;
+            case "gas":
+                type = "gas_station";
+                break;
+            case "rest":
+                type = "lodging";
+                break;
+            default:
+                throw new RuntimeException("Bad switch case. Invalid place type");
+        }
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlacesUrl.append("location=" + latitude + "," + longitude);
+        googlePlacesUrl.append("location=" + latLng.latitude + "," + latLng.longitude);
         googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
-        googlePlacesUrl.append("&type=" + nearbyPlace);
+        googlePlacesUrl.append("&type=" + type);
         googlePlacesUrl.append("&sensor=true");
         googlePlacesUrl.append("&key=" + "AIzaSyDaj0E9W6fqT2mN0PiHOYKze3hVNuoVbBY");
         return (googlePlacesUrl.toString());

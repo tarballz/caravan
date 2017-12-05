@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 
 import edu.cmps121.app.R;
 import edu.cmps121.app.dynamo.DynamoDB;
+import edu.cmps121.app.utilities.GetNearbyPlacesData;
 import edu.cmps121.app.utilities.NavigationFragment;
 import edu.cmps121.app.utilities.NearbyPlace;
 import edu.cmps121.app.utilities.PlaceFragment;
@@ -48,11 +49,13 @@ import edu.cmps121.app.dynamo.Car;
 import edu.cmps121.app.dynamo.User;
 import edu.cmps121.app.utilities.ThreadHandler;
 
+import static edu.cmps121.app.utilities.CaravanUtils.getPlaceUrl;
 import static edu.cmps121.app.utilities.CaravanUtils.isValidString;
 import static edu.cmps121.app.utilities.CaravanUtils.shortToast;
 
 public class MapsOverlayActivity extends AppCompatActivity
-        implements OnMapReadyCallback, NavigationFragment.CameraMovement, PlaceFragment.FoundPlace {
+        implements OnMapReadyCallback, NavigationFragment.CameraMovement,
+        PlaceFragment.FoundPlace, GetNearbyPlacesData.Callback {
 
     private State state;
     private DynamoDB dynamoDB;
@@ -68,11 +71,17 @@ public class MapsOverlayActivity extends AppCompatActivity
     private ArrayList<NearbyPlace> foodPlaces;
     private ArrayList<NearbyPlace> gasPlaces;
     private ArrayList<NearbyPlace> restPlaces;
+    private ArrayList<Marker> currentPlaces;
+    private PlacesState placesState;
     private boolean threadStop;
 
     private static final String TAG = MapsOverlayActivity.class.getSimpleName();
     private static final float INITIAL_ZOOM = 14.0f;
     private static final int SLEEP_MILLI = 1000;
+
+    private enum PlacesState {
+        FOOD, GAS, REST, NONE
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,11 +91,13 @@ public class MapsOverlayActivity extends AppCompatActivity
         state = new State(this);
         dynamoDB = new DynamoDB(this);
         threadStop = false;
+        placesState = PlacesState.NONE;
 
         markers = new HashMap<>();
         foodPlaces = new ArrayList<>();
         gasPlaces = new ArrayList<>();
         restPlaces = new ArrayList<>();
+        currentPlaces = new ArrayList<>();
 
         instantiateFragments();
     }
@@ -392,7 +403,7 @@ public class MapsOverlayActivity extends AppCompatActivity
 
     @Override
     public void addFoodMarkers() {
-       addPlaceMarkers("food");
+        addPlaceMarkers("food");
     }
 
     @Override
@@ -405,27 +416,68 @@ public class MapsOverlayActivity extends AppCompatActivity
         addPlaceMarkers("rest");
     }
 
+    private void startPlaceTask(String type) {
+        LatLng currentLocation = getUserPosition();
+        GetNearbyPlacesData task = new GetNearbyPlacesData(this);
+        String url = getPlaceUrl(currentLocation, type);
+        task.execute(url, type);
+    }
+
     private void addPlaceMarkers(String type) {
-        ArrayList<NearbyPlace> places;
+        ArrayList<NearbyPlace> places = new ArrayList<>();
+
         switch (type) {
             case "food":
-                places = foodPlaces;
+                if (placesState == PlacesState.FOOD)
+                    deleteMarkers();
+                else
+                    places = foodPlaces;
                 break;
             case "gas":
-                places = gasPlaces;
+                if (placesState == PlacesState.GAS)
+                    deleteMarkers();
+                else
+                    places = gasPlaces;
                 break;
             case "rest":
-                places = restPlaces;
+                if (placesState == PlacesState.REST)
+                    deleteMarkers();
+                else
+                    places = restPlaces;
                 break;
             default:
                 throw new RuntimeException("Bad case. Invalid place type");
         }
 
+        deleteMarkers();
+
         for (NearbyPlace place : places) {
-            googleMap.addMarker(new MarkerOptions()
+            currentPlaces.add(googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(place.lat, place.lng))
                     .title(place.name)
-                    .snippet(place.link));
+                    .snippet(place.link)));
+        }
+    }
+
+    private void deleteMarkers() {
+        for (Marker place : currentPlaces)
+            place.remove();
+    }
+
+    @Override
+    public void addPlace(String type, NearbyPlace nearbyPlace) {
+        switch(type) {
+            case "food":
+                foodPlaces.add(nearbyPlace);
+                break;
+            case "gas":
+                gasPlaces.add(nearbyPlace);
+                break;
+            case "rest":
+                restPlaces.add(nearbyPlace);
+                break;
+            default:
+                throw new RuntimeException("Bad case. Invalid place type");
         }
     }
 

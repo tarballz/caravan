@@ -57,15 +57,17 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
             double lat = Double.parseDouble(place.get("lat"));
             double lng = Double.parseDouble(place.get("lng"));
 
+            NearbyPlace nearbyPlace = new NearbyPlace(placeName, vicinity, lat, lng);
+
             switch (keyword) {
                 case "food":
-                    callback.addPlace("food", placeName);
+                    callback.addPlace("food", nearbyPlace);
                     break;
                 case "gas":
-                    callback.addPlace("gas", placeName);
+                    callback.addPlace("gas", nearbyPlace);
                     break;
                 case "rest":
-                    callback.addPlace("rest", placeName);
+                    callback.addPlace("rest", nearbyPlace);
                     break;
                 default:
                     throw new RuntimeException("Bad switch case. Invalid keyword");
@@ -151,7 +153,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
     }
 
     public interface Callback {
-        void addPlace(String placeType, String placeName);
+        void addPlace(String type, NearbyPlace nearbyPlace);
     }
 
 }
