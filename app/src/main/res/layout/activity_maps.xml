@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/backsplash"
     tools:layout_editor_absoluteX="0dp"
-    tools:layout_editor_absoluteY="81dp">
+    tools:layout_editor_absoluteY="25dp">
 
     <!--<Button-->
     <!--android:id="@+id/emergency_b"-->
@@ -23,83 +23,106 @@
 
     <Button
         android:id="@+id/rest_b"
-        android:layout_width="128dp"
-        android:layout_height="86dp"
-        android:background="@android:color/holo_purple"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/round_button_blue"
+        android:fontFamily="@font/droid_sans"
         android:onClick="notifyRest"
         android:text="@string/rest"
+        android:textColor="@color/cardview_light_background"
+        app:layout_constraintBottom_toTopOf="@+id/nearby_places_lv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pit_stop_tv"
         tools:layout_constraintBaseline_creator="1"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_editor_absoluteX="256dp"
-        tools:layout_editor_absoluteY="85dp" />
+        tools:layout_constraintLeft_creator="1" />
 
     <Button
         android:id="@+id/gas_b"
-        android:layout_width="90dp"
-        android:layout_height="62dp"
-        android:background="@android:color/holo_blue_bright"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/round_button_green"
+        android:fontFamily="@font/droid_sans"
         android:onClick="notifyGas"
         android:text="@string/gas"
+        android:textColor="@color/cardview_light_background"
+        app:layout_constraintBottom_toTopOf="@+id/nearby_places_lv"
+        app:layout_constraintEnd_toEndOf="@+id/pit_stop_tv"
+        app:layout_constraintTop_toBottomOf="@+id/pit_stop_tv"
         tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_editor_absoluteX="128dp"
-        tools:layout_editor_absoluteY="171dp" />
+        tools:layout_constraintTop_creator="1" />
 
     <Button
         android:id="@+id/food_b"
-        android:layout_width="74dp"
-        android:layout_height="62dp"
-        android:background="@android:color/holo_green_light"
-        android:onClick="notifyFood"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/round_button_yellow"
+        android:fontFamily="@font/droid_sans"
         android:text="@string/food"
+        android:textColor="@color/cardview_light_background"
+        app:layout_constraintBottom_toTopOf="@+id/nearby_places_lv"
+        app:layout_constraintStart_toStartOf="@+id/pit_stop_tv"
+        app:layout_constraintTop_toBottomOf="@+id/pit_stop_tv"
         tools:layout_constraintBaseline_creator="1"
         tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="171dp" />
-
-    <Button
-        android:id="@+id/maps_menu_b"
-        android:layout_width="213dp"
-        android:layout_height="74dp"
-        android:background="@android:color/holo_orange_light"
-        android:onClick="mapsRedirect"
-        android:text="Get Directions"
-        tools:layout_constraintBottom_creator="1"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_editor_absoluteX="86dp"
-        tools:layout_editor_absoluteY="341dp" />
+        tools:layout_constraintRight_creator="1" />
 
     <Button
         android:id="@+id/live_maps_b"
-        android:layout_width="217dp"
-        android:layout_height="69dp"
-        android:background="@android:color/holo_red_dark"
+        android:layout_width="230dp"
+        android:layout_height="50dp"
+        android:background="@color/theme_orange"
+        android:fontFamily="@font/droid_sans"
         android:onClick="mapsActivity"
-        android:text="Find Your Party"
+        android:text="@string/track_your_party"
+        android:textColor="@color/cardview_light_background"
+        app:layout_constraintBottom_toTopOf="@+id/textView8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nearby_places_lv"
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_editor_absoluteX="84dp"
-        tools:layout_editor_absoluteY="426dp" />
+        tools:layout_constraintRight_creator="1" />
 
     <ListView
         android:id="@+id/nearby_places_lv"
-        android:layout_width="384dp"
-        android:layout_height="65dp"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
         android:visibility="visible"
-        tools:layout_editor_absoluteY="256dp" />
+        app:layout_constraintBottom_toTopOf="@+id/live_maps_b"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rest_b" />
 
     <TextView
-        android:id="@+id/textView4"
-        android:layout_width="235dp"
-        android:layout_height="45dp"
-        android:text="Make a Pit Stop"
+        android:id="@+id/pit_stop_tv"
+        android:layout_width="314dp"
+        android:layout_height="50dp"
+        android:text="@string/make_a_pit_stop"
         android:textAlignment="center"
-        android:textColor="@color/common_google_signin_btn_text_dark_focused"
-        android:textSize="30sp"
-        tools:layout_editor_absoluteX="75dp"
-        tools:layout_editor_absoluteY="25dp" />
+        android:textColor="@color/theme_orange"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/rest_b"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/click_here_for_directions"
+        android:textAlignment="center"
+        android:textColor="@color/theme_orange"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/live_maps_b" />
 
 </android.support.constraint.ConstraintLayout>

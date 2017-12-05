@@ -40,4 +40,7 @@
     <string name="click_here_to_create_an_account">Click here to create an account</string>
     <string name="caravan">Caravan</string>
     <string name="logo">logo</string>
+    <string name="make_a_pit_stop">Make a Pit Stop</string>
+    <string name="click_here_for_directions">Click here for directions</string>
+    <string name="track_your_party">Track Your Party</string>
 </resources>
