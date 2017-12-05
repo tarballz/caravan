@@ -61,6 +61,7 @@ public class MapsOverlayActivity extends AppCompatActivity
     private DynamoDB dynamoDB;
     private GoogleMap googleMap;
     private Thread trackingThread;
+    private GetNearbyPlacesData placeTask;
 
     private HashMap<String, Marker> markers;
     private List<String> cars;
@@ -68,9 +69,6 @@ public class MapsOverlayActivity extends AppCompatActivity
     private List<String> colors;
     private List<LatLng> positions;
     private List<Float> bearings;
-    private ArrayList<NearbyPlace> foodPlaces;
-    private ArrayList<NearbyPlace> gasPlaces;
-    private ArrayList<NearbyPlace> restPlaces;
     private ArrayList<Marker> currentPlaces;
     private PlacesState placesState;
     private boolean threadStop;
@@ -94,9 +92,6 @@ public class MapsOverlayActivity extends AppCompatActivity
         placesState = PlacesState.NONE;
 
         markers = new HashMap<>();
-        foodPlaces = new ArrayList<>();
-        gasPlaces = new ArrayList<>();
-        restPlaces = new ArrayList<>();
         currentPlaces = new ArrayList<>();
 
         instantiateFragments();
@@ -397,88 +392,77 @@ public class MapsOverlayActivity extends AppCompatActivity
     @Override
     public void moveCamera(String carName) {
         Marker marker = markers.get(carName);
+        LatLng cameraPosition = googleMap.getCameraPosition().target;
+        LatLng markerPosition = marker.getPosition();
 
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), INITIAL_ZOOM));
+        if (Math.abs(cameraPosition.latitude - markerPosition.latitude) > .3 ||
+                Math.abs(cameraPosition.longitude - markerPosition.longitude) > .3)
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), INITIAL_ZOOM));
+        else
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), INITIAL_ZOOM));
     }
 
     @Override
     public void addFoodMarkers() {
-        addPlaceMarkers("food");
+        deleteMarkers();
+
+        if (placesState == PlacesState.FOOD)
+            placesState = PlacesState.NONE;
+        else {
+            placesState = PlacesState.FOOD;
+            startPlaceTask("food");
+        }
     }
 
     @Override
     public void addGasMarkers() {
-        addPlaceMarkers("gas");
+        deleteMarkers();
+
+        if (placesState == PlacesState.GAS)
+            placesState = PlacesState.NONE;
+        else {
+            placesState = PlacesState.GAS;
+            startPlaceTask("gas");
+        }
     }
 
     @Override
     public void addRestMarkers() {
-        addPlaceMarkers("rest");
+        deleteMarkers();
+
+        if (placesState == PlacesState.REST)
+            placesState = PlacesState.NONE;
+        else {
+            placesState = PlacesState.REST;
+            startPlaceTask("rest");
+        }
     }
 
     private void startPlaceTask(String type) {
+        if (placeTask != null)
+            throw new RuntimeException("Task should be stopped before starting a new one");
+
         LatLng currentLocation = getUserPosition();
-        GetNearbyPlacesData task = new GetNearbyPlacesData(this);
         String url = getPlaceUrl(currentLocation, type);
-        task.execute(url, type);
-    }
 
-    private void addPlaceMarkers(String type) {
-        ArrayList<NearbyPlace> places = new ArrayList<>();
-
-        switch (type) {
-            case "food":
-                if (placesState == PlacesState.FOOD)
-                    deleteMarkers();
-                else
-                    places = foodPlaces;
-                break;
-            case "gas":
-                if (placesState == PlacesState.GAS)
-                    deleteMarkers();
-                else
-                    places = gasPlaces;
-                break;
-            case "rest":
-                if (placesState == PlacesState.REST)
-                    deleteMarkers();
-                else
-                    places = restPlaces;
-                break;
-            default:
-                throw new RuntimeException("Bad case. Invalid place type");
-        }
-
-        deleteMarkers();
-
-        for (NearbyPlace place : places) {
-            currentPlaces.add(googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(place.lat, place.lng))
-                    .title(place.name)
-                    .snippet(place.link)));
-        }
+        placeTask = new GetNearbyPlacesData(this);
+        placeTask.execute(url);
     }
 
     private void deleteMarkers() {
+        if (placeTask != null)
+            placeTask.stop();
+
         for (Marker place : currentPlaces)
             place.remove();
     }
 
     @Override
-    public void addPlace(String type, NearbyPlace nearbyPlace) {
-        switch(type) {
-            case "food":
-                foodPlaces.add(nearbyPlace);
-                break;
-            case "gas":
-                gasPlaces.add(nearbyPlace);
-                break;
-            case "rest":
-                restPlaces.add(nearbyPlace);
-                break;
-            default:
-                throw new RuntimeException("Bad case. Invalid place type");
-        }
+    public void addPlace(NearbyPlace nearbyPlace) {
+        currentPlaces.add(
+                googleMap.addMarker(new MarkerOptions()
+                        .position(nearbyPlace.position)
+                        .title(nearbyPlace.name)));
     }
 
     /**
