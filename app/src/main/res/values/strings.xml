@@ -44,4 +44,5 @@
     <string name="name_your_car">Name Your Car</string>
     <string name="enter_party_name">Enter Party Name</string>
     <string name="find_party">Find Party</string>
+    <string name="click_here_to_logout">Click here to logout</string>
 </resources>
