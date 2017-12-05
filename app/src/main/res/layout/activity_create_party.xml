@@ -4,45 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.cmps121.app.activities.CreatePartyActivity">
+    android:background="@drawable/backsplash"
+    tools:context="edu.cmps121.app.activities.CreatePartyActivity"
+    tools:layout_editor_absoluteY="25dp">
 
     <EditText
         android:id="@+id/enter_create_party_name_et"
-        android:layout_width="246dp"
-        android:layout_height="42dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="230dp"
+        android:layout_height="50dp"
+        android:background="@drawable/edit_text_background"
         android:ems="10"
         android:hint="@string/dreamteam"
         android:inputType="textPersonName"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/create_party_name_b"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        tools:layout_editor_absoluteX="77dp"
+        tools:layout_editor_absoluteY="258dp" />
 
     <Button
         android:id="@+id/create_party_name_b"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="216dp"
+        android:layout_width="230dp"
+        android:layout_height="50"
+        android:background="@color/theme_orange"
+        android:fontFamily="@font/droid_sans"
         android:onClick="onClickCreateParty"
         android:text="@string/create"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView" />
+        android:textAlignment="center"
+        android:textColor="@color/cardview_light_background"
+        tools:layout_editor_absoluteX="77dp"
+        tools:layout_editor_absoluteY="434dp" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="368dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="200dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="380dp">
 
         <fragment
             android:id="@+id/place_autocomplete_fragment"
@@ -50,31 +45,47 @@
             android:layout_width="368dp"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="142dp" />
+            tools:layout_editor_absoluteY="263dp" />
 
     </android.support.v7.widget.CardView>
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="39dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="48dp"
-        android:text="Where are you going?"
+        android:layout_width="230dp"
+        android:layout_height="30dp"
+        android:fontFamily="@font/droid_sans"
+        android:text="Enter Your Destination"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/enter_create_party_name_et" />
+        android:textColor="@color/theme_dark_grey"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="77dp"
+        tools:layout_editor_absoluteY="325dp" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="What's your party name?"
+        android:fontFamily="@font/droid_sans"
+        android:text="Create Party"
+        android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textColor="@color/theme_orange"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="84dp"
+        tools:layout_editor_absoluteY="58dp" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="230dp"
+        android:layout_height="30dp"
+        android:text="Enter Your Party Name"
+        android:textColor="@color/theme_dark_grey"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="77dp"
+        tools:layout_editor_absoluteY="208dp" />
 
 
 </android.support.constraint.ConstraintLayout>
