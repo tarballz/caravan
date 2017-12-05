@@ -48,15 +48,15 @@ public class MapsActivity extends AppCompatActivity {
         }
 
         CustomListViewAdapter customListViewAdapter = new CustomListViewAdapter(this, foodNames);
-        foodListView = (ListView) findViewById(R.id.nearbyFoodLV);
+        foodListView = (ListView) findViewById(R.id.nearby_places_lv);
         foodListView.setAdapter(customListViewAdapter);
 
         customListViewAdapter = new CustomListViewAdapter(this, gasNames);
-        gasListView = (ListView) findViewById(R.id.nearbyGasLV);
-        gasListView.setAdapter(customListViewAdapter);
+//        gasListView = (ListView) findViewById(R.id.nearbyGasLV);
+//        gasListView.setAdapter(customListViewAdapter);
 
         customListViewAdapter = new CustomListViewAdapter(this, restNames);
-        restListView = (ListView) findViewById(R.id.nearbyRestLV);
+        restListView = (ListView) findViewById(R.id.nearby_places_lv);
         restListView.setAdapter(customListViewAdapter);
 
     }

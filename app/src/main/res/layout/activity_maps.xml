@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/darker_gray"
+    android:background="@drawable/backsplash"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="81dp">
 
@@ -23,43 +23,48 @@
 
     <Button
         android:id="@+id/rest_b"
-        android:layout_width="92dp"
-        android:layout_height="37dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginEnd="16dp"
         android:background="@android:color/holo_purple"
         android:onClick="notifyRest"
         android:text="@string/rest"
-        app:layout_constraintBaseline_toBaselineOf="@+id/gas_b"
+        app:layout_constraintBottom_toTopOf="@+id/gas_b"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/gas_b"
+        app:layout_constraintTop_toBottomOf="@+id/textView4"
         tools:layout_constraintBaseline_creator="1"
         tools:layout_constraintLeft_creator="1" />
 
     <Button
         android:id="@+id/gas_b"
-        android:layout_width="92dp"
-        android:layout_height="37dp"
-        android:layout_marginEnd="28dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="23dp"
+        android:layout_marginEnd="38dp"
         android:background="@android:color/holo_blue_bright"
         android:onClick="notifyGas"
         android:text="@string/gas"
+        app:layout_constraintBottom_toTopOf="@+id/nearby_places_lv"
         app:layout_constraintEnd_toStartOf="@+id/rest_b"
-        app:layout_constraintHorizontal_bias="0.791"
         app:layout_constraintStart_toEndOf="@+id/food_b"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rest_b"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintTop_creator="1" />
 
     <Button
         android:id="@+id/food_b"
-        android:layout_width="92dp"
-        android:layout_height="37dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="38dp"
         android:layout_marginStart="16dp"
         android:background="@android:color/holo_green_light"
         android:onClick="notifyFood"
         android:text="@string/food"
-        app:layout_constraintBaseline_toBaselineOf="@+id/gas_b"
+        app:layout_constraintBottom_toBottomOf="@+id/gas_b"
+        app:layout_constraintEnd_toStartOf="@+id/gas_b"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/gas_b"
         tools:layout_constraintBaseline_creator="1"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1" />
@@ -67,16 +72,15 @@
     <Button
         android:id="@+id/maps_menu_b"
         android:layout_width="213dp"
-        android:layout_height="41dp"
-        android:layout_marginBottom="76dp"
-        android:layout_marginEnd="70dp"
-        android:layout_marginStart="70dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="12dp"
         android:background="@android:color/holo_orange_light"
         android:onClick="mapsRedirect"
-        android:text="@string/go_to_google_maps"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:text="Get Directions"
+        app:layout_constraintBottom_toTopOf="@+id/live_maps_b"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nearby_places_lv"
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1" />
@@ -84,56 +88,43 @@
     <Button
         android:id="@+id/live_maps_b"
         android:layout_width="217dp"
-        android:layout_height="48dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="16dp"
-        android:onClick="mapsActivity"
-        android:text="@string/live_maps"
         android:background="@android:color/holo_red_dark"
+        android:onClick="mapsActivity"
+        android:text="Find Your Party"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/maps_menu_b"
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_editor_absoluteY="447dp"
-        tools:layout_editor_absoluteX="82dp"
-        app:layout_constraintHorizontal_bias="0.502" />
+        tools:layout_constraintRight_creator="1" />
 
     <ListView
-        android:id="@+id/nearbyFoodLV"
-        android:layout_width="122dp"
-        android:layout_height="300dp"
-        android:layout_marginTop="8dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/maps_menu_b"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/food_b"
-        app:layout_constraintVertical_bias="0.214" />
-
-    <ListView
-        android:id="@+id/nearbyGasLV"
-        android:layout_width="122dp"
-        android:layout_height="300dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/maps_menu_b"
-        app:layout_constraintEnd_toStartOf="@+id/nearbyRestLV"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/nearbyFoodLV"
-        app:layout_constraintTop_toBottomOf="@+id/gas_b"
-        app:layout_constraintVertical_bias="0.214" />
-
-    <ListView
-        android:id="@+id/nearbyRestLV"
-        android:layout_width="122dp"
-        android:layout_height="300dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginTop="8dp"
+        android:id="@+id/nearby_places_lv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="20dp"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/maps_menu_b"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rest_b"
-        app:layout_constraintVertical_bias="0.214" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gas_b" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="235dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="25dp"
+        android:text="Make a Pit Stop"
+        android:textAlignment="center"
+        android:textColor="@color/common_google_signin_btn_text_dark_focused"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/rest_b"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

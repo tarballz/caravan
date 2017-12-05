@@ -1,4 +1,4 @@
-package edu.cmps121.app.api;
+package edu.cmps121.app.utilities;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -17,10 +17,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
-import edu.cmps121.app.PartyMenuActivity;
-import edu.cmps121.app.api.NearbyPlace;
-import edu.cmps121.app.MapsActivity;
+import static edu.cmps121.app.activities.PartyMenuActivity.addNearbyFoodPlace;
+import static edu.cmps121.app.activities.PartyMenuActivity.addNearbyGasPlace;
+import static edu.cmps121.app.activities.PartyMenuActivity.addNearbyRestPlace;
 
 public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
@@ -64,11 +63,11 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 //            LatLng latLng = new LatLng(lat, lng);
             Log.d("GNPD", "nearByPlacesList: " + placeName);
             if (keyword == 'f') {
-                PartyMenuActivity.addNearbyFoodPlace(new NearbyPlace(placeName, vicinity, lat, lng));
+                addNearbyFoodPlace(new NearbyPlace(placeName, vicinity, lat, lng));
             } else if (keyword == 'g') {
-                PartyMenuActivity.addNearbyGasPlace(new NearbyPlace(placeName, vicinity, lat, lng));
+                addNearbyGasPlace(new NearbyPlace(placeName, vicinity, lat, lng));
             } else if (keyword == 'r') {
-                PartyMenuActivity.addNearbyRestPlace(new NearbyPlace(placeName, vicinity, lat, lng));
+                addNearbyRestPlace(new NearbyPlace(placeName, vicinity, lat, lng));
             }
         }
     }
