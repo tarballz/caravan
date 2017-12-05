@@ -8,26 +8,12 @@
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="25dp">
 
-    <!--<Button-->
-    <!--android:id="@+id/emergency_b"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="85dp"-->
-    <!--android:background="@android:color/holo_red_dark"-->
-    <!--android:onClick="notifyEmergency"-->
-    <!--android:text="@string/emergency"-->
-    <!--tools:layout_constraintLeft_creator="1"-->
-    <!--tools:layout_constraintRight_creator="1"-->
-    <!--tools:layout_constraintTop_creator="1"-->
-    <!--tools:layout_editor_absoluteX="133dp"-->
-    <!--tools:layout_editor_absoluteY="283dp" />-->
-
     <Button
         android:id="@+id/rest_places_b"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:background="@drawable/round_button_blue"
         android:fontFamily="@font/droid_sans"
-        android:onClick="onClickRest"
         android:text="@string/rest"
         android:textColor="@color/cardview_light_background"
         app:layout_constraintBottom_toTopOf="@+id/nearby_places_lv"
@@ -44,7 +30,6 @@
         android:layout_height="80dp"
         android:background="@drawable/round_button_green"
         android:fontFamily="@font/droid_sans"
-        android:onClick="onClickGas"
         android:text="@string/gas"
         android:textColor="@color/cardview_light_background"
         app:layout_constraintBottom_toTopOf="@+id/nearby_places_lv"
@@ -61,7 +46,6 @@
         android:fontFamily="@font/droid_sans"
         android:text="@string/food"
         android:textColor="@color/cardview_light_background"
-        android:onClick="onClickFood"
         app:layout_constraintBottom_toTopOf="@+id/nearby_places_lv"
         app:layout_constraintStart_toStartOf="@+id/pit_stop_tv"
         app:layout_constraintTop_toBottomOf="@+id/pit_stop_tv"

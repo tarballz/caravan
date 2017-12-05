@@ -439,7 +439,7 @@ public class MapsOverlayActivity extends AppCompatActivity
     }
 
     private void startPlaceTask(String type) {
-        if (placeTask != null)
+        if (placeTask.isRunning())
             throw new RuntimeException("Task should be stopped before starting a new one");
 
         LatLng currentLocation = getUserPosition();

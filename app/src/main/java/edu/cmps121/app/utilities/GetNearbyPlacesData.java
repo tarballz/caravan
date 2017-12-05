@@ -21,13 +21,13 @@ import java.util.List;
 public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
     private Callback callback;
-    private boolean run;
+    private boolean running;
 
     private final String TAG = GetNearbyPlacesData.class.getSimpleName();
 
     public GetNearbyPlacesData(Callback callback) {
         this.callback = callback;
-        this.run = true;
+        this.running = true;
     }
 
     /**
@@ -55,7 +55,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
 
         for (HashMap<String, String> place : nearbyPlaces) {
-            if (!run)
+            if (!running)
                 break;
 
             LatLng latLng = new LatLng(Double.parseDouble(place.get("lat")),
@@ -146,7 +146,11 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
     }
 
     public void stop() {
-        run = false;
+        running = false;
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 
     public interface Callback {

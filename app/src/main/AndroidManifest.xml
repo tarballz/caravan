@@ -29,8 +29,7 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity android:name=".activities.MainActivity"
-            android:theme="@android:style/Theme.Holo.NoActionBar">
-            <!--android:theme="@android:style/Theme.NoTitleBar.Fullscreen">-->
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,32 +38,32 @@
         </activity>
         <activity
             android:name=".activities.MapsActivity"
-            android:theme="@android:style/Theme.Holo.NoActionBar"
+            android:theme="@style/AppTheme"
             android:label="@string/title_activity_maps" />
         <activity
             android:name=".activities.PartyOptionsActivity"
-            android:theme="@android:style/Theme.Holo.NoActionBar"
+            android:theme="@style/AppTheme"
             android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.CreatePartyActivity"
-            android:theme="@android:style/Theme.Holo.NoActionBar"
+            android:theme="@style/AppTheme"
             android:parentActivityName=".activities.PartyOptionsActivity" />
         <activity
             android:name=".activities.FindPartyActivity"
-            android:theme="@android:style/Theme.Holo.NoActionBar"
+            android:theme="@style/AppTheme"
             android:parentActivityName=".activities.PartyOptionsActivity" />
         <activity android:name=".activities.PartyMenuActivity"
-            android:theme="@android:style/Theme.Holo.NoActionBar" />
+            android:theme="@style/AppTheme" />
         <activity android:name=".activities.CreateCarActivity"
-            android:theme="@android:style/Theme.Holo.NoActionBar" />
+            android:theme="@style/AppTheme" />
         <activity android:name=".activities.MapsOverlayActivity"
-            android:theme="@android:style/Theme.Holo.NoActionBar" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:theme="@android:style/Theme.Holo.NoActionBar" />
+            android:theme="@style/AppTheme" />
         <activity android:name=".activities.FindCarActivity"
-            android:theme="@android:style/Theme.Holo.NoActionBar" />
+            android:theme="@style/AppTheme" />
 
         <service
             android:name=".utilities.DriverService"

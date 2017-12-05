@@ -60,7 +60,7 @@ public class CreateCarActivity extends AppCompatActivity {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_spinner_item,
+                R.layout.spinner_item,
                 colors
         );
         colorSpinner.setAdapter(adapter);

@@ -18,7 +18,7 @@ import edu.cmps121.app.utilities.State;
 
 import static edu.cmps121.app.utilities.CaravanUtils.shortToast;
 
-public class MapsActivity extends AppCompatActivity implements GetNearbyPlacesData.Callback {
+public class MapsActivity extends AppCompatActivity {
 
     private State state;
     private ListView nearbyPlaces;
@@ -56,48 +56,48 @@ public class MapsActivity extends AppCompatActivity implements GetNearbyPlacesDa
         state.nextActivity(this, MapsOverlayActivity.class);
     }
 
-    public void onClickFood(View view) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                nearbyFood
-        );
-        nearbyPlaces.setAdapter(adapter);
-    }
-
-    public void onClickGas(View view) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                nearbyGas
-        );
-        nearbyPlaces.setAdapter(adapter);
-    }
-
-    public void onClickRest(View view) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                nearbyRest
-        );
-        nearbyPlaces.setAdapter(adapter);
-    }
-
-
-    @Override
-    public void addPlace(String placeType, String placeName) {
-        switch (placeType) {
-            case "food":
-                nearbyFood.add(placeName);
-                break;
-            case "gas":
-                nearbyGas.add(placeName);
-                break;
-            case "rest":
-                nearbyRest.add(placeName);
-                break;
-            default:
-                throw new RuntimeException("Bad switch case. Invalid placeType");
-        }
-    }
+//    public void onClickFood(View view) {
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+//                this,
+//                android.R.layout.simple_list_item_1,
+//                nearbyFood
+//        );
+//        nearbyPlaces.setAdapter(adapter);
+//    }
+//
+//    public void onClickGas(View view) {
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+//                this,
+//                android.R.layout.simple_list_item_1,
+//                nearbyGas
+//        );
+//        nearbyPlaces.setAdapter(adapter);
+//    }
+//
+//    public void onClickRest(View view) {
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+//                this,
+//                android.R.layout.simple_list_item_1,
+//                nearbyRest
+//        );
+//        nearbyPlaces.setAdapter(adapter);
+//    }
+//
+//
+//    @Override
+//    public void addPlace(String placeType, String placeName) {
+//        switch (placeType) {
+//            case "food":
+//                nearbyFood.add(placeName);
+//                break;
+//            case "gas":
+//                nearbyGas.add(placeName);
+//                break;
+//            case "rest":
+//                nearbyRest.add(placeName);
+//                break;
+//            default:
+//                throw new RuntimeException("Bad switch case. Invalid placeType");
+//        }
+//    }
 }
