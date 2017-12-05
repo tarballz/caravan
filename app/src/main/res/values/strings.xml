@@ -45,4 +45,7 @@
     <string name="enter_party_name">Enter Party Name</string>
     <string name="find_party">Find Party</string>
     <string name="click_here_to_logout">Click here to logout</string>
+    <string name="party_options">Party Options</string>
+    <string name="select_map_theme">Select Map Theme</string>
+    <string name="change_password">Change Password</string>
 </resources>
