@@ -1,7 +1,6 @@
 package edu.cmps121.app.utilities;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,162 +22,125 @@ import static edu.cmps121.app.activities.PartyMenuActivity.addNearbyRestPlace;
 
 public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
-    String googlePlacesData;
-    String url;
-    char keyword;
+    private String keyword;
+
+    private final String TAG = GetNearbyPlacesData.class.getSimpleName();
 
     @Override
     protected String doInBackground(Object... params) {
         try {
-            Log.d("GetNearbyPlacesData", "doInBackground entered");
-            url = (String) params[0];
-            keyword = (char) params[1];
+            String url = (String) params[0];
+            keyword = (String) params[1];
             DownloadUrl downloadUrl = new DownloadUrl();
-            googlePlacesData = downloadUrl.readUrl(url);
-            Log.d("GooglePlacesReadTask", "doInBackground Exit");
-        } catch (Exception e) {
-            Log.d("GooglePlacesReadTask", e.toString());
+            return downloadUrl.readUrl(url);
+        } catch (IOException e) {
+            throw new RuntimeException(TAG, e);
         }
-        return googlePlacesData;
     }
 
     @Override
     protected void onPostExecute(String result) {
-        Log.d("GooglePlacesReadTask", "onPostExecute Entered");
-        List<HashMap<String, String>> nearbyPlacesList = null;
         DataParser dataParser = new DataParser();
-        nearbyPlacesList =  dataParser.parse(result);
-        ShowNearbyPlaces(nearbyPlacesList);
-        Log.d("GooglePlacesReadTask", "onPostExecute Exit");
+        ShowNearbyPlaces(dataParser.parse(result));
     }
 
     private void ShowNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList) {
         for (int i = 0; i < nearbyPlacesList.size(); i++) {
-            Log.d("onPostExecute","Entered into showing locations");
             HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
             double lat = Double.parseDouble(googlePlace.get("lat"));
             double lng = Double.parseDouble(googlePlace.get("lng"));
             String placeName = googlePlace.get("place_name");
             String vicinity = googlePlace.get("vicinity");
-//            LatLng latLng = new LatLng(lat, lng);
-            Log.d("GNPD", "nearByPlacesList: " + placeName);
-            if (keyword == 'f') {
-                addNearbyFoodPlace(new NearbyPlace(placeName, vicinity, lat, lng));
-            } else if (keyword == 'g') {
-                addNearbyGasPlace(new NearbyPlace(placeName, vicinity, lat, lng));
-            } else if (keyword == 'r') {
-                addNearbyRestPlace(new NearbyPlace(placeName, vicinity, lat, lng));
+
+            switch (keyword) {
+                case "food":
+                    addNearbyFoodPlace(new NearbyPlace(placeName, vicinity, lat, lng));
+                    break;
+                case "gas":
+                    addNearbyGasPlace(new NearbyPlace(placeName, vicinity, lat, lng));
+                    break;
+                case "rest":
+                    addNearbyRestPlace(new NearbyPlace(placeName, vicinity, lat, lng));
+                    break;
+                default:
+                    throw new RuntimeException("Bad switch case. Invalid keyword");
             }
         }
     }
 
     public class DownloadUrl {
 
-        public String readUrl(String strUrl) throws IOException {
-            String data = "";
-            InputStream iStream = null;
-            HttpURLConnection urlConnection = null;
-            try {
-                URL url = new URL(strUrl);
+        String readUrl(String strUrl) throws IOException {
+            URL url = new URL(strUrl);
 
-                // Creating an http connection to communicate with url
-                urlConnection = (HttpURLConnection) url.openConnection();
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.connect();
 
-                // Connecting to url
-                urlConnection.connect();
+            InputStream in = urlConnection.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
-                // Reading data from url
-                iStream = urlConnection.getInputStream();
+            StringBuilder sb = new StringBuilder();
+            String line;
 
-                BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
+            while ((line = br.readLine()) != null)
+                sb.append(line);
 
-                StringBuffer sb = new StringBuffer();
+            String data = sb.toString();
+            br.close();
+            in.close();
+            urlConnection.disconnect();
 
-                String line = "";
-                while ((line = br.readLine()) != null) {
-                    sb.append(line);
-                }
-
-                data = sb.toString();
-                Log.d("downloadUrl", data.toString());
-                br.close();
-
-            } catch (Exception e) {
-                Log.d("Exception", e.toString());
-            } finally {
-                iStream.close();
-                urlConnection.disconnect();
-            }
             return data;
         }
     }
 
     public class DataParser {
-        public List<HashMap<String, String>> parse(String jsonData) {
-            JSONArray jsonArray = null;
-            JSONObject jsonObject;
-
+        List<HashMap<String, String>> parse(String jsonData) {
             try {
-                Log.d("Places", "parse");
-                jsonObject = new JSONObject((String) jsonData);
-                jsonArray = jsonObject.getJSONArray("results");
+                JSONObject jsonObject = new JSONObject(jsonData);
+
+                return getPlaces(jsonObject.getJSONArray("results"));
             } catch (JSONException e) {
-                Log.d("Places", "parse error");
-                e.printStackTrace();
+                throw new RuntimeException(TAG + ": DataParser", e);
             }
-            return getPlaces(jsonArray);
         }
 
-        private List<HashMap<String, String>> getPlaces(JSONArray jsonArray) {
-            int placesCount = jsonArray.length();
+        private List<HashMap<String, String>> getPlaces(JSONArray jsonArray) throws JSONException {
             List<HashMap<String, String>> placesList = new ArrayList<>();
-            HashMap<String, String> placeMap = null;
-            Log.d("Places", "getPlaces");
 
-            for (int i = 0; i < placesCount; i++) {
-                try {
-                    placeMap = getPlace((JSONObject) jsonArray.get(i));
-                    placesList.add(placeMap);
-                    Log.d("Places", "Adding places");
+            for (int i = 0; i < jsonArray.length(); i++)
+                placesList.add(getPlace((JSONObject) jsonArray.get(i)));
 
-                } catch (JSONException e) {
-                    Log.d("Places", "Error in Adding places");
-                    e.printStackTrace();
-                }
-            }
             return placesList;
         }
 
-        private HashMap<String, String> getPlace(JSONObject googlePlaceJson) {
-            HashMap<String, String> googlePlaceMap = new HashMap<String, String>();
+        private HashMap<String, String> getPlace(JSONObject googlePlaceJson) throws JSONException {
+            HashMap<String, String> googlePlaceMap = new HashMap<>();
             String placeName = "-NA-";
             String vicinity = "-NA-";
-            String latitude = "";
-            String longitude = "";
-            String reference = "";
 
-            Log.d("getPlace", "Entered");
+            if (!googlePlaceJson.isNull("name"))
+                placeName = googlePlaceJson.getString("name");
 
-            try {
-                if (!googlePlaceJson.isNull("name")) {
-                    placeName = googlePlaceJson.getString("name");
-                }
-                if (!googlePlaceJson.isNull("vicinity")) {
-                    vicinity = googlePlaceJson.getString("vicinity");
-                }
-                latitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lat");
-                longitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lng");
-                reference = googlePlaceJson.getString("reference");
-                googlePlaceMap.put("place_name", placeName);
-                googlePlaceMap.put("vicinity", vicinity);
-                googlePlaceMap.put("lat", latitude);
-                googlePlaceMap.put("lng", longitude);
-                googlePlaceMap.put("reference", reference);
-                Log.d("getPlace", "Putting Places");
-            } catch (JSONException e) {
-                Log.d("getPlace", "Error");
-                e.printStackTrace();
-            }
+            if (!googlePlaceJson.isNull("vicinity"))
+                vicinity = googlePlaceJson.getString("vicinity");
+
+            String latitude = googlePlaceJson.getJSONObject("geometry")
+                    .getJSONObject("location")
+                    .getString("lat");
+            String longitude = googlePlaceJson
+                    .getJSONObject("geometry")
+                    .getJSONObject("location")
+                    .getString("lng");
+            String reference = googlePlaceJson
+                    .getString("reference");
+
+            googlePlaceMap.put("place_name", placeName);
+            googlePlaceMap.put("vicinity", vicinity);
+            googlePlaceMap.put("lat", latitude);
+            googlePlaceMap.put("lng", longitude);
+            googlePlaceMap.put("reference", reference);
+
             return googlePlaceMap;
         }
     }

@@ -19,9 +19,7 @@ import static edu.cmps121.app.utilities.CaravanUtils.shortToast;
 public class MapsActivity extends AppCompatActivity {
 
     private State state;
-    ListView foodListView;
-    ListView gasListView;
-    ListView restListView;
+    ListView nearbyPlaces;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,36 +27,40 @@ public class MapsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_maps);
 
         state = new State(this);
-        // God this is literally the worst code I've ever written.
+        nearbyPlaces = (ListView) findViewById(R.id.nearby_places_lv);
+
+        initializePlaces();
+    }
+
+    private void initializePlaces() {
         List<NearbyPlace> foodNearbyList = PartyMenuActivity.getNearbyFoodList();
         List<NearbyPlace> gasNearbyList  = PartyMenuActivity.getNearbyGasList();
         List<NearbyPlace> restNearbyList = PartyMenuActivity.getNearbyRestList();
         String[] foodNames = new String[foodNearbyList.size()];
         String[] gasNames  = new String[gasNearbyList.size()];
         String[] restNames = new String[restNearbyList.size()];
-        for (int i = 0; i < foodNames.length; i++) {
+        for (int i = 0; i < foodNames.length; i++)
             foodNames[i] = foodNearbyList.get(i).name;
-            //Log.d("MAPACT", "foodNames" + foodNames[i]);
-        }
-        for (int i = 0; i < gasNames.length; i++) {
+
+        for (int i = 0; i < gasNames.length; i++)
             gasNames[i] = gasNearbyList.get(i).name;
-        }
-        for (int i = 0; i < restNames.length; i++) {
+
+        for (int i = 0; i < restNames.length; i++)
             restNames[i] = restNearbyList.get(i).name;
-        }
 
-        CustomListViewAdapter customListViewAdapter = new CustomListViewAdapter(this, foodNames);
-        foodListView = (ListView) findViewById(R.id.nearby_places_lv);
-        foodListView.setAdapter(customListViewAdapter);
+        // TODO: make these viewable on click
 
-        customListViewAdapter = new CustomListViewAdapter(this, gasNames);
+//        CustomListViewAdapter customListViewAdapter = new CustomListViewAdapter(this, foodNames);
+//        foodListView = (ListView) findViewById(R.id.nearby_places_lv);
+//        foodListView.setAdapter(customListViewAdapter);
+//
+//        customListViewAdapter = new CustomListViewAdapter(this, gasNames);
 //        gasListView = (ListView) findViewById(R.id.nearbyGasLV);
 //        gasListView.setAdapter(customListViewAdapter);
-
-        customListViewAdapter = new CustomListViewAdapter(this, restNames);
-        restListView = (ListView) findViewById(R.id.nearby_places_lv);
-        restListView.setAdapter(customListViewAdapter);
-
+//
+//        customListViewAdapter = new CustomListViewAdapter(this, restNames);
+//        restListView = (ListView) findViewById(R.id.nearby_places_lv);
+//        restListView.setAdapter(customListViewAdapter);
     }
 
     public void mapsRedirect(View view) {
