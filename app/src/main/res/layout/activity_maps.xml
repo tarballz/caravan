@@ -17,7 +17,23 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight=".45">
+            android:layout_weight=".42">
+
+            <fragment
+                android:id="@+id/place_fragment"
+                android:name="edu.cmps121.app.utilities.PlaceFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="true"
+                tools:context="edu.cmps121.app.activities.MapsActivity" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight=".18">
 
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -36,7 +52,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight=".15">
+            android:layout_weight=".4">
 
             <fragment
                 android:id="@+id/nav_fragment"
@@ -48,22 +64,6 @@
                 tools:context="edu.cmps121.app.activities.MapsActivity"
                 tools:layout_editor_absoluteX="108dp"
                 tools:layout_editor_absoluteY="8dp" />
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight=".4">
-
-            <fragment
-                android:id="@+id/place_fragment"
-                android:name="edu.cmps121.app.utilities.PlaceFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clickable="true"
-                android:focusable="true"
-                tools:context="edu.cmps121.app.activities.MapsActivity" />
 
         </FrameLayout>
 

@@ -74,7 +74,7 @@ public class MapsActivity extends AppCompatActivity
     private boolean threadStop;
 
     private static final String TAG = MapsActivity.class.getSimpleName();
-    private static final float INITIAL_ZOOM = 10.0f;
+    private static final float INITIAL_ZOOM = 20.0f;
     private static final int SLEEP_MILLI = 1000;
 
     private enum PlacesState {
@@ -84,7 +84,7 @@ public class MapsActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps_overlay);
+        setContentView(R.layout.activity_maps);
 
         state = new State(this);
         dynamoDB = new DynamoDB(this);
