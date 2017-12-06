@@ -17,7 +17,7 @@ public class PartyOptionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_party_options);
 
-        TextView textView = (TextView) findViewById(R.id.display_name_tv);
+        TextView textView = (TextView) findViewById(R.id.party_options_greeting_tv);
         state = new State(this);
 
         if (state.party != null && !state.party.isEmpty())

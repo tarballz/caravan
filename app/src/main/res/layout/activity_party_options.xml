@@ -4,22 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/backsplash"
+    android:background="@drawable/backsplash_white"
     tools:context="edu.cmps121.app.activities.PartyOptionsActivity"
     tools:layout_editor_absoluteY="25dp">
-
-    <TextView
-        android:id="@+id/display_name_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:textColor="@android:color/black"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView10"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/create_party_b"
@@ -32,37 +19,57 @@
         android:text="@string/create_party"
         app:layout_constraintBottom_toTopOf="@+id/find_party_b"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView10" />
+        app:layout_constraintTop_toBottomOf="@+id/party_options_tv" />
 
     <Button
         android:id="@+id/find_party_b"
         android:layout_width="230dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="66dp"
+        android:layout_marginBottom="49dp"
         android:background="@color/theme_orange"
         android:fontFamily="@font/droid_sans"
         android:onClick="onClickFindPartyOptions"
         android:text="@string/find_party"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/create_party_b"
         tools:text="@string/find_party" />
 
     <TextView
-        android:id="@+id/textView10"
+        android:id="@+id/party_options_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="260dp"
+        android:layout_marginTop="83dp"
         android:fontFamily="@font/droid_sans"
         android:text="@string/party_options"
+        android:textAlignment="center"
         android:textColor="@color/theme_orange"
         android:textSize="36sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/create_party_b"
-        app:layout_constraintEnd_toStartOf="@+id/display_name_tv"
-        app:layout_constraintStart_toStartOf="@+id/display_name_tv"
-        app:layout_constraintTop_toBottomOf="@+id/display_name_tv" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/party_options_greeting_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/droid_sans"
+        android:text="@string/hello"
+        android:textAlignment="center"
+        android:textColor="@color/theme_dark_grey"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/create_party_b"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/party_options_tv" />
 
 </android.support.constraint.ConstraintLayout>

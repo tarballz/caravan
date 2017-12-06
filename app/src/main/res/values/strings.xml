@@ -46,4 +46,5 @@
     <string name="change_password">Change Password</string>
     <string name="enter_your_party_name">Enter Your Party Name</string>
     <string name="enter_your_destination">Enter Your Destination</string>
+    <string name="hello">Hello!</string>
 </resources>
