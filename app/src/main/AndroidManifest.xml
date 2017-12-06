@@ -56,11 +56,8 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".activities.CreateCarActivity"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activities.MapsOverlayActivity"
-            android:theme="@style/AppTheme" />
         <activity
             android:name=".activities.SettingsActivity"
-            android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme" />
         <activity android:name=".activities.FindCarActivity"
             android:theme="@style/AppTheme" />

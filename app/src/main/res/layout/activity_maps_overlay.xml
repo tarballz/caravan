@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         map:cameraZoom="10"
-        tools:context="edu.cmps121.app.activities.MapsOverlayActivity" />
+        tools:context="edu.cmps121.app.activities.MapsActivity" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -31,7 +31,7 @@
             android:name="edu.cmps121.app.utilities.PlaceFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="edu.cmps121.app.activities.MapsOverlayActivity" />
+            tools:context="edu.cmps121.app.activities.MapsActivity" />
 
         </FrameLayout>
     </FrameLayout>
@@ -48,7 +48,7 @@
         android:name="edu.cmps121.app.utilities.NavigationFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="edu.cmps121.app.activities.MapsOverlayActivity" />
+        tools:context="edu.cmps121.app.activities.MapsActivity" />
 
     </FrameLayout>
 
