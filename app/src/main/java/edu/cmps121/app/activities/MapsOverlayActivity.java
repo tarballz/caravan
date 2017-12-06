@@ -459,10 +459,13 @@ public class MapsOverlayActivity extends AppCompatActivity
 
     @Override
     public void addPlace(NearbyPlace nearbyPlace) {
-        currentPlaces.add(
-                googleMap.addMarker(new MarkerOptions()
-                        .position(nearbyPlace.position)
-                        .title(nearbyPlace.name)));
+        Marker marker = googleMap.addMarker(new MarkerOptions()
+                .position(nearbyPlace.position)
+                .title(nearbyPlace.name));
+
+        marker.setTag(placesState.toString());
+
+        currentPlaces.add(marker);
     }
 
     /**
@@ -479,7 +482,7 @@ public class MapsOverlayActivity extends AppCompatActivity
 
         @Override
         public View getInfoWindow(Marker marker) {
-            render(marker, mWindow);
+                render(marker, mWindow);
             return mWindow;
         }
 
@@ -497,12 +500,12 @@ public class MapsOverlayActivity extends AppCompatActivity
 
             String title = marker.getTitle();
             String snippet = marker.getSnippet();
-            String color = (String) marker.getTag();
+            String tag = (String) marker.getTag();
             int badge;
 
-            assert color != null;
+            assert tag != null;
 
-            switch (color) {
+            switch (tag) {
                 case "green":
                     badge = R.drawable.badge_green;
                     break;
@@ -512,8 +515,20 @@ public class MapsOverlayActivity extends AppCompatActivity
                 case "red":
                     badge = R.drawable.badge_red;
                     break;
-                default:
+                case "blue":
                     badge = R.drawable.badge_blue;
+                    break;
+                case "FOOD":
+                    badge = R.drawable.badge_food;
+                    break;
+                case "GAS":
+                    badge = R.drawable.badge_gas;
+                    break;
+                case "REST":
+                    badge = R.drawable.badge_rest;
+                    break;
+                default:
+                    throw new RuntimeException("Bad switch case. Improper tag");
             }
 
             ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);
