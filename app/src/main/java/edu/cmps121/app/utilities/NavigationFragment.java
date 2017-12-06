@@ -49,7 +49,7 @@ public class NavigationFragment extends Fragment {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this.getContext(),
-                android.R.layout.simple_list_item_1,
+                R.layout.spinner_item,
                 cars
         );
 

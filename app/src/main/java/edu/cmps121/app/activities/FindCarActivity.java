@@ -47,7 +47,7 @@ public class FindCarActivity extends AppCompatActivity {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_list_item_1,
+                R.layout.spinner_item,
                 getCarsWithDrivers()
         );
         carList.setAdapter(adapter);
