@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 
 import edu.cmps121.app.R;
 import edu.cmps121.app.dynamo.DynamoDB;
+import edu.cmps121.app.dynamo.Party;
 import edu.cmps121.app.utilities.GetNearbyPlacesData;
 import edu.cmps121.app.utilities.NavigationFragment;
 import edu.cmps121.app.utilities.NearbyPlace;
@@ -71,6 +72,7 @@ public class MapsActivity extends AppCompatActivity
     private List<Float> bearings;
     private ArrayList<Marker> currentPlaces;
     private PlacesState placesState;
+    private Marker destinationMarker;
     private boolean threadStop;
 
     private static final String TAG = MapsActivity.class.getSimpleName();
@@ -211,10 +213,27 @@ public class MapsActivity extends AppCompatActivity
     private void setIcons() {
         checkCarsTable();
 
+        setDestinationIcon();
+
         if (cars.size() > 0)
             spawnMarkers();
         else
             shortToast(this, "Create a car to view its location on the map");
+    }
+
+    private void setDestinationIcon() {
+        Party party = (Party) dynamoDB.getItem(Party.class, state.party);
+
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.destination, null);
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        Bitmap finishFlag= Bitmap.createScaledBitmap(bitmap, 100, 100, false);
+
+        destinationMarker = googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(party.getLat(), party.getLng()))
+                .title(party.getDestName())
+                .icon(BitmapDescriptorFactory.fromBitmap(finishFlag)));
+
+        destinationMarker.setTag("destination");
     }
 
     private void checkCarsTable() {
@@ -392,7 +411,15 @@ public class MapsActivity extends AppCompatActivity
 
     @Override
     public void moveCamera(String carName) {
-        Marker marker = markers.get(carName);
+        Marker marker;
+        if (carName.equals("Destination"))
+            marker = destinationMarker;
+        else
+            marker = markers.get(carName);
+
+        if (marker == null)
+            throw new RuntimeException("Marker cannot be null");
+
         LatLng cameraPosition = googleMap.getCameraPosition().target;
         LatLng target = marker.getPosition();
 
@@ -526,6 +553,9 @@ public class MapsActivity extends AppCompatActivity
                     break;
                 case "REST":
                     badge = R.drawable.badge_rest;
+                    break;
+                case "destination":
+                    badge = R.drawable.badge_destination;
                     break;
                 default:
                     throw new RuntimeException("Bad switch case. Improper tag");

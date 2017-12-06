@@ -32,9 +32,9 @@ public class SettingsActivity extends AppCompatActivity {
         Spinner carSpinner = (Spinner) findViewById(R.id.select_theme_sp);
         ArrayList<String> themes = new ArrayList<>();
 
+        themes.add("Night");
         themes.add("Retro");
         themes.add("GreyScale");
-        themes.add("Night");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,

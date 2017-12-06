@@ -47,6 +47,8 @@ public class NavigationFragment extends Fragment {
                 .map(e -> e.get("car").getS())
                 .collect(Collectors.toList());
 
+        cars.add("Destination");
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this.getContext(),
                 R.layout.spinner_item,
@@ -60,7 +62,7 @@ public class NavigationFragment extends Fragment {
         listView.setOnItemClickListener((parent, v, position, id) -> {
             String carName = (String) parent.getItemAtPosition(position);
 
-            if (!dynamoDB.itemExists(Car.class, carName))
+            if (!carName.equals("Destination") || !dynamoDB.itemExists(Car.class, carName))
                 throw new RuntimeException("Car could not be found in the DB");
 
             callback.moveCamera(carName);

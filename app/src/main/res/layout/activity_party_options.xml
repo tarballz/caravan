@@ -66,6 +66,7 @@
         android:textAlignment="center"
         android:textColor="@color/theme_dark_grey"
         android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/create_party_b"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
