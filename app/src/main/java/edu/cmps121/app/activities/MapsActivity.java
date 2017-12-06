@@ -74,7 +74,7 @@ public class MapsActivity extends AppCompatActivity
     private boolean threadStop;
 
     private static final String TAG = MapsActivity.class.getSimpleName();
-    private static final float INITIAL_ZOOM = 20.0f;
+    private static final float INITIAL_ZOOM = 15.0f;
     private static final int SLEEP_MILLI = 1000;
 
     private enum PlacesState {

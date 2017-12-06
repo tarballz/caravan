@@ -2,70 +2,78 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/backsplash"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/backsplash">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="25dp"
-        android:orientation="vertical"
         android:layout_centerInParent="true"
-        android:weightSum="1">
+        android:padding="20dp">
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight=".42">
+            android:background="@drawable/border"
+            android:orientation="vertical"
+            android:padding="2dp"
+            android:weightSum="1">
 
-            <fragment
-                android:id="@+id/place_fragment"
-                android:name="edu.cmps121.app.utilities.PlaceFragment"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clickable="true"
-                android:focusable="true"
-                tools:context="edu.cmps121.app.activities.MapsActivity" />
+                android:layout_weight=".42">
 
-        </FrameLayout>
+                <fragment
+                    android:id="@+id/place_fragment"
+                    android:name="edu.cmps121.app.utilities.PlaceFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    tools:context="edu.cmps121.app.activities.MapsActivity" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight=".18">
+            </FrameLayout>
 
-            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:map="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/map_fragment"
-                android:name="com.google.android.gms.maps.SupportMapFragment"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clickable="true"
-                android:focusable="true"
-                map:cameraZoom="10"
-                tools:context="edu.cmps121.app.activities.MapsActivity" />
+                android:layout_weight=".18">
 
-        </FrameLayout>
+                <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:map="http://schemas.android.com/apk/res-auto"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:id="@+id/map_fragment"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    map:cameraZoom="10"
+                    tools:context="edu.cmps121.app.activities.MapsActivity" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight=".4">
+            </FrameLayout>
 
-            <fragment
-                android:id="@+id/nav_fragment"
-                android:name="edu.cmps121.app.utilities.NavigationFragment"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clickable="true"
-                android:focusable="true"
-                tools:context="edu.cmps121.app.activities.MapsActivity"
-                tools:layout_editor_absoluteX="108dp"
-                tools:layout_editor_absoluteY="8dp" />
+                android:layout_weight=".4">
 
-        </FrameLayout>
+                <fragment
+                    android:id="@+id/nav_fragment"
+                    android:name="edu.cmps121.app.utilities.NavigationFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    tools:context="edu.cmps121.app.activities.MapsActivity"
+                    tools:layout_editor_absoluteX="108dp"
+                    tools:layout_editor_absoluteY="8dp" />
+
+            </FrameLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 

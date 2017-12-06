@@ -5,6 +5,7 @@
     <color name="theme_yellow">#FFFBB23A</color>
     <color name="theme_green">#FF95C41F</color>
     <color name="theme_dark_grey">#464544</color>
+    <color name="theme_light_blue">#FFB1FCF5</color>
     <color name="foreground_material_light">#2cabe5</color>
     <color name="background_material_light">#fafafa</color>
 </resources>

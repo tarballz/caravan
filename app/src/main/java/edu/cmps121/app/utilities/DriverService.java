@@ -23,7 +23,7 @@ public class DriverService extends Service {
     private String car;
 
     private static final int LOCATION_INTERVAL = 1000;
-    private static final float LOCATION_DISTANCE = 10f;
+    private static final float LOCATION_DISTANCE = 1f;
     private static final String TAG = DriverService.class.getSimpleName();
 
     private class LocationListener implements android.location.LocationListener {
