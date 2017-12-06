@@ -5,17 +5,15 @@
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/backsplash"
     android:orientation="horizontal"
     tools:layout_editor_absoluteY="25dp">
 
     <Button
         android:id="@+id/rest_places_b"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:background="@drawable/round_button_blue"
         android:fontFamily="@font/droid_sans"
-        android:onClick="onClickRest"
         android:text="@string/rest"
         android:textColor="@color/cardview_light_background"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -26,11 +24,10 @@
 
     <Button
         android:id="@+id/gas_places_b"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:background="@drawable/round_button_green"
         android:fontFamily="@font/droid_sans"
-        android:onClick="onClickGas"
         android:text="@string/gas"
         android:textColor="@color/cardview_light_background"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -41,11 +38,10 @@
 
     <Button
         android:id="@+id/food_places_b"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:background="@drawable/round_button_yellow"
         android:fontFamily="@font/droid_sans"
-        android:onClick="onClickFood"
         android:text="@string/food"
         android:textColor="@color/cardview_light_background"
         app:layout_constraintBottom_toBottomOf="parent"

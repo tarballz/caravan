@@ -69,7 +69,6 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
     }
 
     public class DownloadUrl {
-
         String readUrl(String strUrl) throws IOException {
             URL url = new URL(strUrl);
 
