@@ -54,7 +54,7 @@ public class FindCarActivity extends AppCompatActivity {
 
         carList.setOnItemClickListener((parent, v, position, id) -> {
             if (carName.isPresent())
-                shortToast(this, "You are already driving " + carName + ". You cannot join another car");
+                shortToast(this, "You are already driving " + carName.get() + ". You cannot join another car");
             else {
                 String carAndDriver = (String) parent.getItemAtPosition(position);
                 state.car = carAndDriver.substring(carAndDriver.indexOf("'s ") + 3);
