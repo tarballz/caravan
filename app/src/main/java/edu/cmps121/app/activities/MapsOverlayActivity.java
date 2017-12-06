@@ -62,7 +62,6 @@ public class MapsOverlayActivity extends AppCompatActivity
     private GoogleMap googleMap;
     private Thread trackingThread;
     private GetNearbyPlacesData placeTask;
-    private LatLng target;
 
     private HashMap<String, Marker> markers;
     private List<String> cars;
@@ -75,7 +74,7 @@ public class MapsOverlayActivity extends AppCompatActivity
     private boolean threadStop;
 
     private static final String TAG = MapsOverlayActivity.class.getSimpleName();
-    private static final float INITIAL_ZOOM = 14.0f;
+    private static final float INITIAL_ZOOM = 10.0f;
     private static final int SLEEP_MILLI = 1000;
 
     private enum PlacesState {
@@ -146,11 +145,11 @@ public class MapsOverlayActivity extends AppCompatActivity
 
     private void setCameraPosition() {
         User userItem = (User) dynamoDB.getItem(User.class, state.user);
+        LatLng target;
 
         if (userItem == null)
             throw new RuntimeException("User does not exist in DB. Critical Failure");
 
-        // TODO: still not working
         if (isValidString(userItem.getCar()))
             target = getCarPosition(userItem.getCar());
         else
@@ -395,7 +394,7 @@ public class MapsOverlayActivity extends AppCompatActivity
     public void moveCamera(String carName) {
         Marker marker = markers.get(carName);
         LatLng cameraPosition = googleMap.getCameraPosition().target;
-        target = marker.getPosition();
+        LatLng target = marker.getPosition();
 
         if (Math.abs(cameraPosition.latitude - target.latitude) > .3 ||
                 Math.abs(cameraPosition.longitude - target.longitude) > .3)
@@ -444,8 +443,7 @@ public class MapsOverlayActivity extends AppCompatActivity
         if (placeTask != null && placeTask.isRunning())
             throw new RuntimeException("Task should be stopped before starting a new one");
 
-        LatLng currentLocation = getUserPosition();
-        String url = getPlaceUrl(currentLocation, type);
+        String url = getPlaceUrl(googleMap.getCameraPosition().target, type);
 
         placeTask = new GetNearbyPlacesData(this);
         placeTask.execute(url);
@@ -507,7 +505,6 @@ public class MapsOverlayActivity extends AppCompatActivity
 
             assert tag != null;
 
-            // TODO: see why this crashes
             switch (tag) {
                 case "green":
                     badge = R.drawable.badge_green;
@@ -518,7 +515,7 @@ public class MapsOverlayActivity extends AppCompatActivity
                 case "red":
                     badge = R.drawable.badge_red;
                     break;
-                case "blue":
+                case "cyan":
                     badge = R.drawable.badge_blue;
                     break;
                 case "FOOD":
