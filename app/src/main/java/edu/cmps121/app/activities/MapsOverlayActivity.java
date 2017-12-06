@@ -62,6 +62,7 @@ public class MapsOverlayActivity extends AppCompatActivity
     private GoogleMap googleMap;
     private Thread trackingThread;
     private GetNearbyPlacesData placeTask;
+    private LatLng target;
 
     private HashMap<String, Marker> markers;
     private List<String> cars;
@@ -149,14 +150,15 @@ public class MapsOverlayActivity extends AppCompatActivity
         if (userItem == null)
             throw new RuntimeException("User does not exist in DB. Critical Failure");
 
+        // TODO: still not working
         if (isValidString(userItem.getCar()))
-            googleMap.moveCamera(
-                    CameraUpdateFactory.newLatLngZoom(getCarPosition(userItem.getCar()), INITIAL_ZOOM)
-            );
+            target = getCarPosition(userItem.getCar());
         else
-            googleMap.moveCamera(
-                    CameraUpdateFactory.newLatLngZoom(getUserPosition(), INITIAL_ZOOM)
-            );
+            target = getUserPosition();
+
+        googleMap.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(target, INITIAL_ZOOM)
+        );
     }
 
     private LatLng getCarPosition(String car) {
@@ -393,10 +395,10 @@ public class MapsOverlayActivity extends AppCompatActivity
     public void moveCamera(String carName) {
         Marker marker = markers.get(carName);
         LatLng cameraPosition = googleMap.getCameraPosition().target;
-        LatLng markerPosition = marker.getPosition();
+        target = marker.getPosition();
 
-        if (Math.abs(cameraPosition.latitude - markerPosition.latitude) > .3 ||
-                Math.abs(cameraPosition.longitude - markerPosition.longitude) > .3)
+        if (Math.abs(cameraPosition.latitude - target.latitude) > .3 ||
+                Math.abs(cameraPosition.longitude - target.longitude) > .3)
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), INITIAL_ZOOM));
         else
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), INITIAL_ZOOM));
@@ -505,6 +507,7 @@ public class MapsOverlayActivity extends AppCompatActivity
 
             assert tag != null;
 
+            // TODO: see why this crashes
             switch (tag) {
                 case "green":
                     badge = R.drawable.badge_green;
