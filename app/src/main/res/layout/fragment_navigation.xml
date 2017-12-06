@@ -6,5 +6,7 @@
     <ListView
         android:id="@+id/navigation_lv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:divider="@color/theme_dark_grey"
+        android:dividerHeight="2dp" />
 </LinearLayout>
