@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.cmps121.app.activities.PartyMenuActivity">
+    android:background="@drawable/backsplash_white"
+    tools:context="edu.cmps121.app.activities.PartyMenuActivity"
+    tools:layout_editor_absoluteY="25dp">
 
     <TextView
         android:id="@+id/team_name_tv"
@@ -12,91 +14,103 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/party_menu_tv"
-        android:layout_width="wrap_content"
+        android:layout_width="230dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:fontFamily="@font/droid_sans"
         android:text="@string/party_menu"
+        android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:textColor="@color/theme_orange"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/find_car_menu_b"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/team_name_tv" />
 
     <Button
         android:id="@+id/find_car_menu_b"
-        android:layout_width="291dp"
-        android:layout_height="69dp"
-        android:layout_marginTop="24dp"
-        android:background="@android:color/holo_blue_dark"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/round_button_green"
+        android:fontFamily="@font/droid_sans"
         android:onClick="onClickFindCarMenu"
         android:text="@string/find_car"
         android:textAllCaps="false"
-        android:textSize="24sp"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_car_menu_b" />
-
-    <Button
-        android:id="@+id/maps_menu_b"
-        android:layout_width="291dp"
-        android:layout_height="69dp"
-        android:layout_marginTop="24dp"
-        android:background="@android:color/holo_orange_dark"
-        android:onClick="onClickMapsMenu"
-        android:text="@string/maps"
-        android:textAllCaps="false"
-        android:textSize="24sp"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/find_car_menu_b" />
-
-    <Button
-        android:id="@+id/settings_menu_b"
-        android:layout_width="291dp"
-        android:layout_height="69dp"
-        android:layout_marginTop="26dp"
-        android:background="@android:color/holo_orange_light"
-        android:onClick="onClickSettingsMenu"
-        android:text="@string/settings"
-        android:textAllCaps="false"
-        android:textSize="24sp"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/maps_menu_b" />
-
-    <Button
-        android:id="@+id/create_car_menu_b"
-        android:layout_width="291dp"
-        android:layout_height="69dp"
-        android:layout_marginTop="29dp"
-        android:background="@android:color/holo_purple"
-        android:onClick="onClickCreateCarMenu"
-        android:text="@string/create_car"
-        android:textAllCaps="false"
-        android:textSize="24sp"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/settings_menu_b"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/create_car_menu_b"
         app:layout_constraintTop_toBottomOf="@+id/party_menu_tv" />
 
     <Button
-        android:id="@+id/logout_b"
+        android:id="@+id/maps_menu_b"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/round_button_yellow"
+        android:fontFamily="@font/droid_sans"
+        android:onClick="onClickMapMenu"
+        android:text="@string/map"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/textView9"
+        app:layout_constraintEnd_toStartOf="@+id/settings_menu_b"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_car_menu_b" />
+
+    <Button
+        android:id="@+id/create_car_menu_b"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/round_button_blue"
+        android:onClick="onClickCreateCarMenu"
+        android:text="@string/create_car"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/maps_menu_b"
+        app:layout_constraintEnd_toStartOf="@+id/find_car_menu_b"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/party_menu_tv" />
+
+    <Button
+        android:id="@+id/settings_menu_b"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/round_button_orange"
+        android:fontFamily="@font/droid_sans"
+        android:onClick="onClickSettingsMenu"
+        android:text="@string/settings"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/textView9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/maps_menu_b"
+        app:layout_constraintTop_toBottomOf="@+id/find_car_menu_b" />
+
+    <TextView
+        android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:layout_marginEnd="1dp"
-        android:text="@string/logout"
+        android:fontFamily="@font/droid_sans"
         android:onClick="onClickLogout"
-        app:layout_constraintBottom_toTopOf="@+id/party_menu_tv"
-        app:layout_constraintEnd_toStartOf="@+id/party_menu_tv" />
+        android:text="@string/click_here_to_logout"
+        android:textAlignment="center"
+        android:textColor="@color/theme_orange"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/maps_menu_b" />
 
 </android.support.constraint.ConstraintLayout>

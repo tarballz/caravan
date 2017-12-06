@@ -1,5 +1,7 @@
 package edu.cmps121.app.activities;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -33,6 +35,7 @@ public class CreateCarActivity extends AppCompatActivity {
     private String carName;
     private String color;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +60,7 @@ public class CreateCarActivity extends AppCompatActivity {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_spinner_item,
+                R.layout.spinner_item,
                 colors
         );
         colorSpinner.setAdapter(adapter);
@@ -74,13 +77,14 @@ public class CreateCarActivity extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void initializeDriverSpinner() {
         @SuppressWarnings("All")
         Spinner carSpinner = (Spinner) findViewById(R.id.select_driver_sp);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_spinner_item,
+                R.layout.spinner_item,
                 getDrivers()
         );
         carSpinner.setAdapter(adapter);
@@ -97,6 +101,7 @@ public class CreateCarActivity extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private ArrayList<String> getDrivers() {
         List<Map<String, AttributeValue>> usersItems = dynamoDB.queryTableByParty("users", state.party);
 

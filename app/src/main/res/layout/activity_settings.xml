@@ -1,25 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.cmps121.app.activities.SettingsActivity">
+    android:background="@drawable/backsplash_white"
+    tools:context="edu.cmps121.app.activities.SettingsActivity"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="25dp">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/change_car_name_b"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/round_button_yellow"
+        android:text="@string/change_car_name"
+        app:layout_constraintBottom_toTopOf="@+id/select_theme_tv"
+        app:layout_constraintEnd_toEndOf="@+id/change_username_b"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/change_username_b"
+        app:layout_constraintTop_toBottomOf="@+id/change_username_b"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1" />
+
+    <Button
+        android:id="@+id/delete_party_b"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/round_button_orange"
+        android:text="@string/delete_party"
+        app:layout_constraintBottom_toTopOf="@+id/select_theme_tv"
+        app:layout_constraintEnd_toEndOf="@+id/change_password_b"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/change_password_b"
+        app:layout_constraintTop_toBottomOf="@+id/change_password_b"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1" />
+
+    <Button
+        android:id="@+id/change_password_b"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/round_button_green"
+        android:text="@string/change_password"
+        app:layout_constraintBottom_toTopOf="@+id/delete_party_b"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/change_username_b"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1" />
+
+    <Button
+        android:id="@+id/change_username_b"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/round_button_blue"
+        android:text="@string/change_username"
+        app:layout_constraintBottom_toTopOf="@+id/change_car_name_b"
+        app:layout_constraintEnd_toStartOf="@+id/change_password_b"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
+
+    <TextView
+        android:id="@+id/select_theme_tv"
+        android:layout_width="230dp"
+        android:layout_height="30dp"
+        android:fontFamily="@font/droid_sans"
+        android:text="@string/select_map_theme"
+        android:textAlignment="center"
+        android:textColor="@color/theme_dark_grey"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/select_theme_sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/change_car_name_b" />
+
+    <Spinner
+        android:id="@+id/select_theme_sp"
+        android:layout_width="230dp"
+        android:layout_height="50dp"
+        android:backgroundTint="@color/theme_dark_grey"
+        android:popupBackground="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/select_theme_tv" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:fontFamily="@font/droid_sans"
+        android:text="@string/settings"
+        android:textAlignment="center"
+        android:textColor="@color/theme_orange"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/change_password_b"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </android.support.design.widget.AppBarLayout>
-
-    <include layout="@layout/content_settings" />
-
-</android.support.design.widget.CoordinatorLayout>
+</android.support.constraint.ConstraintLayout>

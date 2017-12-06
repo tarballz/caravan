@@ -23,9 +23,6 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         state = new State(this);
 
         initializeThemeSpinner();
@@ -35,13 +32,13 @@ public class SettingsActivity extends AppCompatActivity {
         Spinner carSpinner = (Spinner) findViewById(R.id.select_theme_sp);
         ArrayList<String> themes = new ArrayList<>();
 
+        themes.add("Night");
         themes.add("Retro");
         themes.add("GreyScale");
-        themes.add("Night");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_spinner_item,
+                R.layout.spinner_item,
                 themes
         );
         carSpinner.setAdapter(adapter);

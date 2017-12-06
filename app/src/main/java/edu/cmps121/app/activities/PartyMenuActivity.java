@@ -5,12 +5,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+
+import java.util.ArrayList;
+import java.util.List;
+
+import edu.cmps121.app.utilities.NearbyPlace;
 import edu.cmps121.app.R;
 import edu.cmps121.app.utilities.State;
 
 public class PartyMenuActivity extends AppCompatActivity {
 
     private State state;
+//    private FusedLocationProviderClient mFusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,14 +31,14 @@ public class PartyMenuActivity extends AppCompatActivity {
     }
 
     public void onClickCreateCarMenu(View view) {
-       state.nextActivity(this, CreateCarActivity.class);
+        state.nextActivity(this, CreateCarActivity.class);
     }
 
     public void onClickFindCarMenu(View view) {
         state.nextActivity(this, FindCarActivity.class);
     }
 
-    public void onClickMapsMenu(View view) {
+    public void onClickMapMenu(View view) {
         state.nextActivity(this, MapsActivity.class);
     }
 
@@ -40,9 +46,13 @@ public class PartyMenuActivity extends AppCompatActivity {
         state.nextActivity(this, SettingsActivity.class);
     }
 
-    public void onClickLogout(View view) { state.nextActivity(this, MainActivity.class);}
+    public void onClickLogout(View view) {
+        state.nextActivity(this, MainActivity.class);
+    }
 
-    /** Do nothing, force user to log out if they want to return **/
+    /**
+     * Do nothing, force user to log out if they want to return
+     **/
     @Override
     public void onBackPressed() {
     }

@@ -66,8 +66,8 @@ public class CreatePartyActivity extends AppCompatActivity {
         else if (dynamoDB.itemExists(Party.class, partyName))
             shortToast(this, partyName + " has already been taken");
         else {
-                updateDB();
-                state.nextActivity(this, PartyMenuActivity.class);
+            updateDB();
+            state.nextActivity(this, PartyMenuActivity.class);
         }
     }
 
@@ -79,6 +79,7 @@ public class CreatePartyActivity extends AppCompatActivity {
             party.setOwner(state.user);
             party.setLat(destination.getLatLng().latitude);
             party.setLng(destination.getLatLng().longitude);
+            party.setDestName(destination.getName().toString());
 
             dynamoDB.saveItem(party);
 

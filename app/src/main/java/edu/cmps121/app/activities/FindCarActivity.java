@@ -1,5 +1,7 @@
 package edu.cmps121.app.activities;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -27,6 +29,7 @@ public class FindCarActivity extends AppCompatActivity {
     @SuppressWarnings("All")
     private Optional<String> carName;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,19 +41,20 @@ public class FindCarActivity extends AppCompatActivity {
         createCarListView();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void createCarListView() {
         ListView carList = (ListView) findViewById(R.id.car_list_lv);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_list_item_1,
+                R.layout.spinner_item,
                 getCarsWithDrivers()
         );
         carList.setAdapter(adapter);
 
         carList.setOnItemClickListener((parent, v, position, id) -> {
             if (carName.isPresent())
-                shortToast(this, "You are already driving " + carName + ". You cannot join another car");
+                shortToast(this, "You are already driving " + carName.get() + ". You cannot join another car");
             else {
                 String carAndDriver = (String) parent.getItemAtPosition(position);
                 state.car = carAndDriver.substring(carAndDriver.indexOf("'s ") + 3);
@@ -66,6 +70,7 @@ public class FindCarActivity extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private ArrayList<String> getCarsWithDrivers() {
         List<Map<String, AttributeValue>> itemList = dynamoDB.queryTableByParty("cars", state.party);
 
